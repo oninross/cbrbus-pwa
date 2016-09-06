@@ -41,7 +41,7 @@ var RR = (function (parent, $) {
             cardTemplate = doT.template($('#card-template').html()),
             obj = {},
             cardMarkup = '',
-            now = Date.now(),
+            now = new Date(),
             arr,
             eta,
             etaMin;
@@ -50,13 +50,13 @@ var RR = (function (parent, $) {
 
         for (var i = 0, l = services.length; i < l; i++) {
             arr = new Date(services[i].NextBus.EstimatedArrival);
-            eta = arr - now;
-            etaMin = new Date(eta);
+            eta = arr.getTime() - now.getTime(); // This will give difference in milliseconds
+            etaMin = Math.round(eta / 60000);
 
             obj = {
                 serviceNo: services[i].ServiceNo,
                 load: services[i].NextBus.Load,
-                EstimatedArrival: etaMin.getMinutes()
+                EstimatedArrival: etaMin
             };
 
             cardMarkup += cardTemplate(obj);

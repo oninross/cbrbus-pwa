@@ -12,6 +12,8 @@
                     <div class="col-4">
                         {{? it.EstimatedArrival == 0 }}
                         <p>Arriving</p>
+                        {{?? it.EstimatedArrival == 1 }}
+                        <p>{{! it.EstimatedArrival }} min</p>
                         {{??}}
                         <p>{{! it.EstimatedArrival }} mins</p>
                         {{?}}
