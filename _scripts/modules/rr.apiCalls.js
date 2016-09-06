@@ -22,7 +22,7 @@ var RR = (function (parent, $) {
                 'accept': 'application/json'
             },
             success: function (data) {
-                console.log(data);
+                // console.log(data);
                 processData(data);
             },
             error: function (error) {
@@ -49,7 +49,7 @@ var RR = (function (parent, $) {
         $('.header h1').text(busStopName);
 
         for (var i = 0, l = services.length; i < l; i++) {
-            arr = Date.parse(services[i].NextBus.EstimatedArrival);
+            arr = new Date(services[i].NextBus.EstimatedArrival);
             eta = arr - now;
             etaMin = new Date(eta);
 

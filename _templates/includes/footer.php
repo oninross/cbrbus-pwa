@@ -10,7 +10,11 @@
                     </div>
 
                     <div class="col-4">
+                        {{? it.EstimatedArrival == 0 }}
+                        <p>Arriving</p>
+                        {{??}}
                         <p>{{! it.EstimatedArrival }} mins</p>
+                        {{?}}
                     </div>
                 </div>
             </div>
