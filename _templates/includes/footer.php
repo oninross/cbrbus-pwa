@@ -10,7 +10,7 @@
                     </div>
 
                     <div class="col-4">
-                        <p>{{! it.EstimatedArrival }}</p>
+                        <p>{{! it.EstimatedArrival }} mins</p>
                     </div>
                 </div>
             </div>
