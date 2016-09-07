@@ -2,18 +2,24 @@
             <div class="card">
                 <div class="wrap">
                     <div class="col-3">
-                        <p><strong>{{! it.serviceNo }}</strong></p>
+                        <p>{{! it.serviceNo }}</p>
                     </div>
 
                     <div class="col-5">
-                        <p>{{! it.load }}</p>
+                        {{? it.status == 'In Operation' }}
+                        <p class="operational">{{! it.status }}</p>
+                        {{??}}
+                        <p class="non-operational">{{! it.status }}</p>
+                        {{?}}
                     </div>
 
-                    <div class="col-4">
-                        {{? it.EstimatedArrival == 0 }}
-                        <p>Arriving</p>
+                    <div class="eta col-4">
+                        {{? it.EstimatedArrival < 0 }}
+                        <p class="departed">Departed</p>
+                        {{?? it.EstimatedArrival == 0 }}
+                        <p class="arriving">Arriving</p>
                         {{?? it.EstimatedArrival == 1 }}
-                        <p>{{! it.EstimatedArrival }} min</p>
+                        <p class="near">{{! it.EstimatedArrival }} min</p>
                         {{??}}
                         <p>{{! it.EstimatedArrival }} mins</p>
                         {{?}}

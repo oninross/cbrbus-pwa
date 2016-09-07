@@ -22,8 +22,17 @@ var RR = (function (parent, $) {
                 'accept': 'application/json'
             },
             success: function (data) {
-                // console.log(data);
-                processData(data);
+                console.log(data);
+                TweenMax.to('.loader', 0.75, {
+                    autoAlpha: 0,
+                    scale: 0,
+                    ease: Expo.easeOut,
+                    onComplete: function () {
+                        $('.loader').remove();
+                        processData(data);
+                    }
+                });
+
             },
             error: function (error) {
                 console.log(error);
@@ -55,7 +64,7 @@ var RR = (function (parent, $) {
 
             obj = {
                 serviceNo: services[i].ServiceNo,
-                load: services[i].NextBus.Load,
+                status: services[i].Status,
                 EstimatedArrival: etaMin
             };
 

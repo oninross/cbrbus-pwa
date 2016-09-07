@@ -466,7 +466,6 @@ svg.ripple {
     }
 }
 
-
 .timetable {
     margin-top: 60px;
 }
@@ -476,6 +475,40 @@ svg.ripple {
 
     background-color: $white;
     margin-bottom: $gutter;
+
+    p {
+        font-weight: $bold;
+    }
+
+    .eta {
+        text-align: right;
+    }
+
+    .operational {
+        color: $green;
+    }
+
+    .non-operational {
+        color: $red;
+    }
+
+    .departed {
+        color: $blue;
+    }
+
+    .arriving {
+        color: $green;
+    }
+
+    .near {
+        color: $red;
+    }
+}
+
+.loader {
+    height: 50px !important;
+    margin: 0 auto 20px;
+    width: 50px !important;
 }
 
 

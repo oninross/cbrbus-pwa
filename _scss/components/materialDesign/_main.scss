@@ -415,10 +415,7 @@ input[type="checkbox"]{
     stroke-dasharray: 1,200;
     stroke-dashoffset: 0;
 
-    animation:
-        dash 1.5s ease-in-out infinite,
-        color 6s ease-in-out infinite
-    ;
+    animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
     stroke-linecap: round;
 }
 
@@ -450,16 +447,8 @@ input[type="checkbox"]{
         stroke: $red;
     }
 
-    40%{
-        stroke: $red;
-    }
-
-    66%{
-        stroke: $green;
-    }
-
     80%, 90%{
-        stroke: $yellow;
+        stroke: $red;
     }
 }
 
