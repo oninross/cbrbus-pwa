@@ -23,12 +23,12 @@
 
         <title>Singapore Bus Arrival Time</title>
 
-        <link rel="manifest" href="manifest.json">
+        <!-- <link rel="manifest" href="manifest.json">
         <meta name="mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="msapplication-TileColor" content="#54606e">
+        <meta name="apple-mobile-web-app-capable" content="yes"> -->
+        <meta name="msapplication-TileColor" content="#990000">
         <meta name="msapplication-TileImage" content="ms-icon-144x144.png">
-        <meta name="theme-color" content="#54606e">
+        <meta name="theme-color" content="#990000">
 
         <link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png">
         <link rel="apple-touch-icon" sizes="60x60" href="apple-icon-60x60.png">
