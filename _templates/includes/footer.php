@@ -42,17 +42,17 @@
         </script>
 
         <!-- build:js //ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js -->
-        <script src="/assets/btt/js/vendor/jquery-1.11.3.min.js"></script>
+        <script src="assets/btt/js/vendor/jquery-1.11.3.min.js"></script>
         <!-- /build -->
 
         <!--[if lt IE 9]>
             <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js"></script>
         <![endif]-->
 
-        <!-- build:js /assets/btt/js/main.min.js -->
-        <script src="/assets/btt/js/plugins.js"></script>
-        <script src="/assets/btt/js/modules.js"></script>
-        <script src="/assets/btt/js/main.js"></script>
+        <!-- build:js assets/btt/js/main.min.js -->
+        <script src="assets/btt/js/plugins.js"></script>
+        <script src="assets/btt/js/modules.js"></script>
+        <script src="assets/btt/js/main.js"></script>
         <!-- /build -->
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->

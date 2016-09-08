@@ -65,19 +65,19 @@
         <meta name="twitter:description" content=""/>
         <meta name="twitter:image" content="" />
 
-        <!-- build:css /assets/btt/css/main.min.css -->
-        <link href="/assets/btt/css/main.css" rel="stylesheet">
+        <!-- build:css assets/btt/css/main.min.css -->
+        <link href="assets/btt/css/main.css" rel="stylesheet">
         <!-- /build -->
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic" rel="stylesheet" type="text/css">
 
         <!--[if lt IE 9]>
-            <link rel="stylesheet" href = "/assets/btt/css/ie.css">
+            <link rel="stylesheet" href = "assets/btt/css/ie.css">
             <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
             <script src="//cdnjs.cloudflare.com/ajax/libs/selectivizr/1.0.2/selectivizr-min.js"></script>
         <![endif]-->
 
-        <script src="/assets/btt/js/vendor/modernizr.js"></script>
+        <script src="assets/btt/js/vendor/modernizr.js"></script>
     </head>
     <body>
         <header class="header">
