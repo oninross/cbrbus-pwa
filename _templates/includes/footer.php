@@ -1,11 +1,11 @@
         <script id="card-template" type="text/template">
-            <div class="card">
+            <div class="card" data-servicenum="{{! it.serviceNo }}">
                 <div class="wrap">
                     <div class="col-3">
                         <p>{{! it.serviceNo }}</p>
                     </div>
 
-                    <div class="col-5">
+                    <div class="status col-5">
                         {{? it.status == 'In Operation' }}
                         <p class="operational">{{! it.status }}</p>
                         {{??}}

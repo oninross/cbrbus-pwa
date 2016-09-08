@@ -475,9 +475,26 @@ svg.ripple {
 
     background-color: $white;
     margin-bottom: $gutter;
+    overflow: hidden;
 
     p {
         font-weight: $bold;
+    }
+
+    .ripple {
+        circle {
+            fill: $grey;
+        }
+    }
+
+    .loader {
+        bottom: 0;
+        height: 40px !important;
+        margin: auto;
+        position: absolute;
+        right: 20px;
+        top: 0;
+        width: 40px !important;
     }
 
     .eta {
