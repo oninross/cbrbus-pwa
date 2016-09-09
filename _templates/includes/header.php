@@ -23,8 +23,8 @@
 
         <title>Singapore Bus Arrival Time</title>
 
-        <!-- <link rel="manifest" href="manifest.json">
-        <meta name="mobile-web-app-capable" content="yes">
+        <link rel="manifest" href="manifest.json">
+        <!-- <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes"> -->
         <meta name="msapplication-TileColor" content="#990000">
         <meta name="msapplication-TileImage" content="ms-icon-144x144.png">
@@ -71,13 +71,12 @@
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic" rel="stylesheet" type="text/css">
 
-        <!--[if lt IE 9]>
-            <link rel="stylesheet" href = "assets/btt/css/ie.css">
-            <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
-            <script src="//cdnjs.cloudflare.com/ajax/libs/selectivizr/1.0.2/selectivizr-min.js"></script>
-        <![endif]-->
-
         <script src="assets/btt/js/vendor/modernizr.js"></script>
+
+        <script type="text/javascript">
+            var busStopId = '05022',
+                busStopName = 'People\'s Pk Ctr';
+        </script>
     </head>
     <body>
         <header class="header">

@@ -7,12 +7,7 @@
 var RR = (function (parent, $) {
     'use strict';
 
-    var busStopName = getQueryVariable('busStopName'),
-        busStopId = getQueryVariable('busStopId'),
-        loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>';
-
-    busStopName = busStopName.split('+').join(' ');
-    busStopName = decodeURIComponent(busStopName);
+    var loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>';
 
     var setup = function () {
         $.ajax({
