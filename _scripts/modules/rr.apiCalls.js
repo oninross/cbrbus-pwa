@@ -10,36 +10,36 @@ var RR = (function (parent, $) {
     var loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>';
 
     var setup = function () {
-        $.ajax({
-            url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&SST=True',
-            type: 'GET',
-            headers: {
-                'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
-                'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
-                'accept': 'application/json'
-            },
-            success: function (data) {
-                // console.log(data);
-                TweenMax.to('.loader', 0.75, {
-                    autoAlpha: 0,
-                    scale: 0,
-                    ease: Expo.easeOut,
-                    onComplete: function () {
-                        $('.loader').remove();
-                        processData(data);
-                    }
-                });
+        // $.ajax({
+        //     url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&SST=True',
+        //     type: 'GET',
+        //     headers: {
+        //         'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
+        //         'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
+        //         'accept': 'application/json'
+        //     },
+        //     success: function (data) {
+        //         // console.log(data);
+        //         TweenMax.to('.loader', 0.75, {
+        //             autoAlpha: 0,
+        //             scale: 0,
+        //             ease: Expo.easeOut,
+        //             onComplete: function () {
+        //                 $('.loader').remove();
+        //                 processData(data);
+        //             }
+        //         });
 
-            },
-            error: function (error) {
-                console.log(error);
+        //     },
+        //     error: function (error) {
+        //         console.log(error);
 
-                RR.materialDesign.toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
-            },
-            statusCode: function (code) {
-                console.log(code);
-            }
-        });
+        //         RR.materialDesign.toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
+        //     },
+        //     statusCode: function (code) {
+        //         console.log(code);
+        //     }
+        // });
 
         $('body').on('click', '.card', function (e) {
             e.preventDefault();
@@ -53,36 +53,36 @@ var RR = (function (parent, $) {
 
             $this.append(loader);
 
-            $.ajax({
-                url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&ServiceNo=' + serviceNum + '&SST=True',
-                type: 'GET',
-                headers: {
-                    'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
-                    'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
-                    'accept': 'application/json'
-                },
-                success: function (data) {
-                    // console.log(data);
+            // $.ajax({
+            //     url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&ServiceNo=' + serviceNum + '&SST=True',
+            //     type: 'GET',
+            //     headers: {
+            //         'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
+            //         'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
+            //         'accept': 'application/json'
+            //     },
+            //     success: function (data) {
+            //         // console.log(data);
 
-                    TweenMax.to('.loader', 0.75, {
-                        autoAlpha: 0,
-                        scale: 0,
-                        ease: Expo.easeOut,
-                        onComplete: function () {
-                            $('.loader').remove();
-                            updateEta($this, data);
-                        }
-                    });
-                },
-                error: function (error) {
-                    console.log(error);
+            //         TweenMax.to('.loader', 0.75, {
+            //             autoAlpha: 0,
+            //             scale: 0,
+            //             ease: Expo.easeOut,
+            //             onComplete: function () {
+            //                 $('.loader').remove();
+            //                 updateEta($this, data);
+            //             }
+            //         });
+            //     },
+            //     error: function (error) {
+            //         console.log(error);
 
-                    RR.materialDesign.toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
-                },
-                statusCode: function (code) {
-                    console.log(code);
-                }
-            });
+            //         RR.materialDesign.toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
+            //     },
+            //     statusCode: function (code) {
+            //         console.log(code);
+            //     }
+            // });
         });
     };
 
