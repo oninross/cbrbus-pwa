@@ -1,5 +1,6 @@
 .sass-cache/
 dist/
+tmp/
 node_modules/
 www/assets/btt/css/_delete
 www/
