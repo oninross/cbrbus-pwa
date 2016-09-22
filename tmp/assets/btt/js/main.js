@@ -1,4 +1,999 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+
+},{}],2:[function(require,module,exports){
+/**
+*  Ajax Autocomplete for jQuery, version 1.2.26
+*  (c) 2015 Tomas Kirda
+*
+*  Ajax Autocomplete for jQuery is freely distributable under the terms of an MIT-style license.
+*  For details, see the web site: https://github.com/devbridge/jQuery-Autocomplete
+*/
+
+/*jslint  browser: true, white: true, single: true, this: true, multivar: true */
+/*global define, window, document, jQuery, exports, require */
+
+// Expose plugin as an AMD module if AMD loader is present:
+(function (factory) {
+    "use strict";
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['jquery'], factory);
+    } else if (typeof exports === 'object' && typeof require === 'function') {
+        // Browserify
+        factory(require('jquery'));
+    } else {
+        // Browser globals
+        factory(jQuery);
+    }
+}(function ($) {
+    'use strict';
+
+    var
+        utils = (function () {
+            return {
+                escapeRegExChars: function (value) {
+                    return value.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&");
+                },
+                createNode: function (containerClass) {
+                    var div = document.createElement('div');
+                    div.className = containerClass;
+                    div.style.position = 'absolute';
+                    div.style.display = 'none';
+                    return div;
+                }
+            };
+        }()),
+
+        keys = {
+            ESC: 27,
+            TAB: 9,
+            RETURN: 13,
+            LEFT: 37,
+            UP: 38,
+            RIGHT: 39,
+            DOWN: 40
+        };
+
+    function Autocomplete(el, options) {
+        var noop = $.noop,
+            that = this,
+            defaults = {
+                ajaxSettings: {},
+                autoSelectFirst: false,
+                appendTo: document.body,
+                serviceUrl: null,
+                lookup: null,
+                onSelect: null,
+                width: 'auto',
+                minChars: 1,
+                maxHeight: 300,
+                deferRequestBy: 0,
+                params: {},
+                formatResult: Autocomplete.formatResult,
+                delimiter: null,
+                zIndex: 9999,
+                type: 'GET',
+                noCache: false,
+                onSearchStart: noop,
+                onSearchComplete: noop,
+                onSearchError: noop,
+                preserveInput: false,
+                containerClass: 'autocomplete-suggestions',
+                tabDisabled: false,
+                dataType: 'text',
+                currentRequest: null,
+                triggerSelectOnValidInput: true,
+                preventBadQueries: true,
+                lookupFilter: function (suggestion, originalQuery, queryLowerCase) {
+                    return suggestion.value.toLowerCase().indexOf(queryLowerCase) !== -1;
+                },
+                paramName: 'query',
+                transformResult: function (response) {
+                    return typeof response === 'string' ? $.parseJSON(response) : response;
+                },
+                showNoSuggestionNotice: false,
+                noSuggestionNotice: 'No results',
+                orientation: 'bottom',
+                forceFixPosition: false
+            };
+
+        // Shared variables:
+        that.element = el;
+        that.el = $(el);
+        that.suggestions = [];
+        that.badQueries = [];
+        that.selectedIndex = -1;
+        that.currentValue = that.element.value;
+        that.intervalId = 0;
+        that.cachedResponse = {};
+        that.onChangeInterval = null;
+        that.onChange = null;
+        that.isLocal = false;
+        that.suggestionsContainer = null;
+        that.noSuggestionsContainer = null;
+        that.options = $.extend({}, defaults, options);
+        that.classes = {
+            selected: 'autocomplete-selected',
+            suggestion: 'autocomplete-suggestion'
+        };
+        that.hint = null;
+        that.hintValue = '';
+        that.selection = null;
+
+        // Initialize and set options:
+        that.initialize();
+        that.setOptions(options);
+    }
+
+    Autocomplete.utils = utils;
+
+    $.Autocomplete = Autocomplete;
+
+    Autocomplete.formatResult = function (suggestion, currentValue) {
+        // Do not replace anything if there current value is empty
+        if (!currentValue) {
+            return suggestion.value;
+        }
+        
+        var pattern = '(' + utils.escapeRegExChars(currentValue) + ')';
+
+        return suggestion.value
+            .replace(new RegExp(pattern, 'gi'), '<strong>$1<\/strong>')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/&lt;(\/?strong)&gt;/g, '<$1>');
+    };
+
+    Autocomplete.prototype = {
+
+        killerFn: null,
+
+        initialize: function () {
+            var that = this,
+                suggestionSelector = '.' + that.classes.suggestion,
+                selected = that.classes.selected,
+                options = that.options,
+                container;
+
+            // Remove autocomplete attribute to prevent native suggestions:
+            that.element.setAttribute('autocomplete', 'off');
+
+            that.killerFn = function (e) {
+                if (!$(e.target).closest('.' + that.options.containerClass).length) {
+                    that.killSuggestions();
+                    that.disableKillerFn();
+                }
+            };
+
+            // html() deals with many types: htmlString or Element or Array or jQuery
+            that.noSuggestionsContainer = $('<div class="autocomplete-no-suggestion"></div>')
+                                          .html(this.options.noSuggestionNotice).get(0);
+
+            that.suggestionsContainer = Autocomplete.utils.createNode(options.containerClass);
+
+            container = $(that.suggestionsContainer);
+
+            container.appendTo(options.appendTo);
+
+            // Only set width if it was provided:
+            if (options.width !== 'auto') {
+                container.css('width', options.width);
+            }
+
+            // Listen for mouse over event on suggestions list:
+            container.on('mouseover.autocomplete', suggestionSelector, function () {
+                that.activate($(this).data('index'));
+            });
+
+            // Deselect active element when mouse leaves suggestions container:
+            container.on('mouseout.autocomplete', function () {
+                that.selectedIndex = -1;
+                container.children('.' + selected).removeClass(selected);
+            });
+
+            // Listen for click event on suggestions list:
+            container.on('click.autocomplete', suggestionSelector, function () {
+                that.select($(this).data('index'));
+                return false;
+            });
+
+            that.fixPositionCapture = function () {
+                if (that.visible) {
+                    that.fixPosition();
+                }
+            };
+
+            $(window).on('resize.autocomplete', that.fixPositionCapture);
+
+            that.el.on('keydown.autocomplete', function (e) { that.onKeyPress(e); });
+            that.el.on('keyup.autocomplete', function (e) { that.onKeyUp(e); });
+            that.el.on('blur.autocomplete', function () { that.onBlur(); });
+            that.el.on('focus.autocomplete', function () { that.onFocus(); });
+            that.el.on('change.autocomplete', function (e) { that.onKeyUp(e); });
+            that.el.on('input.autocomplete', function (e) { that.onKeyUp(e); });
+        },
+
+        onFocus: function () {
+            var that = this;
+
+            that.fixPosition();
+
+            if (that.el.val().length >= that.options.minChars) {
+                that.onValueChange();
+            }
+        },
+
+        onBlur: function () {
+            this.enableKillerFn();
+        },
+        
+        abortAjax: function () {
+            var that = this;
+            if (that.currentRequest) {
+                that.currentRequest.abort();
+                that.currentRequest = null;
+            }
+        },
+
+        setOptions: function (suppliedOptions) {
+            var that = this,
+                options = that.options;
+
+            $.extend(options, suppliedOptions);
+
+            that.isLocal = $.isArray(options.lookup);
+
+            if (that.isLocal) {
+                options.lookup = that.verifySuggestionsFormat(options.lookup);
+            }
+
+            options.orientation = that.validateOrientation(options.orientation, 'bottom');
+
+            // Adjust height, width and z-index:
+            $(that.suggestionsContainer).css({
+                'max-height': options.maxHeight + 'px',
+                'width': options.width + 'px',
+                'z-index': options.zIndex
+            });
+        },
+
+
+        clearCache: function () {
+            this.cachedResponse = {};
+            this.badQueries = [];
+        },
+
+        clear: function () {
+            this.clearCache();
+            this.currentValue = '';
+            this.suggestions = [];
+        },
+
+        disable: function () {
+            var that = this;
+            that.disabled = true;
+            clearInterval(that.onChangeInterval);
+            that.abortAjax();
+        },
+
+        enable: function () {
+            this.disabled = false;
+        },
+
+        fixPosition: function () {
+            // Use only when container has already its content
+
+            var that = this,
+                $container = $(that.suggestionsContainer),
+                containerParent = $container.parent().get(0);
+            // Fix position automatically when appended to body.
+            // In other cases force parameter must be given.
+            if (containerParent !== document.body && !that.options.forceFixPosition) {
+                return;
+            }
+
+            // Choose orientation
+            var orientation = that.options.orientation,
+                containerHeight = $container.outerHeight(),
+                height = that.el.outerHeight(),
+                offset = that.el.offset(),
+                styles = { 'top': offset.top, 'left': offset.left };
+
+            if (orientation === 'auto') {
+                var viewPortHeight = $(window).height(),
+                    scrollTop = $(window).scrollTop(),
+                    topOverflow = -scrollTop + offset.top - containerHeight,
+                    bottomOverflow = scrollTop + viewPortHeight - (offset.top + height + containerHeight);
+
+                orientation = (Math.max(topOverflow, bottomOverflow) === topOverflow) ? 'top' : 'bottom';
+            }
+
+            if (orientation === 'top') {
+                styles.top += -containerHeight;
+            } else {
+                styles.top += height;
+            }
+
+            // If container is not positioned to body,
+            // correct its position using offset parent offset
+            if(containerParent !== document.body) {
+                var opacity = $container.css('opacity'),
+                    parentOffsetDiff;
+
+                    if (!that.visible){
+                        $container.css('opacity', 0).show();
+                    }
+
+                parentOffsetDiff = $container.offsetParent().offset();
+                styles.top -= parentOffsetDiff.top;
+                styles.left -= parentOffsetDiff.left;
+
+                if (!that.visible){
+                    $container.css('opacity', opacity).hide();
+                }
+            }
+
+            if (that.options.width === 'auto') {
+                styles.width = that.el.outerWidth() + 'px';
+            }
+
+            $container.css(styles);
+        },
+
+        enableKillerFn: function () {
+            var that = this;
+            $(document).on('click.autocomplete', that.killerFn);
+        },
+
+        disableKillerFn: function () {
+            var that = this;
+            $(document).off('click.autocomplete', that.killerFn);
+        },
+
+        killSuggestions: function () {
+            var that = this;
+            that.stopKillSuggestions();
+            that.intervalId = window.setInterval(function () {
+                if (that.visible) {
+                    // No need to restore value when 
+                    // preserveInput === true, 
+                    // because we did not change it
+                    if (!that.options.preserveInput) {
+                        that.el.val(that.currentValue);
+                    }
+
+                    that.hide();
+                }
+                
+                that.stopKillSuggestions();
+            }, 50);
+        },
+
+        stopKillSuggestions: function () {
+            window.clearInterval(this.intervalId);
+        },
+
+        isCursorAtEnd: function () {
+            var that = this,
+                valLength = that.el.val().length,
+                selectionStart = that.element.selectionStart,
+                range;
+
+            if (typeof selectionStart === 'number') {
+                return selectionStart === valLength;
+            }
+            if (document.selection) {
+                range = document.selection.createRange();
+                range.moveStart('character', -valLength);
+                return valLength === range.text.length;
+            }
+            return true;
+        },
+
+        onKeyPress: function (e) {
+            var that = this;
+
+            // If suggestions are hidden and user presses arrow down, display suggestions:
+            if (!that.disabled && !that.visible && e.which === keys.DOWN && that.currentValue) {
+                that.suggest();
+                return;
+            }
+
+            if (that.disabled || !that.visible) {
+                return;
+            }
+
+            switch (e.which) {
+                case keys.ESC:
+                    that.el.val(that.currentValue);
+                    that.hide();
+                    break;
+                case keys.RIGHT:
+                    if (that.hint && that.options.onHint && that.isCursorAtEnd()) {
+                        that.selectHint();
+                        break;
+                    }
+                    return;
+                case keys.TAB:
+                    if (that.hint && that.options.onHint) {
+                        that.selectHint();
+                        return;
+                    }
+                    if (that.selectedIndex === -1) {
+                        that.hide();
+                        return;
+                    }
+                    that.select(that.selectedIndex);
+                    if (that.options.tabDisabled === false) {
+                        return;
+                    }
+                    break;
+                case keys.RETURN:
+                    if (that.selectedIndex === -1) {
+                        that.hide();
+                        return;
+                    }
+                    that.select(that.selectedIndex);
+                    break;
+                case keys.UP:
+                    that.moveUp();
+                    break;
+                case keys.DOWN:
+                    that.moveDown();
+                    break;
+                default:
+                    return;
+            }
+
+            // Cancel event if function did not return:
+            e.stopImmediatePropagation();
+            e.preventDefault();
+        },
+
+        onKeyUp: function (e) {
+            var that = this;
+
+            if (that.disabled) {
+                return;
+            }
+
+            switch (e.which) {
+                case keys.UP:
+                case keys.DOWN:
+                    return;
+            }
+
+            clearInterval(that.onChangeInterval);
+
+            if (that.currentValue !== that.el.val()) {
+                that.findBestHint();
+                if (that.options.deferRequestBy > 0) {
+                    // Defer lookup in case when value changes very quickly:
+                    that.onChangeInterval = setInterval(function () {
+                        that.onValueChange();
+                    }, that.options.deferRequestBy);
+                } else {
+                    that.onValueChange();
+                }
+            }
+        },
+
+        onValueChange: function () {
+            var that = this,
+                options = that.options,
+                value = that.el.val(),
+                query = that.getQuery(value);
+
+            if (that.selection && that.currentValue !== query) {
+                that.selection = null;
+                (options.onInvalidateSelection || $.noop).call(that.element);
+            }
+
+            clearInterval(that.onChangeInterval);
+            that.currentValue = value;
+            that.selectedIndex = -1;
+
+            // Check existing suggestion for the match before proceeding:
+            if (options.triggerSelectOnValidInput && that.isExactMatch(query)) {
+                that.select(0);
+                return;
+            }
+
+            if (query.length < options.minChars) {
+                that.hide();
+            } else {
+                that.getSuggestions(query);
+            }
+        },
+
+        isExactMatch: function (query) {
+            var suggestions = this.suggestions;
+
+            return (suggestions.length === 1 && suggestions[0].value.toLowerCase() === query.toLowerCase());
+        },
+
+        getQuery: function (value) {
+            var delimiter = this.options.delimiter,
+                parts;
+
+            if (!delimiter) {
+                return value;
+            }
+            parts = value.split(delimiter);
+            return $.trim(parts[parts.length - 1]);
+        },
+
+        getSuggestionsLocal: function (query) {
+            var that = this,
+                options = that.options,
+                queryLowerCase = query.toLowerCase(),
+                filter = options.lookupFilter,
+                limit = parseInt(options.lookupLimit, 10),
+                data;
+
+            data = {
+                suggestions: $.grep(options.lookup, function (suggestion) {
+                    return filter(suggestion, query, queryLowerCase);
+                })
+            };
+
+            if (limit && data.suggestions.length > limit) {
+                data.suggestions = data.suggestions.slice(0, limit);
+            }
+
+            return data;
+        },
+
+        getSuggestions: function (q) {
+            var response,
+                that = this,
+                options = that.options,
+                serviceUrl = options.serviceUrl,
+                params,
+                cacheKey,
+                ajaxSettings;
+
+            options.params[options.paramName] = q;
+            params = options.ignoreParams ? null : options.params;
+
+            if (options.onSearchStart.call(that.element, options.params) === false) {
+                return;
+            }
+
+            if ($.isFunction(options.lookup)){
+                options.lookup(q, function (data) {
+                    that.suggestions = data.suggestions;
+                    that.suggest();
+                    options.onSearchComplete.call(that.element, q, data.suggestions);
+                });
+                return;
+            }
+
+            if (that.isLocal) {
+                response = that.getSuggestionsLocal(q);
+            } else {
+                if ($.isFunction(serviceUrl)) {
+                    serviceUrl = serviceUrl.call(that.element, q);
+                }
+                cacheKey = serviceUrl + '?' + $.param(params || {});
+                response = that.cachedResponse[cacheKey];
+            }
+
+            if (response && $.isArray(response.suggestions)) {
+                that.suggestions = response.suggestions;
+                that.suggest();
+                options.onSearchComplete.call(that.element, q, response.suggestions);
+            } else if (!that.isBadQuery(q)) {
+                that.abortAjax();
+
+                ajaxSettings = {
+                    url: serviceUrl,
+                    data: params,
+                    type: options.type,
+                    dataType: options.dataType
+                };
+
+                $.extend(ajaxSettings, options.ajaxSettings);
+
+                that.currentRequest = $.ajax(ajaxSettings).done(function (data) {
+                    var result;
+                    that.currentRequest = null;
+                    result = options.transformResult(data, q);
+                    that.processResponse(result, q, cacheKey);
+                    options.onSearchComplete.call(that.element, q, result.suggestions);
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    options.onSearchError.call(that.element, q, jqXHR, textStatus, errorThrown);
+                });
+            } else {
+                options.onSearchComplete.call(that.element, q, []);
+            }
+        },
+
+        isBadQuery: function (q) {
+            if (!this.options.preventBadQueries){
+                return false;
+            }
+
+            var badQueries = this.badQueries,
+                i = badQueries.length;
+
+            while (i--) {
+                if (q.indexOf(badQueries[i]) === 0) {
+                    return true;
+                }
+            }
+
+            return false;
+        },
+
+        hide: function () {
+            var that = this,
+                container = $(that.suggestionsContainer);
+
+            if ($.isFunction(that.options.onHide) && that.visible) {
+                that.options.onHide.call(that.element, container);
+            }
+
+            that.visible = false;
+            that.selectedIndex = -1;
+            clearInterval(that.onChangeInterval);
+            $(that.suggestionsContainer).hide();
+            that.signalHint(null);
+        },
+
+        suggest: function () {
+            if (!this.suggestions.length) {
+                if (this.options.showNoSuggestionNotice) {
+                    this.noSuggestions();
+                } else {
+                    this.hide();
+                }
+                return;
+            }
+
+            var that = this,
+                options = that.options,
+                groupBy = options.groupBy,
+                formatResult = options.formatResult,
+                value = that.getQuery(that.currentValue),
+                className = that.classes.suggestion,
+                classSelected = that.classes.selected,
+                container = $(that.suggestionsContainer),
+                noSuggestionsContainer = $(that.noSuggestionsContainer),
+                beforeRender = options.beforeRender,
+                html = '',
+                category,
+                formatGroup = function (suggestion, index) {
+                        var currentCategory = suggestion.data[groupBy];
+
+                        if (category === currentCategory){
+                            return '';
+                        }
+
+                        category = currentCategory;
+
+                        return '<div class="autocomplete-group"><strong>' + category + '</strong></div>';
+                    };
+
+            if (options.triggerSelectOnValidInput && that.isExactMatch(value)) {
+                that.select(0);
+                return;
+            }
+
+            // Build suggestions inner HTML:
+            $.each(that.suggestions, function (i, suggestion) {
+                if (groupBy){
+                    html += formatGroup(suggestion, value, i);
+                }
+
+                html += '<div class="' + className + '" data-index="' + i + '">' + formatResult(suggestion, value, i) + '</div>';
+            });
+
+            this.adjustContainerWidth();
+
+            noSuggestionsContainer.detach();
+            container.html(html);
+
+            if ($.isFunction(beforeRender)) {
+                beforeRender.call(that.element, container, that.suggestions);
+            }
+
+            that.fixPosition();
+            container.show();
+
+            // Select first value by default:
+            if (options.autoSelectFirst) {
+                that.selectedIndex = 0;
+                container.scrollTop(0);
+                container.children('.' + className).first().addClass(classSelected);
+            }
+
+            that.visible = true;
+            that.findBestHint();
+        },
+
+        noSuggestions: function() {
+             var that = this,
+                 container = $(that.suggestionsContainer),
+                 noSuggestionsContainer = $(that.noSuggestionsContainer);
+
+            this.adjustContainerWidth();
+
+            // Some explicit steps. Be careful here as it easy to get
+            // noSuggestionsContainer removed from DOM if not detached properly.
+            noSuggestionsContainer.detach();
+            container.empty(); // clean suggestions if any
+            container.append(noSuggestionsContainer);
+
+            that.fixPosition();
+
+            container.show();
+            that.visible = true;
+        },
+
+        adjustContainerWidth: function() {
+            var that = this,
+                options = that.options,
+                width,
+                container = $(that.suggestionsContainer);
+
+            // If width is auto, adjust width before displaying suggestions,
+            // because if instance was created before input had width, it will be zero.
+            // Also it adjusts if input width has changed.
+            if (options.width === 'auto') {
+                width = that.el.outerWidth();
+                container.css('width', width > 0 ? width : 300);
+            }
+        },
+
+        findBestHint: function () {
+            var that = this,
+                value = that.el.val().toLowerCase(),
+                bestMatch = null;
+
+            if (!value) {
+                return;
+            }
+
+            $.each(that.suggestions, function (i, suggestion) {
+                var foundMatch = suggestion.value.toLowerCase().indexOf(value) === 0;
+                if (foundMatch) {
+                    bestMatch = suggestion;
+                }
+                return !foundMatch;
+            });
+
+            that.signalHint(bestMatch);
+        },
+
+        signalHint: function (suggestion) {
+            var hintValue = '',
+                that = this;
+            if (suggestion) {
+                hintValue = that.currentValue + suggestion.value.substr(that.currentValue.length);
+            }
+            if (that.hintValue !== hintValue) {
+                that.hintValue = hintValue;
+                that.hint = suggestion;
+                (this.options.onHint || $.noop)(hintValue);
+            }
+        },
+
+        verifySuggestionsFormat: function (suggestions) {
+            // If suggestions is string array, convert them to supported format:
+            if (suggestions.length && typeof suggestions[0] === 'string') {
+                return $.map(suggestions, function (value) {
+                    return { value: value, data: null };
+                });
+            }
+
+            return suggestions;
+        },
+
+        validateOrientation: function(orientation, fallback) {
+            orientation = $.trim(orientation || '').toLowerCase();
+
+            if($.inArray(orientation, ['auto', 'bottom', 'top']) === -1){
+                orientation = fallback;
+            }
+
+            return orientation;
+        },
+
+        processResponse: function (result, originalQuery, cacheKey) {
+            var that = this,
+                options = that.options;
+
+            result.suggestions = that.verifySuggestionsFormat(result.suggestions);
+
+            // Cache results if cache is not disabled:
+            if (!options.noCache) {
+                that.cachedResponse[cacheKey] = result;
+                if (options.preventBadQueries && !result.suggestions.length) {
+                    that.badQueries.push(originalQuery);
+                }
+            }
+
+            // Return if originalQuery is not matching current query:
+            if (originalQuery !== that.getQuery(that.currentValue)) {
+                return;
+            }
+
+            that.suggestions = result.suggestions;
+            that.suggest();
+        },
+
+        activate: function (index) {
+            var that = this,
+                activeItem,
+                selected = that.classes.selected,
+                container = $(that.suggestionsContainer),
+                children = container.find('.' + that.classes.suggestion);
+
+            container.find('.' + selected).removeClass(selected);
+
+            that.selectedIndex = index;
+
+            if (that.selectedIndex !== -1 && children.length > that.selectedIndex) {
+                activeItem = children.get(that.selectedIndex);
+                $(activeItem).addClass(selected);
+                return activeItem;
+            }
+
+            return null;
+        },
+
+        selectHint: function () {
+            var that = this,
+                i = $.inArray(that.hint, that.suggestions);
+
+            that.select(i);
+        },
+
+        select: function (i) {
+            var that = this;
+            that.hide();
+            that.onSelect(i);
+        },
+
+        moveUp: function () {
+            var that = this;
+
+            if (that.selectedIndex === -1) {
+                return;
+            }
+
+            if (that.selectedIndex === 0) {
+                $(that.suggestionsContainer).children().first().removeClass(that.classes.selected);
+                that.selectedIndex = -1;
+                that.el.val(that.currentValue);
+                that.findBestHint();
+                return;
+            }
+
+            that.adjustScroll(that.selectedIndex - 1);
+        },
+
+        moveDown: function () {
+            var that = this;
+
+            if (that.selectedIndex === (that.suggestions.length - 1)) {
+                return;
+            }
+
+            that.adjustScroll(that.selectedIndex + 1);
+        },
+
+        adjustScroll: function (index) {
+            var that = this,
+                activeItem = that.activate(index);
+
+            if (!activeItem) {
+                return;
+            }
+
+            var offsetTop,
+                upperBound,
+                lowerBound,
+                heightDelta = $(activeItem).outerHeight();
+
+            offsetTop = activeItem.offsetTop;
+            upperBound = $(that.suggestionsContainer).scrollTop();
+            lowerBound = upperBound + that.options.maxHeight - heightDelta;
+
+            if (offsetTop < upperBound) {
+                $(that.suggestionsContainer).scrollTop(offsetTop);
+            } else if (offsetTop > lowerBound) {
+                $(that.suggestionsContainer).scrollTop(offsetTop - that.options.maxHeight + heightDelta);
+            }
+
+            if (!that.options.preserveInput) {
+                that.el.val(that.getValue(that.suggestions[index].value));
+            }
+            that.signalHint(null);
+        },
+
+        onSelect: function (index) {
+            var that = this,
+                onSelectCallback = that.options.onSelect,
+                suggestion = that.suggestions[index];
+
+            that.currentValue = that.getValue(suggestion.value);
+
+            if (that.currentValue !== that.el.val() && !that.options.preserveInput) {
+                that.el.val(that.currentValue);
+            }
+
+            that.signalHint(null);
+            that.suggestions = [];
+            that.selection = suggestion;
+
+            if ($.isFunction(onSelectCallback)) {
+                onSelectCallback.call(that.element, suggestion);
+            }
+        },
+
+        getValue: function (value) {
+            var that = this,
+                delimiter = that.options.delimiter,
+                currentValue,
+                parts;
+
+            if (!delimiter) {
+                return value;
+            }
+
+            currentValue = that.currentValue;
+            parts = currentValue.split(delimiter);
+
+            if (parts.length === 1) {
+                return value;
+            }
+
+            return currentValue.substr(0, currentValue.length - parts[parts.length - 1].length) + value;
+        },
+
+        dispose: function () {
+            var that = this;
+            that.el.off('.autocomplete').removeData('autocomplete');
+            that.disableKillerFn();
+            $(window).off('resize.autocomplete', that.fixPositionCapture);
+            $(that.suggestionsContainer).remove();
+        }
+    };
+
+    // Create chainable jQuery plugin:
+    $.fn.autocomplete = $.fn.devbridgeAutocomplete = function (options, args) {
+        var dataKey = 'autocomplete';
+        // If function invoked without argument return
+        // instance of the first matched element:
+        if (!arguments.length) {
+            return this.first().data(dataKey);
+        }
+
+        return this.each(function () {
+            var inputElement = $(this),
+                instance = inputElement.data(dataKey);
+
+            if (typeof options === 'string') {
+                if (instance && typeof instance[options] === 'function') {
+                    instance[options](args);
+                }
+            } else {
+                // If instance already exists, destroy it:
+                if (instance && instance.dispose) {
+                    instance.dispose();
+                }
+                instance = new Autocomplete(this, options);
+                inputElement.data(dataKey, instance);
+            }
+        });
+    };
+}));
+
+},{"jquery":8}],3:[function(require,module,exports){
 // doT.js
 // 2011-2014, Laura Doktorova, https://github.com/olado/doT
 // Licensed under the MIT license.
@@ -140,7 +1135,154 @@
 	};
 }());
 
-},{}],2:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
+arguments[4][3][0].apply(exports,arguments)
+},{"dup":3}],5:[function(require,module,exports){
+/* doT + auto-compilation of doT templates
+ *
+ * 2012, Laura Doktorova, https://github.com/olado/doT
+ * Licensed under the MIT license
+ *
+ * Compiles .def, .dot, .jst files found under the specified path.
+ * It ignores sub-directories.
+ * Template files can have multiple extensions at the same time.
+ * Files with .def extension can be included in other files via {{#def.name}}
+ * Files with .dot extension are compiled into functions with the same name and
+ * can be accessed as renderer.filename
+ * Files with .jst extension are compiled into .js files. Produced .js file can be
+ * loaded as a commonJS, AMD module, or just installed into a global variable
+ * (default is set to window.render).
+ * All inline defines defined in the .jst file are
+ * compiled into separate functions and are available via _render.filename.definename
+ *
+ * Basic usage:
+ * var dots = require("dot").process({path: "./views"});
+ * dots.mytemplate({foo:"hello world"});
+ *
+ * The above snippet will:
+ * 1. Compile all templates in views folder (.dot, .def, .jst)
+ * 2. Place .js files compiled from .jst templates into the same folder.
+ *    These files can be used with require, i.e. require("./views/mytemplate").
+ * 3. Return an object with functions compiled from .dot templates as its properties.
+ * 4. Render mytemplate template.
+ */
+
+var fs = require("fs"),
+	doT = module.exports = require("./doT");
+
+doT.process = function(options) {
+	//path, destination, global, rendermodule, templateSettings
+	return new InstallDots(options).compileAll();
+};
+
+function InstallDots(o) {
+	this.__path 		= o.path || "./";
+	if (this.__path[this.__path.length-1] !== '/') this.__path += '/';
+	this.__destination	= o.destination || this.__path;
+	if (this.__destination[this.__destination.length-1] !== '/') this.__destination += '/';
+	this.__global		= o.global || "window.render";
+	this.__rendermodule	= o.rendermodule || {};
+	this.__settings 	= o.templateSettings ? copy(o.templateSettings, copy(doT.templateSettings)) : undefined;
+	this.__includes		= {};
+}
+
+InstallDots.prototype.compileToFile = function(path, template, def) {
+	def = def || {};
+	var modulename = path.substring(path.lastIndexOf("/")+1, path.lastIndexOf("."))
+		, defs = copy(this.__includes, copy(def))
+		, settings = this.__settings || doT.templateSettings
+		, compileoptions = copy(settings)
+		, defaultcompiled = doT.template(template, settings, defs)
+		, exports = []
+		, compiled = ""
+		, fn;
+
+	for (var property in defs) {
+		if (defs[property] !== def[property] && defs[property] !== this.__includes[property]) {
+			fn = undefined;
+			if (typeof defs[property] === 'string') {
+				fn = doT.template(defs[property], settings, defs);
+			} else if (typeof defs[property] === 'function') {
+				fn = defs[property];
+			} else if (defs[property].arg) {
+				compileoptions.varname = defs[property].arg;
+				fn = doT.template(defs[property].text, compileoptions, defs);
+			}
+			if (fn) {
+				compiled += fn.toString().replace('anonymous', property);
+				exports.push(property);
+			}
+		}
+	}
+	compiled += defaultcompiled.toString().replace('anonymous', modulename);
+	fs.writeFileSync(path, "(function(){" + compiled
+		+ "var itself=" + modulename + ", _encodeHTML=(" + doT.encodeHTMLSource.toString() + "(" + (settings.doNotSkipEncoded || '') + "));"
+		+ addexports(exports)
+		+ "if(typeof module!=='undefined' && module.exports) module.exports=itself;else if(typeof define==='function')define(function(){return itself;});else {"
+		+ this.__global + "=" + this.__global + "||{};" + this.__global + "['" + modulename + "']=itself;}}());");
+};
+
+function addexports(exports) {
+	for (var ret ='', i=0; i< exports.length; i++) {
+		ret += "itself." + exports[i]+ "=" + exports[i]+";";
+	}
+	return ret;
+}
+
+function copy(o, to) {
+	to = to || {};
+	for (var property in o) {
+		to[property] = o[property];
+	}
+	return to;
+}
+
+function readdata(path) {
+	var data = fs.readFileSync(path);
+	if (data) return data.toString();
+	console.log("problems with " + path);
+}
+
+InstallDots.prototype.compilePath = function(path) {
+	var data = readdata(path);
+	if (data) {
+		return doT.template(data,
+					this.__settings || doT.templateSettings,
+					copy(this.__includes));
+	}
+};
+
+InstallDots.prototype.compileAll = function() {
+	console.log("Compiling all doT templates...");
+
+	var defFolder = this.__path,
+		sources = fs.readdirSync(defFolder),
+		k, l, name;
+
+	for( k = 0, l = sources.length; k < l; k++) {
+		name = sources[k];
+		if (/\.def(\.dot|\.jst)?$/.test(name)) {
+			console.log("Loaded def " + name);
+			this.__includes[name.substring(0, name.indexOf('.'))] = readdata(defFolder + name);
+		}
+	}
+
+	for( k = 0, l = sources.length; k < l; k++) {
+		name = sources[k];
+		if (/\.dot(\.def|\.jst)?$/.test(name)) {
+			console.log("Compiling " + name + " to function");
+			this.__rendermodule[name.substring(0, name.indexOf('.'))] = this.compilePath(defFolder + name);
+		}
+		if (/\.jst(\.dot|\.def)?$/.test(name)) {
+			console.log("Compiling " + name + " to file");
+			this.compileToFile(this.__destination + name.substring(0, name.indexOf('.')) + '.js',
+					readdata(defFolder + name));
+		}
+	}
+	return this.__rendermodule;
+};
+
+},{"./doT":4,"fs":1}],6:[function(require,module,exports){
 (function (global){
 /*!
  * VERSION: 1.19.0
@@ -7944,7 +9086,7 @@ if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); } //necessary in case Tween
 })((typeof(module) !== "undefined" && module.exports && typeof(global) !== "undefined") ? global : this || window, "TweenMax");
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],3:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /*!
  * Lazy Load - jQuery plugin for lazy loading images
  *
@@ -8188,7 +9330,7 @@ if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); } //necessary in case Tween
 
 })(jQuery, window, document);
 
-},{}],4:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 (function (global){
 ; var __browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 /*!
@@ -18012,7 +19154,7 @@ return jQuery;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],5:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function (global){
 ; var __browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 /* == jquery mousewheel plugin == Version: 3.1.13, License: MIT License (MIT) */
@@ -18026,7 +19168,7 @@ return t.apply(e,arguments)}}function a(){this.onload=null,e(t).addClass(d[2]),r
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],6:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function( factory ) {
 	if (typeof define !== 'undefined' && define.amd) {
 		define([], factory);
@@ -18403,7 +19545,7 @@ return t.apply(e,arguments)}}function a(){this.onload=null,e(t).addClass(d[2]),r
 	return exports;
 });
 
-},{}],7:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 var _doT = require('doT');
@@ -18417,54 +19559,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>';
 
 $(function () {
-    $.ajax({
-        url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&SST=True',
-        type: 'GET',
-        headers: {
-            'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
-            'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
-            'accept': 'application/json'
-        },
-        success: function success(data) {
-            // console.log(data);
-            TweenMax.to('.loader', 0.75, {
-                autoAlpha: 0,
-                scale: 0,
-                ease: Expo.easeOut,
-                onComplete: function onComplete() {
-                    $('.loader').remove();
-                    processData(data);
-                }
-            });
-        },
-        error: function error(_error) {
-            console.log(_error);
-
-            (0, _material.toaster)('Whoops! Something went wrong! Error (' + _error.status + ' ' + _error.statusText + ')');
-        },
-        statusCode: function statusCode(code) {
-            console.log(code);
-        }
-    });
-
-    $('body').on('click', '.card', function (e) {
-        e.preventDefault();
-
-        var $this = $(this),
-            serviceNum = $this.data('servicenum');
-
-        if (serviceNum == undefined) {
-            return false;
-        }
-
-        (0, _material.ripple)(e, $this);
-
-        $this.find('.eta').text('');
-
-        $this.append(loader);
-
+    if ($('.timetable').length) {
         $.ajax({
-            url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&ServiceNo=' + serviceNum + '&SST=True',
+            url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&SST=True',
             type: 'GET',
             headers: {
                 'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
@@ -18473,27 +19570,74 @@ $(function () {
             },
             success: function success(data) {
                 // console.log(data);
-
                 TweenMax.to('.loader', 0.75, {
                     autoAlpha: 0,
                     scale: 0,
                     ease: Expo.easeOut,
                     onComplete: function onComplete() {
                         $('.loader').remove();
-                        updateEta($this, data);
+                        processData(data);
                     }
                 });
             },
-            error: function error(_error2) {
-                console.log(_error2);
+            error: function error(_error) {
+                console.log(_error);
 
-                (0, _material.toaster)('Whoops! Something went wrong! Error (' + _error2.status + ' ' + _error2.statusText + ')');
+                (0, _material.toaster)('Whoops! Something went wrong! Error (' + _error.status + ' ' + _error.statusText + ')');
             },
             statusCode: function statusCode(code) {
                 console.log(code);
             }
         });
-    });
+
+        $('body').on('click', '.card', function (e) {
+            e.preventDefault();
+
+            var $this = $(this),
+                serviceNum = $this.data('servicenum');
+
+            if (serviceNum == undefined) {
+                return false;
+            }
+
+            (0, _material.ripple)(e, $this);
+
+            $this.find('.eta').text('');
+
+            $this.append(loader);
+
+            $.ajax({
+                url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&ServiceNo=' + serviceNum + '&SST=True',
+                type: 'GET',
+                headers: {
+                    'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
+                    'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
+                    'accept': 'application/json'
+                },
+                success: function success(data) {
+                    // console.log(data);
+
+                    TweenMax.to('.loader', 0.75, {
+                        autoAlpha: 0,
+                        scale: 0,
+                        ease: Expo.easeOut,
+                        onComplete: function onComplete() {
+                            $('.loader').remove();
+                            updateEta($this, data);
+                        }
+                    });
+                },
+                error: function error(_error2) {
+                    console.log(_error2);
+
+                    (0, _material.toaster)('Whoops! Something went wrong! Error (' + _error2.status + ' ' + _error2.statusText + ')');
+                },
+                statusCode: function statusCode(code) {
+                    console.log(code);
+                }
+            });
+        });
+    }
 });
 
 function processData(json) {
@@ -18575,7 +19719,7 @@ function getQueryVariable(variable) {
     return false;
 };
 
-},{"./_material":9,"doT":1}],8:[function(require,module,exports){
+},{"./_material":13,"doT":3}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18638,13 +19782,17 @@ jQuery.extend(jQuery.easing, {
 exports.bp = bp;
 exports.debounce = debounce;
 
-},{}],9:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.ripple = exports.toaster = undefined;
+
+var _dot = require('dot');
+
+var _dot2 = _interopRequireDefault(_dot);
 
 var _scrollMonitor = require('scrollMonitor');
 
@@ -18996,7 +20144,169 @@ var ripple = function ripple(e, el) {
 exports.toaster = toaster;
 exports.ripple = ripple;
 
-},{"./_helper":8,"mCustomScrollbar":5,"scrollMonitor":6}],10:[function(require,module,exports){
+},{"./_helper":12,"dot":5,"mCustomScrollbar":9,"scrollMonitor":10}],14:[function(require,module,exports){
+'use strict';
+
+require('autocomplete');
+
+var _doT = require('doT');
+
+var _doT2 = _interopRequireDefault(_doT);
+
+var _material = require('./_material');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>';
+
+$(function () {
+    if ($('.search').length) {
+        $.ajax({
+            url: '/assets/btt/api/services.json',
+            success: function success(data) {
+                console.log(data);
+                var services = data;
+
+                $('.search input[type="text"]').autocomplete({
+                    lookup: services,
+                    onSelect: function onSelect(suggestion) {
+                        alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+                    }
+                });
+            },
+            error: function error(_error) {
+                console.log(_error);
+
+                (0, _material.toaster)('Whoops! Something went wrong! Error (' + _error.status + ' ' + _error.statusText + ')');
+            },
+            statusCode: function statusCode(code) {
+                console.log(code);
+            }
+        });
+
+        $('body').on('click', '.card', function (e) {
+            e.preventDefault();
+
+            var $this = $(this),
+                serviceNum = $this.data('servicenum');
+
+            if (serviceNum == undefined) {
+                return false;
+            }
+
+            (0, _material.ripple)(e, $this);
+
+            $this.find('.eta').text('');
+
+            $this.append(loader);
+
+            $.ajax({
+                url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&ServiceNo=' + serviceNum + '&SST=True',
+                type: 'GET',
+                headers: {
+                    'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
+                    'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
+                    'accept': 'application/json'
+                },
+                success: function success(data) {
+                    // console.log(data);
+
+                    TweenMax.to('.loader', 0.75, {
+                        autoAlpha: 0,
+                        scale: 0,
+                        ease: Expo.easeOut,
+                        onComplete: function onComplete() {
+                            $('.loader').remove();
+                            updateEta($this, data);
+                        }
+                    });
+                },
+                error: function error(_error2) {
+                    console.log(_error2);
+
+                    (0, _material.toaster)('Whoops! Something went wrong! Error (' + _error2.status + ' ' + _error2.statusText + ')');
+                },
+                statusCode: function statusCode(code) {
+                    console.log(code);
+                }
+            });
+        });
+    }
+});
+
+function processData(json) {
+    var services = json.Services,
+        cardTemplate = _doT2.default.template($('#card-template').html()),
+        obj = {},
+        cardMarkup = '',
+        now = new Date(),
+        arr,
+        eta,
+        etaMin;
+
+    for (var i = 0, l = services.length; i < l; i++) {
+        arr = new Date(services[i].NextBus.EstimatedArrival);
+        eta = arr.getTime() - now.getTime(); // This will give difference in milliseconds
+        etaMin = Math.round(eta / 60000);
+
+        obj = {
+            serviceNo: services[i].ServiceNo,
+            status: services[i].Status,
+            EstimatedArrival: etaMin
+        };
+
+        cardMarkup += cardTemplate(obj);
+    }
+
+    $('.search .col-12').html(cardMarkup);
+
+    TweenMax.staggerTo('.card', 0.75, {
+        opacity: 1,
+        top: 1,
+        ease: Expo.easeOut
+    }, 0.1);
+};
+
+function updateEta(el, json) {
+    var services = json.Services,
+        now = new Date(),
+        arr,
+        eta,
+        etaMin;
+
+    arr = new Date(services[0].NextBus.EstimatedArrival);
+    eta = arr.getTime() - now.getTime(); // This will give difference in milliseconds
+    etaMin = Math.round(eta / 60000);
+
+    if (etaMin < 0) {
+        el.find('.eta').html('<p class="departed">Departed</p>');
+    } else if (etaMin == 0) {
+        el.find('.eta').html('<p class="arriving">Arriving</p>');
+    } else if (etaMin == 1) {
+        el.find('.eta').html('<p class="near">' + etaMin + ' min</p>');
+    } else {
+        el.find('.eta').html('<p>' + etaMin + ' mins</p>');
+    }
+
+    el.find('.eta').text();
+};
+
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1),
+        vars = query.split("&");
+
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+
+        if (pair[0] == variable) {
+            return pair[1];
+        }
+    }
+
+    return false;
+};
+
+},{"./_material":13,"autocomplete":2,"doT":3}],15:[function(require,module,exports){
 // Main javascript entry point
 // Should handle bootstrapping/starting application
 
@@ -19016,9 +20326,9 @@ var _primaryNav2 = _interopRequireDefault(_primaryNav);
 
 var _helper = require('./_helper');
 
-var _busStop = require('./_busStop');
+require('./_busStop');
 
-var _busStop2 = _interopRequireDefault(_busStop);
+require('./_search');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -19152,7 +20462,7 @@ var $window = (0, _jquery2.default)(window),
     console.log("I'm a firestarter!");
 });
 
-},{"../../../_modules/primary-nav/primary-nav":11,"./_busStop":7,"./_helper":8,"TweenMax":2,"jquery":4,"lazyload":3}],11:[function(require,module,exports){
+},{"../../../_modules/primary-nav/primary-nav":16,"./_busStop":11,"./_helper":12,"./_search":14,"TweenMax":6,"jquery":8,"lazyload":7}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19383,7 +20693,7 @@ var PrimaryNav = function PrimaryNav() {
 exports.default = PrimaryNav;
 module.exports = exports['default'];
 
-},{"../../_assets/btt/js/_helper":8,"../../_assets/btt/js/_material":9}]},{},[10])
+},{"../../_assets/btt/js/_helper":12,"../../_assets/btt/js/_material":13}]},{},[15])
 
 
 //# sourceMappingURL=main.js.map

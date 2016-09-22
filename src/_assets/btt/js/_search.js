@@ -1,32 +1,25 @@
 'use strict';
 
+import 'autocomplete';
 import doT from 'doT';
 import { ripple, toaster } from './_material';
 
 let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>';
 
 $(() => {
-    if ($('.timetable').length) {
+    if ($('.search').length) {
         $.ajax({
-            url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&SST=True',
-            type: 'GET',
-            headers: {
-                'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
-                'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
-                'accept': 'application/json'
-            },
+            url: '/assets/btt/api/services.json',
             success: function (data) {
-                // console.log(data);
-                TweenMax.to('.loader', 0.75, {
-                    autoAlpha: 0,
-                    scale: 0,
-                    ease: Expo.easeOut,
-                    onComplete: function () {
-                        $('.loader').remove();
-                        processData(data);
+                console.log(data);
+                var services = data;
+
+                $('.search input[type="text"]').autocomplete({
+                    lookup: services,
+                    onSelect: function (suggestion) {
+                        alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
                     }
                 });
-
             },
             error: function (error) {
                 console.log(error);
@@ -90,7 +83,6 @@ $(() => {
 
 function processData(json) {
     var services = json.Services,
-        cardHeader = doT.template($('#card-header').html()),
         cardTemplate = doT.template($('#card-template').html()),
         obj = {},
         cardMarkup = '',
@@ -98,12 +90,6 @@ function processData(json) {
         arr,
         eta,
         etaMin;
-
-    obj = {
-        busStopName: busStopName
-    };
-
-    cardMarkup += cardHeader(obj);
 
     for (var i = 0, l = services.length; i < l; i++) {
         arr = new Date(services[i].NextBus.EstimatedArrival);
@@ -119,7 +105,7 @@ function processData(json) {
         cardMarkup += cardTemplate(obj);
     }
 
-    $('.timetable .col-12').html(cardMarkup);
+    $('.search .col-12').html(cardMarkup);
 
     TweenMax.staggerTo('.card', 0.75, {
         opacity: 1,

@@ -4,6 +4,7 @@ let $body = $('body'),
     $window = $(window),
     isMobileDevice = $window.width() < 1024 ? 1 : 0;
 
+import dot from 'dot';
 import scrollMonitor from 'scrollMonitor';
 import mCustomScrollbar from 'mCustomScrollbar';
 

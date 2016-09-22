@@ -10,7 +10,8 @@ import 'TweenMax';
 import PrimaryNav from '../../../_modules/primary-nav/primary-nav';
 
 import { debounce } from './_helper';
-import BusStop from './_busStop';
+import './_busStop';
+import './_search';
 
 // Variable declaration
 var $window = $(window),

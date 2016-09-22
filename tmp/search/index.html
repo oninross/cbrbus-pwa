@@ -55,14 +55,34 @@
       </nav>
     </div>
   </header>
-  <div class="loader">
-    <svg viewbox="25 25 50 50" class="circular">
-      <circle cx="50" cy="50" r="18" fill="none" stroke-width="3" stroke-miterlimit="10" class="path"></circle>
-    </svg>
-  </div>
   <main id="main">
-    <p>search page</p>
+    <section class="container search">
+      <div class="wrap">
+        <div class="col-12">
+          <input type="text" placeholder="Bus stop number or name" data-hint="Dhoby Ghaut Stn or 08057" class="floating-input">
+        </div>
+      </div>
+    </section>
   </main>
+  <script id="card-template" type="text/template">
+    <div data-servicenum="{{! it.serviceNo }}" class="card">
+      <div class="wrap">
+        <div class="col-3">
+          <p>{{! it.serviceNo }}</p>
+        </div>
+        <div class="status col-5">{{? it.status == 'In Operation' }}
+          <p class="operational">{{! it.status }}</p>{{??}}
+          <p class="non-operational">{{! it.status }}</p>{{?}}
+        </div>
+        <div class="eta col-4">{{? it.EstimatedArrival < 0 }}
+          <p class="departed">Departed</p>{{?? it.EstimatedArrival == 0 }}
+          <p class="arriving">Arriving</p>{{?? it.EstimatedArrival == 1 }}
+          <p class="near">{{! it.EstimatedArrival }} min</p>{{??}}
+          <p>{{! it.EstimatedArrival }} mins</p>{{?}}
+        </div>
+      </div>
+    </div>
+  </script>
   <script src="../assets/btt/js/main.js"></script>
   <script id="toaster-template" type="text/template">
     .toaster(class='toaster{{= it.ind }}')

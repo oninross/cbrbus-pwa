@@ -6,7 +6,7 @@
     height: 45px;
     position: absolute;
     right: 0;
-    top: 45px;;
+    top: 0;
     width: 100%;
     z-index: 5;
 
@@ -24,6 +24,7 @@
     // }
 
     &.active {
+        top: 45px;
         z-index: 25;
     }
 

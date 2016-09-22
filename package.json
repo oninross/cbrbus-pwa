@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "browserify-shim": "^3.8.12",
+    "devbridge-autocomplete": "^1.2.26",
     "dot": "^1.0.3",
     "gsap": "^1.19.0",
     "jquery": "~2.2.0",
@@ -75,7 +76,8 @@
     "lazyload": "./node_modules/jquery-lazyload/jquery.lazyload.js",
     "TweenMax": "./node_modules/gsap/src/uncompressed/TweenMax.js",
     "mCustomScrollbar": "./node_modules/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js",
-    "scrollMonitor": "./node_modules/scrollmonitor/scrollmonitor.js"
+    "scrollMonitor": "./node_modules/scrollmonitor/scrollmonitor.js",
+    "autocomplete": "./node_modules/devbridge-autocomplete/dist/jquery.autocomplete.js"
   },
   "browserify-shim": {
     "jquery": "jQuery",
@@ -100,6 +102,7 @@
       "images": "_assets/btt/images",
       "css": "_assets/btt/css",
       "fonts": "_assets/btt/css/fonts",
+      "api": "_assets/btt/api",
       "js": "_assets/btt/js",
       "data": "_data"
     },

@@ -5,6 +5,8 @@ block config
   //- Setup site's base URL to match the "baseUrl" key within `package.json`
   //- Otherwise default to relative pathing
   - var baseUrl = config.baseUrl || './'
+  - var isBusStop = config.isBusStop || false
+  - var isSearch = config.isSearch || false
 
 doctype html
 
@@ -65,12 +67,13 @@ body
             |WhatTimeSG
       +primary-nav
 
+  if isBusStop
     .loader
       svg.circular(viewbox='25 25 50 50')
         circle.path(cx='50', cy='50', r='18', fill='none', stroke-width='3', stroke-miterlimit='10')
 
-    main#main
-      block content
+  main#main
+    block content
 
   block scripts
     script(src= baseUrl + 'assets/btt/js/main.js')

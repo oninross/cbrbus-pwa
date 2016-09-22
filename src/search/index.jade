@@ -3,6 +3,34 @@ extends ../_layouts/base
 block config
   //- Correct base url pathing for this page
   - var baseUrl = '../'
+  - var isSearch = true
 
 block content
-  p search page
+  section.container.search
+    .wrap
+      .col-12
+        input.floating-input(type='text', placeholder='Bus stop number or name', data-hint='Dhoby Ghaut Stn or 08057')
+
+block prepend scripts
+  script#card-template(type='text/template')
+    .card(data-servicenum='{{! it.serviceNo }}')
+      .wrap
+        .col-3
+          p {{! it.serviceNo }}
+        .status.col-5
+          | {{? it.status == 'In Operation' }}
+          p.operational {{! it.status }}
+          | {{??}}
+          p.non-operational {{! it.status }}
+          | {{?}}
+        .eta.col-4
+          | {{? it.EstimatedArrival < 0 }}
+          p.departed Departed
+          | {{?? it.EstimatedArrival == 0 }}
+          p.arriving Arriving
+          | {{?? it.EstimatedArrival == 1 }}
+          p.near {{! it.EstimatedArrival }} min
+          | {{??}}
+          p {{! it.EstimatedArrival }} mins
+          | {{?}}
+
