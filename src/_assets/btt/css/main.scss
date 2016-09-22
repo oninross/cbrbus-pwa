@@ -43,12 +43,40 @@
 }
 
 
+.timetable {
+    padding-top: $gutterTablet;
+
+    [class^="col-"], [class*=" col-"] {
+        float: left;
+    }
+
+    .col-1 { width: 8.333333%; }
+    .col-2 { width: 16.666667%; }
+    .col-3 { width: 25%; }
+    .col-4 { width: 33.333333%; }
+    .col-5 { width: 41.666667%; }
+    .col-6 { width: 50%; }
+    .col-7 { width: 58.333333%; }
+    .col-8 { width: 66.666667%; }
+    .col-9 { width: 75%; }
+    .col-10 { width: 83.333333%; }
+    .col-11 { width: 91.666667%; }
+    .col-12 { width: 100%; }
+}
+
 .card {
+    @include reset-transitions();
     @include material-shadow(1);
 
     background-color: $white;
     margin-bottom: $gutter;
     overflow: hidden;
+    padding: 0 $gutter;
+
+    h2 {
+        margin: $gutter 0;
+        text-align: center;
+    }
 
     p {
         font-weight: $bold;
@@ -61,8 +89,14 @@
     }
 
     .loader {
+        -webkit-transform: none !important;
+          -moz-transition: none !important;
+            -ms-transform: none !important;
+            -o-transition: none !important;
+                transform: none !important;
         bottom: 0;
         height: 40px !important;
+        left: auto;
         margin: auto;
         position: absolute;
         right: 20px;

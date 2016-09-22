@@ -1,4 +1,146 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+// doT.js
+// 2011-2014, Laura Doktorova, https://github.com/olado/doT
+// Licensed under the MIT license.
+
+(function() {
+	"use strict";
+
+	var doT = {
+		version: "1.0.3",
+		templateSettings: {
+			evaluate:    /\{\{([\s\S]+?(\}?)+)\}\}/g,
+			interpolate: /\{\{=([\s\S]+?)\}\}/g,
+			encode:      /\{\{!([\s\S]+?)\}\}/g,
+			use:         /\{\{#([\s\S]+?)\}\}/g,
+			useParams:   /(^|[^\w$])def(?:\.|\[[\'\"])([\w$\.]+)(?:[\'\"]\])?\s*\:\s*([\w$\.]+|\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})/g,
+			define:      /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
+			defineParams:/^\s*([\w$]+):([\s\S]+)/,
+			conditional: /\{\{\?(\?)?\s*([\s\S]*?)\s*\}\}/g,
+			iterate:     /\{\{~\s*(?:\}\}|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\}\})/g,
+			varname:	"it",
+			strip:		true,
+			append:		true,
+			selfcontained: false,
+			doNotSkipEncoded: false
+		},
+		template: undefined, //fn, compile template
+		compile:  undefined  //fn, for express
+	}, _globals;
+
+	doT.encodeHTMLSource = function(doNotSkipEncoded) {
+		var encodeHTMLRules = { "&": "&#38;", "<": "&#60;", ">": "&#62;", '"': "&#34;", "'": "&#39;", "/": "&#47;" },
+			matchHTML = doNotSkipEncoded ? /[&<>"'\/]/g : /&(?!#?\w+;)|<|>|"|'|\//g;
+		return function(code) {
+			return code ? code.toString().replace(matchHTML, function(m) {return encodeHTMLRules[m] || m;}) : "";
+		};
+	};
+
+	_globals = (function(){ return this || (0,eval)("this"); }());
+
+	if (typeof module !== "undefined" && module.exports) {
+		module.exports = doT;
+	} else if (typeof define === "function" && define.amd) {
+		define(function(){return doT;});
+	} else {
+		_globals.doT = doT;
+	}
+
+	var startend = {
+		append: { start: "'+(",      end: ")+'",      startencode: "'+encodeHTML(" },
+		split:  { start: "';out+=(", end: ");out+='", startencode: "';out+=encodeHTML(" }
+	}, skip = /$^/;
+
+	function resolveDefs(c, block, def) {
+		return ((typeof block === "string") ? block : block.toString())
+		.replace(c.define || skip, function(m, code, assign, value) {
+			if (code.indexOf("def.") === 0) {
+				code = code.substring(4);
+			}
+			if (!(code in def)) {
+				if (assign === ":") {
+					if (c.defineParams) value.replace(c.defineParams, function(m, param, v) {
+						def[code] = {arg: param, text: v};
+					});
+					if (!(code in def)) def[code]= value;
+				} else {
+					new Function("def", "def['"+code+"']=" + value)(def);
+				}
+			}
+			return "";
+		})
+		.replace(c.use || skip, function(m, code) {
+			if (c.useParams) code = code.replace(c.useParams, function(m, s, d, param) {
+				if (def[d] && def[d].arg && param) {
+					var rw = (d+":"+param).replace(/'|\\/g, "_");
+					def.__exp = def.__exp || {};
+					def.__exp[rw] = def[d].text.replace(new RegExp("(^|[^\\w$])" + def[d].arg + "([^\\w$])", "g"), "$1" + param + "$2");
+					return s + "def.__exp['"+rw+"']";
+				}
+			});
+			var v = new Function("def", "return " + code)(def);
+			return v ? resolveDefs(c, v, def) : v;
+		});
+	}
+
+	function unescape(code) {
+		return code.replace(/\\('|\\)/g, "$1").replace(/[\r\t\n]/g, " ");
+	}
+
+	doT.template = function(tmpl, c, def) {
+		c = c || doT.templateSettings;
+		var cse = c.append ? startend.append : startend.split, needhtmlencode, sid = 0, indv,
+			str  = (c.use || c.define) ? resolveDefs(c, tmpl, def || {}) : tmpl;
+
+		str = ("var out='" + (c.strip ? str.replace(/(^|\r|\n)\t* +| +\t*(\r|\n|$)/g," ")
+					.replace(/\r|\n|\t|\/\*[\s\S]*?\*\//g,""): str)
+			.replace(/'|\\/g, "\\$&")
+			.replace(c.interpolate || skip, function(m, code) {
+				return cse.start + unescape(code) + cse.end;
+			})
+			.replace(c.encode || skip, function(m, code) {
+				needhtmlencode = true;
+				return cse.startencode + unescape(code) + cse.end;
+			})
+			.replace(c.conditional || skip, function(m, elsecase, code) {
+				return elsecase ?
+					(code ? "';}else if(" + unescape(code) + "){out+='" : "';}else{out+='") :
+					(code ? "';if(" + unescape(code) + "){out+='" : "';}out+='");
+			})
+			.replace(c.iterate || skip, function(m, iterate, vname, iname) {
+				if (!iterate) return "';} } out+='";
+				sid+=1; indv=iname || "i"+sid; iterate=unescape(iterate);
+				return "';var arr"+sid+"="+iterate+";if(arr"+sid+"){var "+vname+","+indv+"=-1,l"+sid+"=arr"+sid+".length-1;while("+indv+"<l"+sid+"){"
+					+vname+"=arr"+sid+"["+indv+"+=1];out+='";
+			})
+			.replace(c.evaluate || skip, function(m, code) {
+				return "';" + unescape(code) + "out+='";
+			})
+			+ "';return out;")
+			.replace(/\n/g, "\\n").replace(/\t/g, '\\t').replace(/\r/g, "\\r")
+			.replace(/(\s|;|\}|^|\{)out\+='';/g, '$1').replace(/\+''/g, "");
+			//.replace(/(\s|;|\}|^|\{)out\+=''\+/g,'$1out+=');
+
+		if (needhtmlencode) {
+			if (!c.selfcontained && _globals && !_globals._encodeHTML) _globals._encodeHTML = doT.encodeHTMLSource(c.doNotSkipEncoded);
+			str = "var encodeHTML = typeof _encodeHTML !== 'undefined' ? _encodeHTML : ("
+				+ doT.encodeHTMLSource.toString() + "(" + (c.doNotSkipEncoded || '') + "));"
+				+ str;
+		}
+		try {
+			return new Function(c.varname, str);
+		} catch (e) {
+			if (typeof console !== "undefined") console.log("Could not create a template function: " + str);
+			throw e;
+		}
+	};
+
+	doT.compile = function(tmpl, def) {
+		return doT.template(tmpl, null, def);
+	};
+}());
+
+},{}],2:[function(require,module,exports){
 (function (global){
 /*!
  * VERSION: 1.19.0
@@ -7802,7 +7944,7 @@ if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); } //necessary in case Tween
 })((typeof(module) !== "undefined" && module.exports && typeof(global) !== "undefined") ? global : this || window, "TweenMax");
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 /*!
  * Lazy Load - jQuery plugin for lazy loading images
  *
@@ -8046,7 +8188,7 @@ if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); } //necessary in case Tween
 
 })(jQuery, window, document);
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 (function (global){
 ; var __browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 /*!
@@ -17870,7 +18012,7 @@ return jQuery;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function (global){
 ; var __browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 /* == jquery mousewheel plugin == Version: 3.1.13, License: MIT License (MIT) */
@@ -17884,7 +18026,7 @@ return t.apply(e,arguments)}}function a(){this.onload=null,e(t).addClass(d[2]),r
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 (function( factory ) {
 	if (typeof define !== 'undefined' && define.amd) {
 		define([], factory);
@@ -18261,7 +18403,179 @@ return t.apply(e,arguments)}}function a(){this.onload=null,e(t).addClass(d[2]),r
 	return exports;
 });
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
+'use strict';
+
+var _doT = require('doT');
+
+var _doT2 = _interopRequireDefault(_doT);
+
+var _material = require('./_material');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>';
+
+$(function () {
+    $.ajax({
+        url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&SST=True',
+        type: 'GET',
+        headers: {
+            'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
+            'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
+            'accept': 'application/json'
+        },
+        success: function success(data) {
+            // console.log(data);
+            TweenMax.to('.loader', 0.75, {
+                autoAlpha: 0,
+                scale: 0,
+                ease: Expo.easeOut,
+                onComplete: function onComplete() {
+                    $('.loader').remove();
+                    processData(data);
+                }
+            });
+        },
+        error: function error(_error) {
+            console.log(_error);
+
+            (0, _material.toaster)('Whoops! Something went wrong! Error (' + _error.status + ' ' + _error.statusText + ')');
+        },
+        statusCode: function statusCode(code) {
+            console.log(code);
+        }
+    });
+
+    $('body').on('click', '.card', function (e) {
+        e.preventDefault();
+
+        var $this = $(this),
+            serviceNum = $this.data('servicenum');
+
+        if (serviceNum == undefined) {
+            return false;
+        }
+
+        (0, _material.ripple)(e, $this);
+
+        $this.find('.eta').text('');
+
+        $this.append(loader);
+
+        $.ajax({
+            url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&ServiceNo=' + serviceNum + '&SST=True',
+            type: 'GET',
+            headers: {
+                'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
+                'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
+                'accept': 'application/json'
+            },
+            success: function success(data) {
+                // console.log(data);
+
+                TweenMax.to('.loader', 0.75, {
+                    autoAlpha: 0,
+                    scale: 0,
+                    ease: Expo.easeOut,
+                    onComplete: function onComplete() {
+                        $('.loader').remove();
+                        updateEta($this, data);
+                    }
+                });
+            },
+            error: function error(_error2) {
+                console.log(_error2);
+
+                (0, _material.toaster)('Whoops! Something went wrong! Error (' + _error2.status + ' ' + _error2.statusText + ')');
+            },
+            statusCode: function statusCode(code) {
+                console.log(code);
+            }
+        });
+    });
+});
+
+function processData(json) {
+    var services = json.Services,
+        cardHeader = _doT2.default.template($('#card-header').html()),
+        cardTemplate = _doT2.default.template($('#card-template').html()),
+        obj = {},
+        cardMarkup = '',
+        now = new Date(),
+        arr,
+        eta,
+        etaMin;
+
+    obj = {
+        busStopName: busStopName
+    };
+
+    cardMarkup += cardHeader(obj);
+
+    for (var i = 0, l = services.length; i < l; i++) {
+        arr = new Date(services[i].NextBus.EstimatedArrival);
+        eta = arr.getTime() - now.getTime(); // This will give difference in milliseconds
+        etaMin = Math.round(eta / 60000);
+
+        obj = {
+            serviceNo: services[i].ServiceNo,
+            status: services[i].Status,
+            EstimatedArrival: etaMin
+        };
+
+        cardMarkup += cardTemplate(obj);
+    }
+
+    $('.timetable .col-12').html(cardMarkup);
+
+    TweenMax.staggerTo('.card', 0.75, {
+        opacity: 1,
+        top: 1,
+        ease: Expo.easeOut
+    }, 0.1);
+};
+
+function updateEta(el, json) {
+    var services = json.Services,
+        now = new Date(),
+        arr,
+        eta,
+        etaMin;
+
+    arr = new Date(services[0].NextBus.EstimatedArrival);
+    eta = arr.getTime() - now.getTime(); // This will give difference in milliseconds
+    etaMin = Math.round(eta / 60000);
+
+    if (etaMin < 0) {
+        el.find('.eta').html('<p class="departed">Departed</p>');
+    } else if (etaMin == 0) {
+        el.find('.eta').html('<p class="arriving">Arriving</p>');
+    } else if (etaMin == 1) {
+        el.find('.eta').html('<p class="near">' + etaMin + ' min</p>');
+    } else {
+        el.find('.eta').html('<p>' + etaMin + ' mins</p>');
+    }
+
+    el.find('.eta').text();
+};
+
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1),
+        vars = query.split("&");
+
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+
+        if (pair[0] == variable) {
+            return pair[1];
+        }
+    }
+
+    return false;
+};
+
+},{"./_material":9,"doT":1}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18324,7 +18638,7 @@ jQuery.extend(jQuery.easing, {
 exports.bp = bp;
 exports.debounce = debounce;
 
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18682,7 +18996,7 @@ var ripple = function ripple(e, el) {
 exports.toaster = toaster;
 exports.ripple = ripple;
 
-},{"./_helper":6,"mCustomScrollbar":4,"scrollMonitor":5}],8:[function(require,module,exports){
+},{"./_helper":8,"mCustomScrollbar":5,"scrollMonitor":6}],10:[function(require,module,exports){
 // Main javascript entry point
 // Should handle bootstrapping/starting application
 
@@ -18701,6 +19015,10 @@ var _primaryNav = require('../../../_modules/primary-nav/primary-nav');
 var _primaryNav2 = _interopRequireDefault(_primaryNav);
 
 var _helper = require('./_helper');
+
+var _busStop = require('./_busStop');
+
+var _busStop2 = _interopRequireDefault(_busStop);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18834,7 +19152,7 @@ var $window = (0, _jquery2.default)(window),
     console.log("I'm a firestarter!");
 });
 
-},{"../../../_modules/primary-nav/primary-nav":9,"./_helper":6,"TweenMax":1,"jquery":3,"lazyload":2}],9:[function(require,module,exports){
+},{"../../../_modules/primary-nav/primary-nav":11,"./_busStop":7,"./_helper":8,"TweenMax":2,"jquery":4,"lazyload":3}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19065,7 +19383,7 @@ var PrimaryNav = function PrimaryNav() {
 exports.default = PrimaryNav;
 module.exports = exports['default'];
 
-},{"../../_assets/btt/js/_helper":6,"../../_assets/btt/js/_material":7}]},{},[8])
+},{"../../_assets/btt/js/_helper":8,"../../_assets/btt/js/_material":9}]},{},[10])
 
 
 //# sourceMappingURL=main.js.map

@@ -307,12 +307,13 @@
 }
 
 .logo {
-    padding: 8px $gutter;
+    padding: 11px $gutter;
     position: absolute;
     z-index: 25;
 
     h1 {
         color: $white;
+        font-size: 2.4em;
         margin: 0;
     }
 

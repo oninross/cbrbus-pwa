@@ -1,0 +1,44 @@
+extends ../_layouts/base
+
+block config
+  //- Correct base url pathing for this page
+  - var baseUrl = '../'
+
+block content
+  section.container.timetable
+    .wrap
+      .col-12
+
+block prepend scripts
+  script(type='text/javascript').
+    var busStopId = '05022',
+      busStopName = 'People\'s Pk Ctr';
+
+  script#card-header(type='text/template')
+    .card
+      .wrap
+        .col-12
+          h2 {{! it.busStopName }}
+
+  script#card-template(type='text/template')
+    .card(data-servicenum='{{! it.serviceNo }}')
+      .wrap
+        .col-3
+          p {{! it.serviceNo }}
+        .status.col-5
+          | {{? it.status == 'In Operation' }}
+          p.operational {{! it.status }}
+          | {{??}}
+          p.non-operational {{! it.status }}
+          | {{?}}
+        .eta.col-4
+          | {{? it.EstimatedArrival < 0 }}
+          p.departed Departed
+          | {{?? it.EstimatedArrival == 0 }}
+          p.arriving Arriving
+          | {{?? it.EstimatedArrival == 1 }}
+          p.near {{! it.EstimatedArrival }} min
+          | {{??}}
+          p {{! it.EstimatedArrival }} mins
+          | {{?}}
+
