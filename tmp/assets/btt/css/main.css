@@ -3692,59 +3692,74 @@ input[type="checkbox"]:checked + label:after {
   padding: 0.5em 0;
 }
 
-.timetable {
+.timetable,
+.search {
   padding-top: 15px;
 }
 
-.timetable [class^="col-"], .timetable [class*=" col-"] {
+.timetable [class^="col-"], .timetable [class*=" col-"],
+.search [class^="col-"],
+.search [class*=" col-"] {
   float: left;
 }
 
-.timetable .col-1 {
+.timetable .col-1,
+.search .col-1 {
   width: 8.333333%;
 }
 
-.timetable .col-2 {
+.timetable .col-2,
+.search .col-2 {
   width: 16.666667%;
 }
 
-.timetable .col-3 {
+.timetable .col-3,
+.search .col-3 {
   width: 25%;
 }
 
-.timetable .col-4 {
+.timetable .col-4,
+.search .col-4 {
   width: 33.333333%;
 }
 
-.timetable .col-5 {
+.timetable .col-5,
+.search .col-5 {
   width: 41.666667%;
 }
 
-.timetable .col-6 {
+.timetable .col-6,
+.search .col-6 {
   width: 50%;
 }
 
-.timetable .col-7 {
+.timetable .col-7,
+.search .col-7 {
   width: 58.333333%;
 }
 
-.timetable .col-8 {
+.timetable .col-8,
+.search .col-8 {
   width: 66.666667%;
 }
 
-.timetable .col-9 {
+.timetable .col-9,
+.search .col-9 {
   width: 75%;
 }
 
-.timetable .col-10 {
+.timetable .col-10,
+.search .col-10 {
   width: 83.333333%;
 }
 
-.timetable .col-11 {
+.timetable .col-11,
+.search .col-11 {
   width: 91.666667%;
 }
 
-.timetable .col-12 {
+.timetable .col-12,
+.search .col-12 {
   width: 100%;
 }
 
@@ -3757,6 +3772,7 @@ input[type="checkbox"]:checked + label:after {
   margin-bottom: 15px;
   overflow: hidden;
   padding: 0 15px;
+  z-index: 10;
 }
 
 .card h2 {
@@ -3826,10 +3842,7 @@ input[type="checkbox"]:checked + label:after {
   height: 50px !important;
   margin: 0 auto 20px;
   width: 50px !important;
-}
-
-.search {
-  padding-top: 15px;
+  z-index: 15;
 }
 
 .autocomplete-suggestions {

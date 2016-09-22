@@ -29,7 +29,6 @@ export default function(gulp, plugins, args, config, taskTarget, browserSync) {
       gulp.watch([
         path.join(dirs.source, '**/*'),
         path.join(dirs.source, dirs.fonts, '**/*.{ttf,woff,eof,svg}'),
-        path.join(dirs.source, dirs.api, '**/*'),
         '!' + path.join(dirs.source, '{**/\_*,**/\_*/**}'),
         '!' + path.join(dirs.source, '**/*.jade')
       ], ['copy']);

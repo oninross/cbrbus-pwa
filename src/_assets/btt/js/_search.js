@@ -4,20 +4,23 @@ import 'autocomplete';
 import doT from 'doT';
 import { ripple, toaster } from './_material';
 
-let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>';
+let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
+    busStopId = null;
 
 $(() => {
     if ($('.search').length) {
         $.ajax({
             url: '/assets/btt/api/services.json',
             success: function (data) {
-                console.log(data);
                 var services = data;
 
                 $('.search input[type="text"]').autocomplete({
                     lookup: services,
+                    noCache: true,
+                    triggerSelectOnValidInput: false,
                     onSelect: function (suggestion) {
-                        alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+                        busStopId = suggestion.data;
+                        getData(suggestion.data);
                     }
                 });
             },
@@ -81,7 +84,43 @@ $(() => {
     }
 });
 
+function getData(busStopId) {
+    $('#main').before(loader);
+
+    $.ajax({
+        url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&SST=True',
+        type: 'GET',
+        headers: {
+            'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
+            'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
+            'accept': 'application/json'
+        },
+        success: function (data) {
+            // console.log(data);
+            TweenMax.to('.loader', 0.75, {
+                autoAlpha: 0,
+                scale: 0,
+                ease: Expo.easeOut,
+                onComplete: function () {
+                    $('.loader').remove();
+                    processData(data);
+                }
+            });
+
+        },
+        error: function (error) {
+            console.log(error);
+
+            toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
+        },
+        statusCode: function (code) {
+            console.log(code);
+        }
+    });
+}
+
 function processData(json) {
+    console.log(json)
     var services = json.Services,
         cardTemplate = doT.template($('#card-template').html()),
         obj = {},
@@ -105,7 +144,7 @@ function processData(json) {
         cardMarkup += cardTemplate(obj);
     }
 
-    $('.search .col-12').html(cardMarkup);
+    $('.cards-wrapper').html(cardMarkup);
 
     TweenMax.staggerTo('.card', 0.75, {
         opacity: 1,

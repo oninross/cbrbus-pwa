@@ -20157,20 +20157,23 @@ var _material = require('./_material');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>';
+var loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
+    busStopId = null;
 
 $(function () {
     if ($('.search').length) {
         $.ajax({
             url: '/assets/btt/api/services.json',
             success: function success(data) {
-                console.log(data);
                 var services = data;
 
                 $('.search input[type="text"]').autocomplete({
                     lookup: services,
+                    noCache: true,
+                    triggerSelectOnValidInput: false,
                     onSelect: function onSelect(suggestion) {
-                        alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+                        busStopId = suggestion.data;
+                        getData(suggestion.data);
                     }
                 });
             },
@@ -20234,7 +20237,42 @@ $(function () {
     }
 });
 
+function getData(busStopId) {
+    $('#main').before(loader);
+
+    $.ajax({
+        url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&SST=True',
+        type: 'GET',
+        headers: {
+            'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
+            'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
+            'accept': 'application/json'
+        },
+        success: function success(data) {
+            // console.log(data);
+            TweenMax.to('.loader', 0.75, {
+                autoAlpha: 0,
+                scale: 0,
+                ease: Expo.easeOut,
+                onComplete: function onComplete() {
+                    $('.loader').remove();
+                    processData(data);
+                }
+            });
+        },
+        error: function error(_error3) {
+            console.log(_error3);
+
+            (0, _material.toaster)('Whoops! Something went wrong! Error (' + _error3.status + ' ' + _error3.statusText + ')');
+        },
+        statusCode: function statusCode(code) {
+            console.log(code);
+        }
+    });
+}
+
 function processData(json) {
+    console.log(json);
     var services = json.Services,
         cardTemplate = _doT2.default.template($('#card-template').html()),
         obj = {},
@@ -20258,7 +20296,7 @@ function processData(json) {
         cardMarkup += cardTemplate(obj);
     }
 
-    $('.search .col-12').html(cardMarkup);
+    $('.cards-wrapper').html(cardMarkup);
 
     TweenMax.staggerTo('.card', 0.75, {
         opacity: 1,

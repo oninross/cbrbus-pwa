@@ -10,7 +10,8 @@
     "jquery-lazyload": "^1.9.7",
     "malihu-custom-scrollbar-plugin": "^3.1.5",
     "normalize.css": "~3.0.3",
-    "scrollmonitor": "^1.0.12"
+    "scrollmonitor": "^1.0.12",
+    "typeahead.js": "^0.11.1"
   },
   "devDependencies": {
     "babelify": "~7.3.0",
@@ -77,7 +78,8 @@
     "TweenMax": "./node_modules/gsap/src/uncompressed/TweenMax.js",
     "mCustomScrollbar": "./node_modules/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js",
     "scrollMonitor": "./node_modules/scrollmonitor/scrollmonitor.js",
-    "autocomplete": "./node_modules/devbridge-autocomplete/dist/jquery.autocomplete.js"
+    "autocomplete": "./node_modules/devbridge-autocomplete/dist/jquery.autocomplete.js",
+    "typeahead": "./node_modules/typeahead.js/dist/typeahead.bundle.js"
   },
   "browserify-shim": {
     "jquery": "jQuery",

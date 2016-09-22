@@ -42,7 +42,8 @@
     padding: 0.5em 0;
 }
 
-.timetable {
+.timetable,
+.search {
     padding-top: $gutterTablet;
 
     [class^="col-"], [class*=" col-"] {
@@ -107,6 +108,7 @@
     margin-bottom: $gutter;
     overflow: hidden;
     padding: 0 $gutter;
+    z-index: 10;
 
     h2 {
         margin: $gutter 0;
@@ -170,10 +172,7 @@
     height: 50px !important;
     margin: 0 auto 20px;
     width: 50px !important;
-}
-
-.search {
-    padding-top: $gutterTablet;
+    z-index: 15;
 }
 
 .autocomplete {
