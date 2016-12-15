@@ -36,7 +36,8 @@ $(() => {
         $xml += '<RequestorRef>A6F762</RequestorRef>';
         $xml += '<StopMonitoringRequest version="2.0">';
         $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-        $xml += '<MonitoringRef>2014</MonitoringRef>';
+        $xml += '<PreviewInterval>PT30M</PreviewInterval>';
+        $xml += '<MonitoringRef>3409</MonitoringRef>';
         $xml += '</StopMonitoringRequest>';
         $xml += '</ServiceRequest>';
 
