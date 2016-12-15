@@ -11,7 +11,7 @@
     z-index: 5;
 
     // @include desktop {
-    //     background: $red;
+    //     background: $black;
     //     height: auto;
     //     position: static;
     //     width: 100%;
@@ -78,7 +78,7 @@
             width: 100%;
 
             &.active {
-                background: $red;
+                background: $black;
             }
 
             span {
@@ -220,7 +220,7 @@
         a {
             padding: 10px $gutter;
 
-            &.active { background: $red; }
+            &.active { background: $black; }
         }
 
         // @include desktop {
@@ -254,12 +254,12 @@
         }
 
         // @include desktop {
-        //     background: darken( $red, 10%);
+        //     background: darken( $black, 10%);
         //     position: absolute;
         //     width: 200px;
 
         //     li {
-        //         border-top: 1px solid darken( $red, 20%);
+        //         border-top: 1px solid darken( $black, 20%);
         //     }
         // }
     }
@@ -281,7 +281,7 @@
 .header {
     @include material-shadow(1);
 
-    background: darken( $red, 10% );
+    background: darken( $black, 10% );
     height: 45px;
     position: fixed;
     top: 0;

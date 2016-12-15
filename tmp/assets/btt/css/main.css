@@ -510,6 +510,34 @@ th {
 }
 
 @font-face {
+  font-family: 'HelveticaNeue';
+  src: url("fonts/HelveticaNeue-Thin.eot?#iefix") format("embedded-opentype"), url("fonts/HelveticaNeue-Thin.otf") format("opentype"), url("fonts/HelveticaNeue-Thin.woff") format("woff"), url("fonts/HelveticaNeue-Thin.ttf") format("truetype"), url("fonts/HelveticaNeue-Thin.svg#HelveticaNeue-Thin") format("svg");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'HelveticaNeue';
+  src: url("fonts/HelveticaNeue-Light.eot?#iefix") format("embedded-opentype"), url("fonts/HelveticaNeue-Light.otf") format("opentype"), url("fonts/HelveticaNeue-Light.woff") format("woff"), url("fonts/HelveticaNeue-Light.ttf") format("truetype"), url("fonts/HelveticaNeue-Light.svg#HelveticaNeue-Light") format("svg");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'HelveticaNeue';
+  src: url("fonts/HelveticaNeue.eot?#iefix") format("embedded-opentype"), url("fonts/HelveticaNeue.otf") format("opentype"), url("fonts/HelveticaNeue.woff") format("woff"), url("fonts/HelveticaNeue.ttf") format("truetype"), url("fonts/HelveticaNeue.svg#HelveticaNeue") format("svg");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'HelveticaNeue';
+  src: url("fonts/HelveticaNeue-Bold.eot?#iefix") format("embedded-opentype"), url("fonts/HelveticaNeue-Bold.otf") format("opentype"), url("fonts/HelveticaNeue-Bold.woff") format("woff"), url("fonts/HelveticaNeue-Bold.ttf") format("truetype"), url("fonts/HelveticaNeue-Bold.svg#HelveticaNeue-Bold") format("svg");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'icomoon';
   src: url("fonts/icomoon.eot?-p3pgtp");
   src: url("fonts/icomoon.eot?#iefix-p3pgtp") format("embedded-opentype"), url("fonts/icomoon.woff?-p3pgtp") format("woff"), url("fonts/icomoon.ttf?-p3pgtp") format("truetype"), url("fonts/icomoon.svg?-p3pgtp#icomoon") format("svg");
@@ -560,7 +588,7 @@ html {
 
 body {
   background: #eee;
-  font: 62.5%/1.618 'Roboto', sans-serif;
+  font: 62.5%/1.618 'Helvetica', sans-serif;
   margin: 0 !important;
 }
 
@@ -740,7 +768,7 @@ a {
   -webkit-transition-property: all;
   -webkit-transition-duration: 0.5s;
   -webkit-transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-  color: #cc0000;
+  color: #292929;
   font-size: 1.6em;
   margin-bottom: 10px;
   text-decoration: none;
@@ -808,7 +836,7 @@ button:focus {
   -webkit-transition-property: all;
   -webkit-transition-duration: 0.5s;
   -webkit-transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-  background: #cc0000;
+  background: #292929;
   border: 0;
   border-radius: 3px;
   color: #ffffff;
@@ -821,7 +849,7 @@ button:focus {
 }
 
 .btn:hover, .btn-print-table:hover {
-  background: #990000;
+  background: #101010;
 }
 
 .btn.disabled, .disabled.btn-print-table {
@@ -893,7 +921,7 @@ Layout
 }
 
 .breadcrumbs li:last-child {
-  color: #cc0000;
+  color: #292929;
   font-weight: bold;
 }
 
@@ -1131,8 +1159,8 @@ input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus,
 textarea:focus {
-  border-bottom: 1px solid #cc0000;
-  color: #000000;
+  border-bottom: 1px solid #292929;
+  color: #292929;
   outline: 0;
 }
 
@@ -1187,7 +1215,7 @@ textarea[disabled]:hover {
 }
 
 .floating.focus .placeholder {
-  color: #cc0000;
+  color: #292929;
   font-size: 1em;
   top: -10px;
 }
@@ -1304,18 +1332,18 @@ input[type="checkbox"] {
 }
 
 input[type="radio"]:checked + label:before {
-  border: 2px solid #cc0000;
+  border: 2px solid #292929;
 }
 
 input[type="radio"]:checked + label:after {
   -webkit-transform: scale(0.45);
   transform: scale(0.45);
-  background: #cc0000;
+  background: #292929;
 }
 
 input[type="checkbox"]:checked + label:before {
-  background: #cc0000;
-  border: 2px solid #cc0000;
+  background: #292929;
+  border: 2px solid #292929;
 }
 
 input[type="checkbox"]:checked + label:after {
@@ -1327,7 +1355,7 @@ input[type="checkbox"]:checked + label:after {
 }
 
 .progress {
-  background: #ff6666;
+  background: #767676;
   border-radius: 0;
   height: 4px;
   width: 100%;
@@ -1342,7 +1370,7 @@ input[type="checkbox"]:checked + label:after {
   -webkit-transition-property: width;
   -webkit-transition-duration: 0.5s;
   -webkit-transition-timing-function: cubic-bezier(1, 0, 0, 1);
-  background: #cc0000;
+  background: #292929;
   height: 100%;
   margin-left: 0;
   width: 0;
@@ -1620,13 +1648,13 @@ input[type="checkbox"]:checked + label:after {
 
 @-webkit-keyframes color {
   100%, 0% {
-    stroke: #cc0000;
+    stroke: #292929;
   }
 }
 
 @keyframes color {
   100%, 0% {
-    stroke: #cc0000;
+    stroke: #292929;
   }
 }
 
@@ -3333,7 +3361,7 @@ input[type="checkbox"]:checked + label:after {
 }
 
 #primary-nav ul a {
-  color: #000000;
+  color: #292929;
   display: block;
   font-size: 1em;
   margin-bottom: 0;
@@ -3344,7 +3372,7 @@ input[type="checkbox"]:checked + label:after {
 }
 
 #primary-nav ul a.active {
-  background: #cc0000;
+  background: #292929;
 }
 
 #primary-nav ul a span {
@@ -3472,7 +3500,7 @@ input[type="checkbox"]:checked + label:after {
 }
 
 #primary-nav .lvl1 a.active {
-  background: #cc0000;
+  background: #292929;
 }
 
 #primary-nav .lvl2 {
@@ -3504,7 +3532,7 @@ input[type="checkbox"]:checked + label:after {
 .header {
   -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.24);
           box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.24);
-  background: #990000;
+  background: #101010;
   height: 45px;
   position: fixed;
   top: 0;
@@ -3632,7 +3660,7 @@ input[type="checkbox"]:checked + label:after {
   /* Safari */
   /* IE 9 */
   transform: translateY(4px) rotate(225deg);
-  background-color: #000000;
+  background-color: #292929;
 }
 
 .menu.active .bot {
@@ -3640,7 +3668,7 @@ input[type="checkbox"]:checked + label:after {
   /* Safari */
   /* IE 9 */
   transform: translateY(-4px) rotate(-225deg);
-  background-color: #000000;
+  background-color: #292929;
 }
 
 .menu.active .mid {
@@ -3813,7 +3841,7 @@ input[type="checkbox"]:checked + label:after {
 }
 
 .card .non-operational {
-  color: #cc0000;
+  color: #292929;
 }
 
 .card .departed {
@@ -3825,7 +3853,7 @@ input[type="checkbox"]:checked + label:after {
 }
 
 .card .near {
-  color: #cc0000;
+  color: #292929;
 }
 
 .loader {

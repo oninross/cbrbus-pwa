@@ -91,11 +91,11 @@
           <p class="operational">{{! it.status }}</p>{{??}}
           <p class="non-operational">{{! it.status }}</p>{{?}}
         </div>
-        <div class="eta col-4">{{? it.EstimatedArrival < 0 }}
-          <p class="departed">Departed</p>{{?? it.EstimatedArrival == 0 }}
-          <p class="arriving">Arriving</p>{{?? it.EstimatedArrival == 1 }}
-          <p class="near">{{! it.EstimatedArrival }} min</p>{{??}}
-          <p>{{! it.EstimatedArrival }} mins</p>{{?}}
+        <div class="eta col-4">{{? it.estimatedArrival < 0 }}
+          <p class="departed">Departed</p>{{?? it.estimatedArrival == 0 }}
+          <p class="arriving">Arriving</p>{{?? it.estimatedArrival == 1 }}
+          <p class="near">{{! it.estimatedArrival }} min</p>{{??}}
+          <p>{{! it.estimatedArrival }} mins</p>{{?}}
         </div>
       </div>
     </div>

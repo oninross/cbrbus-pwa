@@ -19560,112 +19560,147 @@ var loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><c
 
 $(function () {
     if ($('.timetable').length) {
+        var $xml = '';
+        $xml = '<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>';
+        $xml += '<Siri version="2.0" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns="http://www.siri.org.uk/siri" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns3="http://www.ifopt.org.uk/ifopt">';
+
+        // Check status
+        //$xml += '<CheckStatusRequest>';
+        //$xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
+        //$xml += '<RequestorRef>A6F762</RequestorRef>';
+        //$xml += '</CheckStatusRequest>';
+
+
+        // Vehicle monitoring request
+        //$xml += '<ServiceRequest>';
+        //$xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
+        //$xml += '<RequestorRef>A6F762</RequestorRef>';
+        //$xml += '<VehicleMonitoringRequest version="2.0">';
+        //$xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
+        //$xml += '<VehicleMonitoringRef>VM_ACT_0200</VehicleMonitoringRef>';
+        //$xml += '</VehicleMonitoringRequest>';
+        //$xml += '</ServiceRequest>';
+
+
+        // BusStop Monitoring request
+        $xml += '<ServiceRequest>';
+        $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
+        $xml += '<RequestorRef>A6F762</RequestorRef>';
+        $xml += '<StopMonitoringRequest version="2.0">';
+        $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
+        $xml += '<MonitoringRef>2014</MonitoringRef>';
+        $xml += '</StopMonitoringRequest>';
+        $xml += '</ServiceRequest>';
+
+        $xml += '</Siri>';
+
         $.ajax({
-            url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&SST=True',
-            type: 'GET',
-            headers: {
-                'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
-                'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
-                'accept': 'application/json'
-            },
-            success: function success(data) {
-                // console.log(data);
+            //  url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/A6F762/vm/status.xml',
+            url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/A6F762/sm/service.xml',
+            data: $xml,
+            type: 'POST',
+            contentType: "text/xml",
+            dataType: "text",
+            success: function success(xml) {
                 TweenMax.to('.loader', 0.75, {
                     autoAlpha: 0,
                     scale: 0,
                     ease: Expo.easeOut,
                     onComplete: function onComplete() {
                         $('.loader').remove();
-                        processData(data);
+                        processData(xml);
                     }
                 });
             },
-            error: function error(_error) {
-                console.log(_error);
-
-                (0, _material.toaster)('Whoops! Something went wrong! Error (' + _error.status + ' ' + _error.statusText + ')');
-            },
-            statusCode: function statusCode(code) {
-                console.log(code);
-            }
-        });
-
-        $('body').on('click', '.card', function (e) {
-            e.preventDefault();
-
-            var $this = $(this),
-                serviceNum = $this.data('servicenum');
-
-            if (serviceNum == undefined) {
-                return false;
-            }
-
-            (0, _material.ripple)(e, $this);
-
-            $this.find('.eta').text('');
-
-            $this.append(loader);
-
-            $.ajax({
-                url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&ServiceNo=' + serviceNum + '&SST=True',
-                type: 'GET',
-                headers: {
-                    'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
-                    'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
-                    'accept': 'application/json'
-                },
-                success: function success(data) {
-                    // console.log(data);
-
-                    TweenMax.to('.loader', 0.75, {
-                        autoAlpha: 0,
-                        scale: 0,
-                        ease: Expo.easeOut,
-                        onComplete: function onComplete() {
-                            $('.loader').remove();
-                            updateEta($this, data);
-                        }
-                    });
-                },
-                error: function error(_error2) {
-                    console.log(_error2);
-
-                    (0, _material.toaster)('Whoops! Something went wrong! Error (' + _error2.status + ' ' + _error2.statusText + ')');
-                },
-                statusCode: function statusCode(code) {
-                    console.log(code);
+            error: function (_error) {
+                function error(_x) {
+                    return _error.apply(this, arguments);
                 }
-            });
+
+                error.toString = function () {
+                    return _error.toString();
+                };
+
+                return error;
+            }(function (msg) {
+                console.log(error);
+
+                (0, _material.toaster)('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
+            })
         });
+
+        // $('body').on('click', '.card', function (e) {
+        //     e.preventDefault();
+
+        //     let $this = $(this),
+        //         serviceNum = $this.data('servicenum');
+
+        //     if (serviceNum == undefined) {
+        //         return false;
+        //     }
+
+        //     ripple(e, $this);
+
+        //     $this.find('.eta').text('');
+
+        //     $this.append(loader);
+
+        //     $.ajax({
+        //         url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&ServiceNo=' + serviceNum + '&SST=True',
+        //         type: 'GET',
+        //         headers: {
+        //             'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
+        //             'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
+        //             'accept': 'application/json'
+        //         },
+        //         success: function (data) {
+        //             // console.log(data);
+
+        //             TweenMax.to('.loader', 0.75, {
+        //                 autoAlpha: 0,
+        //                 scale: 0,
+        //                 ease: Expo.easeOut,
+        //                 onComplete: function () {
+        //                     $('.loader').remove();
+        //                     updateEta($this, data);
+        //                 }
+        //             });
+        //         },
+        //         error: function (error) {
+        //             console.log(error);
+
+        //             toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
+        //         },
+        //         statusCode: function (code) {
+        //             console.log(code);
+        //         }
+        //     });
+        // });
     }
 });
 
-function processData(json) {
-    var services = json.Services,
+function processData(xml) {
+    var xmlDoc = $.parseXML(xml),
+        $xml = $(xmlDoc),
+        $monitoredStopVisit = $xml.find('MonitoredStopVisit'),
         cardHeader = _doT2.default.template($('#card-header').html()),
         cardTemplate = _doT2.default.template($('#card-template').html()),
         obj = {},
         cardMarkup = '',
         now = new Date(),
-        arr,
-        eta,
-        etaMin;
+        arr = void 0,
+        eta = void 0,
+        etaMin = void 0;
 
-    obj = {
-        busStopName: busStopName
-    };
-
-    cardMarkup += cardHeader(obj);
-
-    for (var i = 0, l = services.length; i < l; i++) {
-        arr = new Date(services[i].NextBus.EstimatedArrival);
+    for (var i = 0, l = $monitoredStopVisit.length; i < l; i++) {
+        arr = new Date($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0].innerHTML);
         eta = arr.getTime() - now.getTime(); // This will give difference in milliseconds
         etaMin = Math.round(eta / 60000);
 
         obj = {
-            serviceNo: services[i].ServiceNo,
-            status: services[i].Status,
-            EstimatedArrival: etaMin
+            serviceNo: $($monitoredStopVisit[i]).find('PublishedLineName')[0].innerHTML,
+            // status: services[i].Status,
+            estimatedArrival: etaMin
         };
 
         cardMarkup += cardTemplate(obj);
@@ -19683,9 +19718,9 @@ function processData(json) {
 function updateEta(el, json) {
     var services = json.Services,
         now = new Date(),
-        arr,
-        eta,
-        etaMin;
+        arr = void 0,
+        eta = void 0,
+        etaMin = void 0;
 
     arr = new Date(services[0].NextBus.EstimatedArrival);
     eta = arr.getTime() - now.getTime(); // This will give difference in milliseconds

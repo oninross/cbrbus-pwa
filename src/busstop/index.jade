@@ -33,13 +33,13 @@ block prepend scripts
           p.non-operational {{! it.status }}
           | {{?}}
         .eta.col-4
-          | {{? it.EstimatedArrival < 0 }}
+          | {{? it.estimatedArrival < 0 }}
           p.departed Departed
-          | {{?? it.EstimatedArrival == 0 }}
+          | {{?? it.estimatedArrival == 0 }}
           p.arriving Arriving
-          | {{?? it.EstimatedArrival == 1 }}
-          p.near {{! it.EstimatedArrival }} min
+          | {{?? it.estimatedArrival == 1 }}
+          p.near {{! it.estimatedArrival }} min
           | {{??}}
-          p {{! it.EstimatedArrival }} mins
+          p {{! it.estimatedArrival }} mins
           | {{?}}
 
