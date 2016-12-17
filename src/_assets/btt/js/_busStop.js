@@ -36,7 +36,7 @@ $(() => {
         $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
         $xml += '<RequestorRef>A6F762</RequestorRef>';
         $xml += '<StopMonitoringRequest version="2.0">';
-        $xml += '<PreviewInterval>PT30M</PreviewInterval>';
+        $xml += '<PreviewInterval>PT60M</PreviewInterval>';
         $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
         $xml += '<MonitoringRef>' + getQueryVariable('busStopId') + '</MonitoringRef>';
         $xml += '</StopMonitoringRequest>';
@@ -47,7 +47,7 @@ $(() => {
 
 
         $.ajax({
-        //  url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/A6F762/vm/status.xml',
+            // url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/A6F762/vm/status.xml',
             url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/A6F762/sm/service.xml',
             data: $xml,
             type: 'POST',
@@ -70,54 +70,6 @@ $(() => {
                 toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
             }
         });
-
-        // $('body').on('click', '.card', function (e) {
-        //     e.preventDefault();
-
-        //     let $this = $(this),
-        //         serviceNum = $this.data('servicenum');
-
-        //     if (serviceNum == undefined) {
-        //         return false;
-        //     }
-
-        //     ripple(e, $this);
-
-        //     $this.find('.eta').text('');
-
-        //     $this.append(loader);
-
-        //     $.ajax({
-        //         url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&ServiceNo=' + serviceNum + '&SST=True',
-        //         type: 'GET',
-        //         headers: {
-        //             'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
-        //             'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
-        //             'accept': 'application/json'
-        //         },
-        //         success: function (data) {
-        //             // console.log(data);
-
-        //             TweenMax.to('.loader', 0.75, {
-        //                 autoAlpha: 0,
-        //                 scale: 0,
-        //                 ease: Expo.easeOut,
-        //                 onComplete: function () {
-        //                     $('.loader').remove();
-        //                     updateEta($this, data);
-        //                 }
-        //             });
-        //         },
-        //         error: function (error) {
-        //             console.log(error);
-
-        //             toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
-        //         },
-        //         statusCode: function (code) {
-        //             console.log(code);
-        //         }
-        //     });
-        // });
     }
 });
 
@@ -127,12 +79,16 @@ function processData(xml) {
         $monitoredStopVisit = $xml.find('MonitoredStopVisit'),
         cardHeader = doT.template($('#card-header').html()),
         cardTemplate = doT.template($('#card-template').html()),
-        obj = {},
-        cardMarkup = '',
+        // cardEmptyTemplate = doT.template($('#card-empty-template').html()),
         now = new Date(),
-        arr,
-        eta,
-        etaMin;
+        obj = {},
+        vehicleFeatureArr = [],
+        cardMarkup = '',
+        vehicleFeatureRef = '',
+        serviceNum = '',
+        arr = '',
+        eta = '',
+        etaMin = '';
 
     obj = {
         busStopName: decodeURIComponent(getQueryVariable('busStopName'))
@@ -140,18 +96,33 @@ function processData(xml) {
 
     cardMarkup += cardHeader(obj);
 
-    for (let i = 0, l = $monitoredStopVisit.length; i < l; i++) {
-        arr = new Date($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0].innerHTML);
-        eta = arr.getTime() - now.getTime(); // This will give difference in milliseconds
-        etaMin = Math.round(eta / 60000);
+    if ($monitoredStopVisit.length) {
+        for (let i = 0, l = $monitoredStopVisit.length; i < l; i++) {
+            if ($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0] == undefined) {
+                arr = new Date($($monitoredStopVisit[i]).find('ExpectedDepartureTime')[0].innerHTML);
+            } else {
+                arr = new Date($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0].innerHTML);
+            }
 
-        obj = {
-            serviceNo: $($monitoredStopVisit[i]).find('PublishedLineName')[0].innerHTML,
-            // status: services[i].Status,
-            estimatedArrival: etaMin
-        };
+            vehicleFeatureRef = $($monitoredStopVisit[i]).find('VehicleFeatureRef'),
+            eta = arr.getTime() - now.getTime(); // This will give difference in milliseconds
+            etaMin = Math.round(eta / 60000);
+            serviceNum = $($monitoredStopVisit[i]).find('PublishedLineName')[0].innerHTML;
 
-        cardMarkup += cardTemplate(obj);
+            for (let j = 0, m = vehicleFeatureRef.length; j < m; j++) {
+                vehicleFeatureArr.push(vehicleFeatureRef[j].innerHTML);
+            }
+
+            obj = {
+                serviceNo: serviceNum,
+                feature: vehicleFeatureArr,
+                estimatedArrival: etaMin
+            };
+
+            cardMarkup += cardTemplate(obj);
+        }
+    } else {
+        // cardMarkup += cardEmptyTemplate({});
     }
 
     $('.timetable .col-12').html(cardMarkup);

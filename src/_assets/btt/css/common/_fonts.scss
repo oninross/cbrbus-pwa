@@ -82,18 +82,25 @@ $ultra-bold: 900;
 }
 
 
+.icon-wheelchair:before {
+  content: "\e903";
+}
+.icon-bike:before {
+  content: "\e904";
+}
 .icon-cross:before {
-    content: "\e900";
+  content: "\e900";
 }
 .icon-chevron-down:before {
-    content: "\e901";
+  content: "\e901";
 }
 .icon-chevron-right:before {
-    content: "\e902";
+  content: "\e902";
 }
 .icon-done:before {
-    content: "\e28a";
+  content: "\e28a";
 }
 .icon-print:before {
-    content: "\e2c1";
+  content: "\e2c1";
 }
+
