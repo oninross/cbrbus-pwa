@@ -8,6 +8,7 @@ let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><c
 $(() => {
     if ($('.timetable').length) {
         let $xml = '';
+
         $xml = '<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>';
         $xml += '<Siri version="2.0" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns="http://www.siri.org.uk/siri" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns3="http://www.ifopt.org.uk/ifopt">';
 
@@ -35,8 +36,9 @@ $(() => {
         $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
         $xml += '<RequestorRef>A6F762</RequestorRef>';
         $xml += '<StopMonitoringRequest version="2.0">';
+        $xml += '<PreviewInterval>PT30M</PreviewInterval>';
         $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-        $xml += '<MonitoringRef>2014</MonitoringRef>';
+        $xml += '<MonitoringRef>' + getQueryVariable('busStopId') + '</MonitoringRef>';
         $xml += '</StopMonitoringRequest>';
         $xml += '</ServiceRequest>';
 
@@ -131,6 +133,12 @@ function processData(xml) {
         arr,
         eta,
         etaMin;
+
+    obj = {
+        busStopName: decodeURIComponent(getQueryVariable('busStopName'))
+    };
+
+    cardMarkup += cardHeader(obj);
 
     for (let i = 0, l = $monitoredStopVisit.length; i < l; i++) {
         arr = new Date($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0].innerHTML);
