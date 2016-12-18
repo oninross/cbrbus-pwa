@@ -12,7 +12,7 @@ $(() => {
     if ($('.search').length) {
         $.ajax({
             url: '/assets/btt/api/services.json',
-            // url: '/timetable/assets/btt/api/services.json',
+            // url: '/assets/btt/api/services.json',
             success: function (data) {
                 var services = data;
 

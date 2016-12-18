@@ -163,7 +163,7 @@ $(() => {
 window.addEventListener('load', function() {
     var outputElement = document.getElementById('output');
 
-    navigator.serviceWorker.register('/timetable/service-worker.js', { scope: './' })
+    navigator.serviceWorker.register('/service-worker.js', { scope: './' })
         .then(function(r) {
           console.log('registered service worker');
       })
