@@ -121,7 +121,11 @@ function processData(xml) {
     if ($monitoredStopVisit.length) {
         for (let i = 0, l = $monitoredStopVisit.length; i < l; i++) {
             if ($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0] == undefined) {
-                arr = new Date($($monitoredStopVisit[i]).find('ExpectedDepartureTime')[0].innerHTML);
+                if ($($monitoredStopVisit[i]).find('AimedArrivalTime')[0] == undefined ) {
+                    arr = new Date($($monitoredStopVisit[i]).find('AimedDepartureTime')[0].innerHTML);
+                } else {
+                    arr = new Date($($monitoredStopVisit[i]).find('AimedArrivalTime')[0].innerHTML);
+                }
             } else {
                 arr = new Date($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0].innerHTML);
             }
