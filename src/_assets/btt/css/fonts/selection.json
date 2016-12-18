@@ -26,7 +26,7 @@
       "properties": {
         "order": 2,
         "id": 6,
-        "name": "wheelchair",
+        "name": "wheel-chair",
         "prevSize": 24,
         "code": 59651
       },
@@ -55,7 +55,7 @@
       "properties": {
         "order": 3,
         "id": 5,
-        "name": "bike",
+        "name": "bike-rack",
         "prevSize": 24,
         "code": 59652
       },

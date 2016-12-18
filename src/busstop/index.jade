@@ -8,39 +8,4 @@ block config
 block content
     section.container.timetable
         .wrap
-            .col-12
-
-block prepend scripts
-    script#card-header(type='text/template')
-        .card
-            .wrap
-                .col-12
-                    h2 {{! it.busStopName }}
-
-    script#card-template(type='text/template')
-        .card(data-servicenum='{{! it.serviceNo }}')
-            .wrap
-                .col-3
-                    p {{! it.serviceNo }}
-                .feature.col-4
-                    {{? it.feature }}
-                        {{ ~it.feature :value:index }}
-                        i.icon.icon-{{= value}}
-                        {{~ }}
-                    {{? }}
-                .eta.col-5
-                    | {{? it.estimatedArrival < 0 }}
-                    p.departed Departed
-                    | {{?? it.estimatedArrival == 0 }}
-                    p.arriving Arriving
-                    | {{?? it.estimatedArrival == 1 }}
-                    p.near {{! it.estimatedArrival }} min
-                    | {{??}}
-                    p {{! it.estimatedArrival }} mins
-                    | {{?}}
-
-    script#card-empty-template(type='text/template')
-        .card
-            .wrap
-                .col-12
-                    p Service not available
+            .cards-wrapper.col-12

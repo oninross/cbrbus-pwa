@@ -282,7 +282,7 @@
     @include material-shadow(1);
 
     background: darken( $black, 10% );
-    height: 45px;
+    height: 50px;
     position: fixed;
     top: 0;
     width: 100%;
@@ -308,7 +308,7 @@
 }
 
 .logo {
-    padding: 11px $gutter;
+    padding: 13px $gutter;
     position: absolute;
     z-index: 25;
 
@@ -319,7 +319,8 @@
     }
 
     a {
-        font-size: 0.8em;
+        color: $white;
+        font-size: 1em;
     }
 
     .container {
