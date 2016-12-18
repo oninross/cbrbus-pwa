@@ -98,7 +98,7 @@ function processData(xml) {
         $monitoredStopVisit = $xml.find('MonitoredStopVisit'),
         cardHeader = doT.template($('#card-header').html()),
         cardTemplate = doT.template($('#card-template').html()),
-        // cardEmptyTemplate = doT.template($('#card-empty-template').html()),
+        cardEmptyTemplate = doT.template($('#card-empty-template').html()),
         now = new Date(),
         obj = {},
         vehicleFeatureArr = [],
@@ -151,7 +151,7 @@ function processData(xml) {
             cardMarkup += cardTemplate(obj);
         }
     } else {
-        // cardMarkup += cardEmptyTemplate({});
+        cardMarkup += cardEmptyTemplate({});
     }
 
     $('.cards-wrapper.col-12').html(cardMarkup);

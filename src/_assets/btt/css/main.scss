@@ -149,6 +149,15 @@
         font-weight: $bold;
     }
 
+    &.warning {
+        background-color: $red;
+        text-align: center;
+
+        p {
+            color: $white;
+        }
+    }
+
     .ripple {
         circle {
             fill: $grey;
