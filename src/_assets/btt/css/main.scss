@@ -246,3 +246,28 @@
         }
     }
 }
+
+.input {
+    &--wrapper {
+        margin-top: 5px;
+        position: relative;
+
+        input[type="text"] {
+            overflow: hidden;
+            padding-right: 15px;
+            text-overflow: ellipsis;
+        }
+
+        .btn {
+            background-color: transparent;
+            border-radius: 0;
+            color: $black;
+            line-height: 1;
+            opacity: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            visibility: hidden;
+        }
+    }
+}

@@ -8,7 +8,10 @@ block config
 block content
     section.container.search
         .wrap
-            .col-12
-                input.floating-input(type='text', placeholder='Bus stop number or name', data-hint='City Bus Station or 3000')
+            .col-12.input--wrapper
+                input.floating-input(type='text', placeholder='Bus stop number', data-hint='3000')
+                button(type='button').btn.js-clear
+                    span.sr-only clear
+                    i.icon.icon-cross
 
             .cards-wrapper.col-12

@@ -10,21 +10,40 @@ let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><c
 
 $(() => {
     if ($('.search').length) {
+        let $search = $('.search input[type="text"]');
+
+        $('.js-clear').on('click', function () {
+            $search.autocomplete().clear();
+            $search.val('').focus();
+        });
+
         $.ajax({
             url: '/assets/btt/api/services.json',
             // url: '/assets/btt/api/services.json',
             success: function (data) {
                 var services = data;
 
-                $('.search input[type="text"]').autocomplete({
+                $search.autocomplete({
                     lookup: services,
-                    noCache: true,
+                    noCache: false,
                     lookupLimit: 5,
                     triggerSelectOnValidInput: false,
                     autoSelectFirst: true,
                     onSelect: function (suggestion) {
                         busStopId = suggestion.data;
                         getData(suggestion.data);
+                    },
+                    onSearchStart: function (query) {
+                        TweenMax.to('.search .btn', 0.75, {
+                            autoAlpha: 1,
+                            ease: Expo.easeOut
+                        });
+                    },
+                    onHide: function () {
+                        TweenMax.to('.search .btn', 0.75, {
+                            autoAlpha: 0,
+                            ease: Expo.easeOut
+                        });
                     }
                 });
             },
