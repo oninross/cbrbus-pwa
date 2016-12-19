@@ -3,15 +3,5 @@
         "label" : "Search",
         "link" : "/search/",
         "lvl2" : null
-    },
-    {
-        "label" : "Bookmarks",
-        "link" : "/bookmarks/",
-        "lvl2" : null
-    },
-    {
-        "label" : "Near By",
-        "link" : "/nearby/",
-        "lvl2" : null
     }
 ]

@@ -3,6 +3,7 @@
 import 'autocomplete';
 import doT from 'doT';
 import { ripple, toaster } from './_material';
+import { lookupBusId } from './_busStop';
 
 let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
     busStopId = null;
@@ -11,13 +12,16 @@ $(() => {
     if ($('.search').length) {
         $.ajax({
             url: '/assets/btt/api/services.json',
+            // url: '/assets/btt/api/services.json',
             success: function (data) {
                 var services = data;
 
                 $('.search input[type="text"]').autocomplete({
                     lookup: services,
                     noCache: true,
+                    lookupLimit: 5,
                     triggerSelectOnValidInput: false,
+                    autoSelectFirst: true,
                     onSelect: function (suggestion) {
                         busStopId = suggestion.data;
                         getData(suggestion.data);
@@ -33,90 +37,13 @@ $(() => {
                 console.log(code);
             }
         });
-
-        $('body').on('click', '.card', function (e) {
-            e.preventDefault();
-
-            var $this = $(this),
-                serviceNum = $this.data('servicenum');
-
-            if (serviceNum == undefined) {
-                return false;
-            }
-
-            ripple(e, $this);
-
-            $this.find('.eta').text('');
-
-            $this.append(loader);
-
-            $.ajax({
-                url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&ServiceNo=' + serviceNum + '&SST=True',
-                type: 'GET',
-                headers: {
-                    'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
-                    'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
-                    'accept': 'application/json'
-                },
-                success: function (data) {
-                    // console.log(data);
-
-                    TweenMax.to('.loader', 0.75, {
-                        autoAlpha: 0,
-                        scale: 0,
-                        ease: Expo.easeOut,
-                        onComplete: function () {
-                            $('.loader').remove();
-                            updateEta($this, data);
-                        }
-                    });
-                },
-                error: function (error) {
-                    console.log(error);
-
-                    toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
-                },
-                statusCode: function (code) {
-                    console.log(code);
-                }
-            });
-        });
     }
 });
 
 function getData(busStopId) {
     $('#main').before(loader);
 
-    $.ajax({
-        url: 'https://cors-anywhere.herokuapp.com/http://datamall2.mytransport.sg/ltaodataservice/BusArrival?BusStopID=' + busStopId + '&SST=True',
-        type: 'GET',
-        headers: {
-            'AccountKey': 'GXJLVP0cQTyUGWGTjf7TwQ==',
-            'UniqueUserID': '393c7339-4df2-4e6a-b840-ea6b1f5d8acc',
-            'accept': 'application/json'
-        },
-        success: function (data) {
-            // console.log(data);
-            TweenMax.to('.loader', 0.75, {
-                autoAlpha: 0,
-                scale: 0,
-                ease: Expo.easeOut,
-                onComplete: function () {
-                    $('.loader').remove();
-                    processData(data);
-                }
-            });
-
-        },
-        error: function (error) {
-            console.log(error);
-
-            toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
-        },
-        statusCode: function (code) {
-            console.log(code);
-        }
-    });
+    lookupBusId(busStopId);
 }
 
 function processData(json) {

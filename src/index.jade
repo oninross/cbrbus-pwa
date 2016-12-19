@@ -1,8 +1,14 @@
 extends _layouts/base
 
-include _modules/link/link
+block config
+    //- Correct base url pathing for this page
+    - var baseUrl = '../'
+    - var isSearch = true
 
 block content
-  section.container
-    .wrap
-      .col-12
+    section.container.search
+        .wrap
+            .col-12
+                input.floating-input(type='text', placeholder='Bus stop number or name', data-hint='City Bus Station or 3000')
+
+            .cards-wrapper.col-12
