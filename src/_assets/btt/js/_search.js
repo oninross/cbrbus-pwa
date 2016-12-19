@@ -25,7 +25,7 @@ $(() => {
 
                 $search.autocomplete({
                     lookup: services,
-                    noCache: false,
+                    noCache: true,
                     lookupLimit: 5,
                     triggerSelectOnValidInput: false,
                     autoSelectFirst: true,
