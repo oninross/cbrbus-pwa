@@ -8,6 +8,15 @@ let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><c
 $(() => {
     if ($('.timetable').length) {
         lookupBusId(getQueryVariable('busStopId'), null);
+
+        $('.js-refresh').on('click', function() {
+            console.log('click')
+            TweenMax.staggerTo('.card', 0.75, {
+                opacity: 0,
+                top: 150,
+                ease: Expo.easeOut
+            }, 0.1);
+        });
     }
 });
 
@@ -41,14 +50,15 @@ let lookupBusId = function (id) {
 
 
     // Vehicle monitoring request
-    //$xml += '<ServiceRequest>';
-    //$xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-    //$xml += '<RequestorRef>A6F762</RequestorRef>';
-    //$xml += '<VehicleMonitoringRequest version="2.0">';
-    //$xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-    //$xml += '<VehicleMonitoringRef>VM_ACT_0200</VehicleMonitoringRef>';
-    //$xml += '</VehicleMonitoringRequest>';
-    //$xml += '</ServiceRequest>';
+    // $xml += '<ServiceRequest>';
+    // $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
+    // $xml += '<RequestorRef>A6F762</RequestorRef>';
+    // $xml += '<VehicleMonitoringRequest version="2.0">';
+    // $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
+    // $xml += '<VehicleMonitoringRef>VM_ACT_0200</VehicleMonitoringRef>';
+    // $xml += '</VehicleMonitoringRequest>';
+    // $xml += '</ServiceRequest>';
+
 
 
     // BusStop Monitoring request
@@ -80,6 +90,7 @@ let lookupBusId = function (id) {
                 ease: Expo.easeOut,
                 onComplete: function () {
                     $('.loader').remove();
+
                     processData(xml);
                 }
             });
@@ -117,6 +128,8 @@ function processData(xml) {
 
         cardMarkup += cardHeader(obj);
     }
+
+    console.log($monitoredStopVisit.length)
 
     if ($monitoredStopVisit.length) {
         for (let i = 0, l = $monitoredStopVisit.length; i < l; i++) {
@@ -157,7 +170,7 @@ function processData(xml) {
     $('.cards-wrapper.col-12').html(cardMarkup);
 
     TweenMax.staggerTo('.card', 0.75, {
-        opacity: 1,
+        opacity: 0,
         top: 1,
         ease: Expo.easeOut
     }, 0.1);

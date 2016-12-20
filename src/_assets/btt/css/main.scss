@@ -271,3 +271,16 @@
         }
     }
 }
+
+.btn-refresh {
+    @include material-shadow(1);
+
+    background-color: $green;
+    border: 0;
+    color: $white;
+    font-size: 3em;
+    margin-bottom: 15px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
