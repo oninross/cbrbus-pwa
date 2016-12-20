@@ -138,7 +138,7 @@
     margin-bottom: $gutter;
     overflow: hidden;
     padding: 0 $gutter;
-    z-index: 10;
+    z-index: 5;
 
     h2 {
         margin: $gutter 0;
@@ -283,4 +283,5 @@
     overflow: hidden;
     position: relative;
     width: 100%;
+    z-index: 100;
 }

@@ -3,19 +3,27 @@
 import doT from 'doT';
 import { ripple, toaster } from './_material';
 
-let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>';
+let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
+    isLoading = true;
 
 $(() => {
     if ($('.timetable').length) {
         lookupBusId(getQueryVariable('busStopId'), null);
 
         $('.js-refresh').on('click', function() {
-            console.log('click')
+            if (isLoading) {
+                return false;
+            }
+
+            $('body').append(loader);
+
             TweenMax.staggerTo('.card', 0.75, {
                 opacity: 0,
-                top: 150,
+                top: -50,
                 ease: Expo.easeOut
-            }, 0.1);
+            }, 0.1, function() {
+                lookupBusId(getQueryVariable('busStopId'), null);
+            });
         });
     }
 });
@@ -37,6 +45,8 @@ function getQueryVariable(variable) {
 
 let lookupBusId = function (id) {
     let $xml = '';
+
+    isLoading = false;
 
     $xml = '<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>';
     $xml += '<Siri version="2.0" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns="http://www.siri.org.uk/siri" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns3="http://www.ifopt.org.uk/ifopt">';
@@ -129,8 +139,6 @@ function processData(xml) {
         cardMarkup += cardHeader(obj);
     }
 
-    console.log($monitoredStopVisit.length)
-
     if ($monitoredStopVisit.length) {
         for (let i = 0, l = $monitoredStopVisit.length; i < l; i++) {
             if ($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0] == undefined) {
@@ -170,8 +178,8 @@ function processData(xml) {
     $('.cards-wrapper.col-12').html(cardMarkup);
 
     TweenMax.staggerTo('.card', 0.75, {
-        opacity: 0,
-        top: 1,
+        opacity: 1,
+        top: 0,
         ease: Expo.easeOut
     }, 0.1);
 };
