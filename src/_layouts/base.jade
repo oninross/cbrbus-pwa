@@ -85,9 +85,9 @@ body
                         i.icon.icon-cross
 
         script#card-header(type='text/template')
-            .card.card__header(data-id='{{! it.busStopId }}')
+            button.card.card__header.js-bookmark(data-id='{{! it.busStopId }}')
                 h2 {{! it.busStopName }}
-                i.icon.icon-star.js-bookmark
+                i.icon.icon-star
 
         script#card-template(type='text/template')
             .card(data-servicenum='{{! it.serviceNo }}')

@@ -12,6 +12,7 @@ import PrimaryNav from '../../../_modules/primary-nav/primary-nav';
 import { debounce } from './_helper';
 import './_busStop';
 import './_search';
+import './_bookmark';
 
 // Variable declaration
 var $window = $(window),

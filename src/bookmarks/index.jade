@@ -1,15 +1,11 @@
-extends _layouts/base
+extends ../_layouts/base
 
 block config
-    //- Correct base url pathing for this page
-    - var baseUrl = '../'
+  //- Correct base url pathing for this page
+  - var baseUrl = '../'
 
 block content
-    section.container.bookmark
-        .wrap
-            .cards-wrapper.col-12
-                .card(data-id='{{! it.busStopId }}')
-                    .wrap
-                        .col-12
-                            h2 {{! it.busStopName }}
-                            i.icon.icon-star.js-bookmark
+  section.container
+    .wrap
+      .col-12
+        h1|Coming soon!

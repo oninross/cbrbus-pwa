@@ -2,6 +2,7 @@
 
 import doT from 'doT';
 import { ripple, toaster } from './_material';
+import { setBookmark } from './_bookmark';
 
 let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
     isLoading = true;
@@ -24,6 +25,15 @@ $(() => {
             }, 0.1, function() {
                 lookupBusId(getQueryVariable('busStopId'), null);
             });
+        });
+
+        $('body').on('click', '.js-bookmark', function (e) {
+            e.preventDefault();
+
+            let $this = $(this),
+                $id = $this.data('id');
+
+            setBookmark($id);
         });
     }
 });
@@ -132,15 +142,11 @@ function processData(xml) {
         etaMin = '',
         icon = '';
 
-    console.log(xml)
-
     if (getQueryVariable('busStopName')) {
         obj = {
             busStopName: decodeURIComponent(getQueryVariable('busStopName')),
             busStopId: $monitoringRef
         };
-
-        console.log($monitoringRef)
 
         cardMarkup += cardHeader(obj);
     }
