@@ -105,9 +105,9 @@ body
                         | {{? it.estimatedArrival < 0 }}
                         p.departed Departed
                         | {{?? it.estimatedArrival == 0 }}
-                        p.arriving Due
+                        p.due Due
                         | {{?? it.estimatedArrival == 1 }}
-                        p.near {{! it.estimatedArrival }} min
+                        p.arriving Arriving
                         | {{??}}
                         p {{! it.estimatedArrival }} mins
                         | {{?}}
