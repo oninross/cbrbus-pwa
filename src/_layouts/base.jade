@@ -90,8 +90,8 @@ body
                 i.icon.icon-star(class=' {{! it.isBookmarked }}')
 
         script#card-bookmark(type='text/template')
-            a.card.card__header.js-check(href='/busstop/?busStopId={{! it.busStopId }}')
-                h2 {{! it.busStopId }}
+            a.card.card__header(href='/busstop/?busStopId={{! it.busStopId }}&busStopName={{! it.busStopName }}')
+                h2 {{! it.busStopId }} - {{! it.busStopName }}
                 i.icon.icon-star.active
 
         script#card-template(type='text/template')
