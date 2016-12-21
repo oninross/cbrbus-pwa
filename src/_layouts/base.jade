@@ -63,7 +63,7 @@ body
                 .container
                     h1
                         a(href="/") CBR Buses
-            //- +primary-nav
+            +primary-nav
 
     if isBusStop
         .loader
@@ -85,10 +85,9 @@ body
                         i.icon.icon-cross
 
         script#card-header(type='text/template')
-            .card
-                .wrap
-                    .col-12
-                        h2 {{! it.busStopName }}
+            .card.card__header(data-id='{{! it.busStopId }}')
+                h2 {{! it.busStopName }}
+                i.icon.icon-star.js-bookmark
 
         script#card-template(type='text/template')
             .card(data-servicenum='{{! it.serviceNo }}')

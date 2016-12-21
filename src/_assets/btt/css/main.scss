@@ -140,13 +140,36 @@
     padding: 0 $gutter;
     z-index: 5;
 
-    h2 {
-        margin: $gutter 0;
-        text-align: center;
-    }
-
     p {
         font-weight: $bold;
+    }
+
+    &__header {
+        padding-right: 40px;
+
+        h2 {
+            margin: $gutter 0;
+        }
+
+        .icon {
+            @include transition(all, 0.5s, $easeOutExpo);
+
+            bottom: 0;
+            font-size: 2em;
+            height: 20px;
+            line-height: normal;
+            margin: auto;
+            opacity: 0.5;
+            position: absolute;
+            top: 0;
+            right: 10px;
+            width: 20px;
+
+            &.active {
+                opacity: 1;
+                color: $yellow;
+            }
+        }
     }
 
     &.warning {

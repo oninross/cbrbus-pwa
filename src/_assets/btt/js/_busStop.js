@@ -72,15 +72,15 @@ let lookupBusId = function (id) {
 
 
     // BusStop Monitoring request
-    // $xml += '<ServiceRequest>';
-    // $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-    // $xml += '<RequestorRef>A6F762</RequestorRef>';
-    // $xml += '<StopMonitoringRequest version="2.0">';
-    // $xml += '<PreviewInterval>PT60M</PreviewInterval>';
-    // $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-    // $xml += '<MonitoringRef>' + id + '</MonitoringRef>';
-    // $xml += '</StopMonitoringRequest>';
-    // $xml += '</ServiceRequest>';
+    $xml += '<ServiceRequest>';
+    $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
+    $xml += '<RequestorRef>A6F762</RequestorRef>';
+    $xml += '<StopMonitoringRequest version="2.0">';
+    $xml += '<PreviewInterval>PT60M</PreviewInterval>';
+    $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
+    $xml += '<MonitoringRef>' + id + '</MonitoringRef>';
+    $xml += '</StopMonitoringRequest>';
+    $xml += '</ServiceRequest>';
 
 
     $xml += '</Siri>';
@@ -117,6 +117,7 @@ function processData(xml) {
     let xmlDoc = $.parseXML(xml),
         $xml = $(xmlDoc),
         $monitoredStopVisit = $xml.find('MonitoredStopVisit'),
+        $monitoringRef = $xml.find('MonitoringRef')[0].innerHTML,
         cardHeader = doT.template($('#card-header').html()),
         cardTemplate = doT.template($('#card-template').html()),
         cardEmptyTemplate = doT.template($('#card-empty-template').html()),
@@ -135,8 +136,11 @@ function processData(xml) {
 
     if (getQueryVariable('busStopName')) {
         obj = {
-            busStopName: decodeURIComponent(getQueryVariable('busStopName'))
+            busStopName: decodeURIComponent(getQueryVariable('busStopName')),
+            busStopId: $monitoringRef
         };
+
+        console.log($monitoringRef)
 
         cardMarkup += cardHeader(obj);
     }
