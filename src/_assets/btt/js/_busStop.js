@@ -152,6 +152,7 @@ function processData(xml) {
         cardMarkup += cardHeader(obj);
     }
 
+
     if ($monitoredStopVisit.length) {
         $monitoredStopVisit.each(function (i, v) {
             if ($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0] == undefined) {

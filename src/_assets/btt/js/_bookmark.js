@@ -65,13 +65,15 @@ $(() => {
 });
 
 let checkBookmark = function (id) {
-    tmpArr = JSON.parse(localStorage.bookmarks);
+    if (localStorage.bookmarks != undefined) {
+        tmpArr = JSON.parse(localStorage.bookmarks);
 
-    if (tmpArr.indexOf(Number(id)) > -1) {
-        $('.card__header .icon').addClass('active');
-        return true;
-    } else {
-        return false;
+        if (tmpArr.indexOf(Number(id)) > -1) {
+            $('.card__header .icon').addClass('active');
+            return true;
+        } else {
+            return false;
+        }
     }
 };
 
