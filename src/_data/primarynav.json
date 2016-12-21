@@ -1,0 +1,12 @@
+[
+    {
+        "label" : "Search",
+        "link" : "/",
+        "lvl2" : null
+    },
+    {
+        "label" : "Bookmarks",
+        "link" : "/bookmarks/",
+        "lvl2" : null
+    }
+]

@@ -1,0 +1,17 @@
+extends _layouts/base
+
+block config
+    //- Correct base url pathing for this page
+    - var baseUrl = '../'
+    - var isSearch = true
+
+block content
+    section.container.search
+        .wrap
+            .col-12.input--wrapper
+                input.floating-input(type='text', placeholder='Bus stop number', data-hint='3000')
+                button(type='button').btn.js-clear
+                    span.sr-only clear
+                    i.icon.icon-cross
+
+            .cards-wrapper.col-12
