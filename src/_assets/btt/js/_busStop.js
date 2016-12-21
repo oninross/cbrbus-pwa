@@ -72,22 +72,22 @@ let lookupBusId = function (id) {
 
 
     // BusStop Monitoring request
-    $xml += '<ServiceRequest>';
-    $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-    $xml += '<RequestorRef>A6F762</RequestorRef>';
-    $xml += '<StopMonitoringRequest version="2.0">';
-    $xml += '<PreviewInterval>PT60M</PreviewInterval>';
-    $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-    $xml += '<MonitoringRef>' + id + '</MonitoringRef>';
-    $xml += '</StopMonitoringRequest>';
-    $xml += '</ServiceRequest>';
+    // $xml += '<ServiceRequest>';
+    // $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
+    // $xml += '<RequestorRef>A6F762</RequestorRef>';
+    // $xml += '<StopMonitoringRequest version="2.0">';
+    // $xml += '<PreviewInterval>PT60M</PreviewInterval>';
+    // $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
+    // $xml += '<MonitoringRef>' + id + '</MonitoringRef>';
+    // $xml += '</StopMonitoringRequest>';
+    // $xml += '</ServiceRequest>';
 
 
     $xml += '</Siri>';
 
 
     $.ajax({
-        // url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/A6F762/vm/status.xml',
+        // url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/A6F762/vm/service.xml',
         url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/A6F762/sm/service.xml',
         data: $xml,
         type: 'POST',
@@ -131,6 +131,8 @@ function processData(xml) {
         etaMin = '',
         icon = '';
 
+    console.log(xml)
+
     if (getQueryVariable('busStopName')) {
         obj = {
             busStopName: decodeURIComponent(getQueryVariable('busStopName'))
@@ -140,7 +142,7 @@ function processData(xml) {
     }
 
     if ($monitoredStopVisit.length) {
-        for (let i = 0, l = $monitoredStopVisit.length; i < l; i++) {
+        $monitoredStopVisit.each(function (i, v) {
             if ($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0] == undefined) {
                 if ($($monitoredStopVisit[i]).find('AimedArrivalTime')[0] == undefined ) {
                     arr = new Date($($monitoredStopVisit[i]).find('AimedDepartureTime')[0].innerHTML);
@@ -157,6 +159,10 @@ function processData(xml) {
             etaMin = Math.round(eta / 60000);
             serviceNum = $($monitoredStopVisit[i]).find('PublishedLineName')[0].innerHTML;
 
+            // $monitoredStopVisit.each(function (i, v) {
+            //     console.log($(v).find('PublishedLineName')[0].innerHTML)
+            // });
+
             for (let j = 0, m = vehicleFeatureRef.length; j < m; j++) {
                 icon = vehicleFeatureRef[j].innerHTML;
                 icon = icon.replace(' ', '-').toLowerCase();
@@ -170,7 +176,7 @@ function processData(xml) {
             };
 
             cardMarkup += cardTemplate(obj);
-        }
+        });
     } else {
         cardMarkup += cardEmptyTemplate({});
     }
