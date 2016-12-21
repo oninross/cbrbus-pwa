@@ -2,7 +2,7 @@
 
 import doT from 'doT';
 import { ripple, toaster } from './_material';
-import { setBookmark } from './_bookmark';
+import { checkBookmark, setBookmark } from './_bookmark';
 
 let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
     isLoading = true;
@@ -145,7 +145,8 @@ function processData(xml) {
     if (getQueryVariable('busStopName')) {
         obj = {
             busStopName: decodeURIComponent(getQueryVariable('busStopName')),
-            busStopId: $monitoringRef
+            busStopId: $monitoringRef,
+            isBookmarked: checkBookmark($monitoringRef) == true ? 'active' : ''
         };
 
         cardMarkup += cardHeader(obj);

@@ -87,7 +87,12 @@ body
         script#card-header(type='text/template')
             button.card.card__header.js-bookmark(data-id='{{! it.busStopId }}')
                 h2 {{! it.busStopName }}
-                i.icon.icon-star
+                i.icon.icon-star(class=' {{! it.isBookmarked }}')
+
+        script#card-bookmark(type='text/template')
+            a.card.card__header.js-check(href='/busstop/?busStopId={{! it.busStopId }}')
+                h2 {{! it.busStopId }}
+                i.icon.icon-star.active
 
         script#card-template(type='text/template')
             .card(data-servicenum='{{! it.serviceNo }}')
