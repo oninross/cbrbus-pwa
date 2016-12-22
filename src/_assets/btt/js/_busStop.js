@@ -11,6 +11,11 @@ $(() => {
     if ($('.timetable').length) {
         lookupBusId(getQueryVariable('busStopId'), null);
 
+        if (getQueryVariable('busStopName')) {
+            $('html title').text('CBR Buses | ' + decodeURIComponent(getQueryVariable('busStopName')));
+        }
+
+
         $('.js-refresh').on('click', function() {
             if (isLoading) {
                 return false;
