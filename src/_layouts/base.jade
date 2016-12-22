@@ -8,6 +8,8 @@ block config
     - var isBusStop = config.isBusStop || false
     - var isSearch = config.isSearch || false
     - var pageTitle = config.pageTitle || ''
+    - var busStopId = config.busStopId || ''
+    - var busStopName = config.busStopName || ''
 
 doctype html
 
@@ -22,9 +24,8 @@ head
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
 
-    if pageTitle
-        title CBR Buses |
-            =pageTitle
+    if busStopId
+        title CBR Buses | #{busStopId} #{busStopName}
     else
         title CBR Buses
 
@@ -56,6 +57,12 @@ head
 
     block stylesheets
         link(rel='stylesheet', href= baseUrl + 'assets/btt/css/main.css')
+
+    if busStopId
+        script.
+            var _busStopId = '#{busStopId}',
+            _busStopName = '#{busStopName}';
+
 
 body
     <!--[if lt IE 9]>

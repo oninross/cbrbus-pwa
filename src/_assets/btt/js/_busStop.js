@@ -9,12 +9,7 @@ let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><c
 
 $(() => {
     if ($('.timetable').length) {
-        lookupBusId(getQueryVariable('busStopId'), null);
-
-        if (getQueryVariable('busStopName')) {
-            $('html title').text('CBR Buses | ' + decodeURIComponent(getQueryVariable('busStopName')));
-        }
-
+        lookupBusId(_busStopId, null);
 
         $('.js-refresh').on('click', function() {
             if (isLoading) {
@@ -28,7 +23,7 @@ $(() => {
                 top: -50,
                 ease: Expo.easeOut
             }, 0.1, function() {
-                lookupBusId(getQueryVariable('busStopId'), null);
+                lookupBusId(_busStopId, null);
             });
         });
 
@@ -147,9 +142,9 @@ function processData(xml) {
         etaMin = '',
         icon = '';
 
-    if (getQueryVariable('busStopName')) {
+    if (_busStopName) {
         obj = {
-            busStopName: decodeURIComponent(getQueryVariable('busStopName')),
+            busStopName: _busStopName,
             busStopId: $monitoringRef,
             isBookmarked: checkBookmark($monitoringRef) == true ? 'active' : ''
         };
