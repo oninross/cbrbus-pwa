@@ -141,15 +141,17 @@ let lookupBusId = function (id, name) {
 function processData(xml) {
     let xmlDoc = $.parseXML(xml),
         $xml = $(xmlDoc),
-        $status = $xml.find('Status')[0].innerHTML == 'true' ? true : false;
+        $status = $xml.find('Status')[0].innerHTML == 'true' ? true : false,
+        $monitoringRef = $xml.find('MonitoringRef');
 
     if (!$status) {
         toaster('Whoops! Something went wrong! Error (' + $xml.find('ErrorText')[0].innerHTML + ')');
         return false;
     }
 
+    console.log(xmlDoc)
+
     let $monitoredStopVisit = $xml.find('MonitoredStopVisit'),
-        $monitoringRef = $xml.find('MonitoringRef')[0].innerHTML,
         cardHeader = doT.template($('#card-header').html()),
         cardTemplate = doT.template($('#card-template').html()),
         cardEmptyTemplate = doT.template($('#card-empty-template').html()),
@@ -164,17 +166,17 @@ function processData(xml) {
         etaMin = '',
         icon = '';
 
-    if (busStopName != undefined) {
-        obj = {
-            busStopName: busStopName,
-            busStopId: $monitoringRef,
-            isBookmarked: checkBookmark($monitoringRef) == true ? 'active' : ''
-        };
+    if ($monitoredStopVisit.length || $monitoringRef.length) {
+        if (busStopName != undefined) {
+            obj = {
+                busStopName: busStopName,
+                busStopId: $monitoringRef[0].innerHTML,
+                isBookmarked: checkBookmark($monitoringRef[0].innerHTML) == true ? 'active' : ''
+            };
 
-        cardMarkup += cardHeader(obj);
-    }
+            cardMarkup += cardHeader(obj);
+        }
 
-    if ($monitoredStopVisit.length) {
         $monitoredStopVisit.each(function (i, v) {
             if ($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0] == undefined) {
                 if ($($monitoredStopVisit[i]).find('AimedArrivalTime')[0] == undefined ) {

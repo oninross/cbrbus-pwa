@@ -136,8 +136,13 @@
     }
 
     &.warning {
-        background-color: $red;
-        text-align: center;
+        margin-bottom: 0;
+        width: 100%;
+
+        .card__wrapper {
+            background-color: $red;
+            text-align: center
+        }
 
         p {
             color: $white;
