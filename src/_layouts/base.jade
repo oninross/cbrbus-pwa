@@ -88,13 +88,12 @@ body
     block scripts
         script(src= baseUrl + 'assets/btt/js/main.js')
 
-        script(id='toaster-template', type='text/template').
+        script(id='toaster-template', type='text/template')
             .toaster(class='toaster{{= it.ind }}')
-                .container
-                    p {{! it.message}}
-                    button.js-dismiss
-                        span.vh Close
-                        i.icon.icon-cross
+                p {{! it.message}}
+                button.js-dismiss
+                    span.sr-only Close
+                    i.icon.icon-cross
 
         script#card-header(type='text/template')
             button.card.card__header.js-bookmark(data-id='{{! it.busStopId }}')

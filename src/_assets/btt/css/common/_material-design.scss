@@ -469,11 +469,15 @@ input[type="checkbox"]{
 
 // Toaster
 .toaster-wrap {
-    bottom: 30px;
-    left: 30px;
+    bottom: 20px;
+    left: 20px;
     max-width: 440px;
     position: fixed;
-    width: 100%;
+    width: 85%;
+
+    @include tablet {
+        width: 100%;
+    }
 }
 
 .toaster {
@@ -485,6 +489,7 @@ input[type="checkbox"]{
     color: $white;
     margin-bottom: 10px;
     padding: 20px;
+    padding-right: 40px;
 
     &:only-child,
     &:last-child {
@@ -492,7 +497,8 @@ input[type="checkbox"]{
     }
 
     p {
-        margin-bottom: 0;
+        line-height: 1.25;
+        margin: 0;
     }
 
     button {
@@ -504,7 +510,7 @@ input[type="checkbox"]{
         left: auto;
         padding: 0;
         position: absolute;
-        right: 0;
+        right: 10px;
         top: 0;
         width: 20px;
     }

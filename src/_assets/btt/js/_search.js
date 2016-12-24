@@ -4,6 +4,7 @@ import 'autocomplete';
 import doT from 'doT';
 import { ripple, toaster } from './_material';
 import { lookupBusId } from './_busStop';
+import { setBookmark } from './_bookmark';
 
 let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
     busStopId = null,
@@ -16,6 +17,15 @@ $(() => {
         $('.js-clear').on('click', function () {
             $search.autocomplete().clear();
             $search.val('').focus();
+        });
+
+        $('body').on('click', '.js-bookmark', function (e) {
+            e.preventDefault();
+
+            let $this = $(this),
+                $id = $this.data('id');
+
+            setBookmark($id);
         });
 
         $.ajax({
@@ -35,8 +45,8 @@ $(() => {
                         busStopId = suggestion.data;
                         busStopName = suggestion.name;
 
-                        window.location.href = '/busstop/?busStopId=' + busStopId + '&busStopName=' + busStopName;
-                        // getData(suggestion.data);
+                        // window.location.href = '/busstop/?busStopId=' + busStopId + '&busStopName=' + busStopName;
+                        getData(suggestion.data);
                     },
                     onSearchStart: function (query) {
                         TweenMax.to('.search .btn', 0.75, {
@@ -67,7 +77,7 @@ $(() => {
 function getData(busStopId) {
     $('#main').before(loader);
 
-    lookupBusId(busStopId);
+    lookupBusId(busStopId, busStopName);
 }
 
 function processData(json) {

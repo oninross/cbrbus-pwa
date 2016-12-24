@@ -5,10 +5,16 @@ import { ripple, toaster } from './_material';
 import { checkBookmark, setBookmark } from './_bookmark';
 
 let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
-    isLoading = true;
+    isLoading = true,
+    _busStopId,
+    _busStopName;
 
 $(() => {
     if ($('.timetable').length) {
+        if (getQueryVariable('busStopId')) {
+            _busStopId = getQueryVariable('busStopId');
+        }
+
         lookupBusId(_busStopId, null);
 
         $('.js-refresh').on('click', function() {
@@ -53,9 +59,10 @@ function getQueryVariable(variable) {
     return false;
 };
 
-let lookupBusId = function (id) {
+let lookupBusId = function (id, name) {
     let $xml = '';
 
+    _busStopName = name;
     isLoading = false;
 
     $xml = '<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>';
@@ -126,7 +133,14 @@ let lookupBusId = function (id) {
 function processData(xml) {
     let xmlDoc = $.parseXML(xml),
         $xml = $(xmlDoc),
-        $monitoredStopVisit = $xml.find('MonitoredStopVisit'),
+        $status = $xml.find('Status')[0].innerHTML == 'true' ? true : false;
+
+    if (!$status) {
+        toaster('Whoops! Something went wrong! Error (' + $xml.find('ErrorText')[0].innerHTML + ')');
+        return false;
+    }
+
+    let $monitoredStopVisit = $xml.find('MonitoredStopVisit'),
         $monitoringRef = $xml.find('MonitoringRef')[0].innerHTML,
         cardHeader = doT.template($('#card-header').html()),
         cardTemplate = doT.template($('#card-template').html()),
@@ -142,7 +156,7 @@ function processData(xml) {
         etaMin = '',
         icon = '';
 
-    if (_busStopName) {
+    if (_busStopName != undefined) {
         obj = {
             busStopName: _busStopName,
             busStopId: $monitoringRef,
@@ -151,7 +165,6 @@ function processData(xml) {
 
         cardMarkup += cardHeader(obj);
     }
-
 
     if ($monitoredStopVisit.length) {
         $monitoredStopVisit.each(function (i, v) {
@@ -195,11 +208,19 @@ function processData(xml) {
 
     $('.cards-wrapper.col-12').html(cardMarkup);
 
+    TweenMax.to('.btn-refresh', 0.75, {
+        opacity: 1,
+        top: 0,
+        ease: Expo.easeOut,
+    });
+
     TweenMax.staggerTo('.card', 0.75, {
         opacity: 1,
         top: 0,
-        ease: Expo.easeOut
+        ease: Expo.easeOut,
+        delay: 0.1
     }, 0.1);
+
 };
 
 export { lookupBusId }
