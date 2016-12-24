@@ -164,8 +164,6 @@ function processData(xml) {
         etaMin = '',
         icon = '';
 
-    console.log(busStopName)
-
     if (busStopName != undefined) {
         obj = {
             busStopName: busStopName,

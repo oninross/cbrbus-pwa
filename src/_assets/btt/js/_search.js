@@ -97,30 +97,6 @@ function getData(busStopId) {
     lookupBusId(busStopId, busStopName);
 }
 
-function updateEta(el, json) {
-    var services = json.Services,
-        now = new Date(),
-        arr,
-        eta,
-        etaMin;
-
-    arr = new Date(services[0].NextBus.EstimatedArrival);
-    eta = arr.getTime() - now.getTime(); // This will give difference in milliseconds
-    etaMin = Math.round(eta / 60000);
-
-    if (etaMin < 0) {
-        el.find('.eta').html('<p class="departed">Departed</p>');
-    } else if (etaMin == 0) {
-        el.find('.eta').html('<p class="arriving">Arriving</p>');
-    } else if (etaMin == 1) {
-        el.find('.eta').html('<p class="near">' + etaMin + ' min</p>');
-    } else {
-        el.find('.eta').html('<p>' + etaMin + ' mins</p>');
-    }
-
-    el.find('.eta').text();
-};
-
 function getQueryVariable(variable) {
     var query = window.location.search.substring(1),
         vars = query.split("&");
