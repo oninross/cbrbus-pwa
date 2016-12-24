@@ -7,6 +7,7 @@ import { lookupBusId } from './_busStop';
 import { setBookmark } from './_bookmark';
 
 let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
+    isLoading = false,
     busStopId = null,
     busStopName = null;
 
@@ -26,6 +27,22 @@ $(() => {
                 $id = $this.data('id');
 
             setBookmark($id);
+        });
+
+        $('.js-refresh').on('click', function() {
+            if (isLoading) {
+                return false;
+            }
+
+            $('body').append(loader);
+
+            TweenMax.staggerTo('.card', 0.75, {
+                opacity: 0,
+                top: -50,
+                ease: Expo.easeOut
+            }, 0.1, function() {
+                lookupBusId(busStopId, null);
+            });
         });
 
         $.ajax({
@@ -79,40 +96,6 @@ function getData(busStopId) {
 
     lookupBusId(busStopId, busStopName);
 }
-
-function processData(json) {
-    console.log(json)
-    var services = json.Services,
-        cardTemplate = doT.template($('#card-template').html()),
-        obj = {},
-        cardMarkup = '',
-        now = new Date(),
-        arr,
-        eta,
-        etaMin;
-
-    for (var i = 0, l = services.length; i < l; i++) {
-        arr = new Date(services[i].NextBus.EstimatedArrival);
-        eta = arr.getTime() - now.getTime(); // This will give difference in milliseconds
-        etaMin = Math.round(eta / 60000);
-
-        obj = {
-            serviceNo: services[i].ServiceNo,
-            status: services[i].Status,
-            EstimatedArrival: etaMin
-        };
-
-        cardMarkup += cardTemplate(obj);
-    }
-
-    $('.cards-wrapper').html(cardMarkup);
-
-    TweenMax.staggerTo('.card', 0.75, {
-        opacity: 1,
-        top: 1,
-        ease: Expo.easeOut
-    }, 0.1);
-};
 
 function updateEta(el, json) {
     var services = json.Services,

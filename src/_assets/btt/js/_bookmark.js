@@ -44,7 +44,7 @@ $(() => {
                     cardMarkup += cardBookmark(obj);
                 }
 
-                $('.cards-wrapper.col-12').html(cardMarkup);
+                $('.cards-wrapper').html(cardMarkup);
 
                 TweenMax.staggerTo('.card', 0.75, {
                     opacity: 1,

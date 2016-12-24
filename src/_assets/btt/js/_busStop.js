@@ -6,16 +6,24 @@ import { checkBookmark, setBookmark } from './_bookmark';
 
 let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
     isLoading = true,
-    _busStopId,
-    _busStopName;
+    busStopId,
+    busStopName;
 
 $(() => {
     if ($('.timetable').length) {
         if (getQueryVariable('busStopId')) {
-            _busStopId = getQueryVariable('busStopId');
+            busStopId = getQueryVariable('busStopId');
+        } else {
+            busStopId = _busStopId;
         }
 
-        lookupBusId(_busStopId, null);
+        if (getQueryVariable('busStopName')) {
+            busStopName = decodeURI(getQueryVariable('busStopName'));
+        } else {
+            busStopName = _busStopName;
+        }
+
+        lookupBusId(busStopId, busStopName);
 
         $('.js-refresh').on('click', function() {
             if (isLoading) {
@@ -29,7 +37,7 @@ $(() => {
                 top: -50,
                 ease: Expo.easeOut
             }, 0.1, function() {
-                lookupBusId(_busStopId, null);
+                lookupBusId(busStopId, null);
             });
         });
 
@@ -62,7 +70,7 @@ function getQueryVariable(variable) {
 let lookupBusId = function (id, name) {
     let $xml = '';
 
-    _busStopName = name;
+    busStopName = name;
     isLoading = false;
 
     $xml = '<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>';
@@ -156,9 +164,11 @@ function processData(xml) {
         etaMin = '',
         icon = '';
 
-    if (_busStopName != undefined) {
+    console.log(busStopName)
+
+    if (busStopName != undefined) {
         obj = {
-            busStopName: _busStopName,
+            busStopName: busStopName,
             busStopId: $monitoringRef,
             isBookmarked: checkBookmark($monitoringRef) == true ? 'active' : ''
         };
@@ -206,7 +216,7 @@ function processData(xml) {
         cardMarkup += cardEmptyTemplate({});
     }
 
-    $('.cards-wrapper.col-12').html(cardMarkup);
+    $('.cards-wrapper').html(cardMarkup);
 
     TweenMax.to('.btn-refresh', 0.75, {
         opacity: 1,
@@ -220,7 +230,6 @@ function processData(xml) {
         ease: Expo.easeOut,
         delay: 0.1
     }, 0.1);
-
 };
 
 export { lookupBusId }

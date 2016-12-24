@@ -97,35 +97,40 @@ body
 
         script#card-header(type='text/template')
             button.card.card__header.js-bookmark(data-id='{{! it.busStopId }}')
-                h2 {{! it.busStopName }}
-                i.icon.icon-star(class=' {{! it.isBookmarked }}')
+                .card__wrapper
+                    .wrap
+                        h2 {{! it.busStopName }}
+                        i.icon.icon-star(class=' {{! it.isBookmarked }}')
 
         script#card-bookmark(type='text/template')
             a.card.card__header(href='/busstop/?busStopId={{! it.busStopId }}&busStopName={{! it.busStopName }}')
-                h2 {{! it.busStopId }} - {{! it.busStopName }}
-                i.icon.icon-star.active
+                .card__wrapper
+                    .wrap
+                        h2 {{! it.busStopId }} - {{! it.busStopName }}
+                        i.icon.icon-star.active
 
         script#card-template(type='text/template')
             .card(data-servicenum='{{! it.serviceNo }}')
-                .wrap
-                    .col-3
-                        p {{! it.serviceNo }}
-                    .feature.col-4
-                        |{{? it.feature.length > 0 }}
-                        |{{~ it.feature :value:index }}
-                        i.icon(class='icon-{{= value}}')
-                        |{{~ }}
-                        |{{? }}
-                    .eta.col-5
-                        | {{? it.estimatedArrival < 0 }}
-                        p.departed Departed
-                        | {{?? it.estimatedArrival == 0 }}
-                        p.due Due
-                        | {{?? it.estimatedArrival == 1 }}
-                        p.arriving Arriving
-                        | {{??}}
-                        p {{! it.estimatedArrival }} mins
-                        | {{?}}
+                .card__wrapper
+                    .wrap
+                        .bus
+                            p {{! it.serviceNo }}
+                        .feature
+                            |{{? it.feature.length > 0 }}
+                            |{{~ it.feature :value:index }}
+                            i.icon(class='icon-{{= value}}')
+                            |{{~ }}
+                            |{{? }}
+                        .eta
+                            | {{? it.estimatedArrival < 0 }}
+                            p.departed Departed
+                            | {{?? it.estimatedArrival == 0 }}
+                            p.due Due
+                            | {{?? it.estimatedArrival == 1 }}
+                            p.arriving Arriving
+                            | {{??}}
+                            p {{! it.estimatedArrival }} mins
+                            | {{?}}
 
         script#card-empty-template(type='text/template')
             .card.warning
