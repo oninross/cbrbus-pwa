@@ -17,11 +17,7 @@ $(() => {
             busStopId = _busStopId;
         }
 
-        if (getQueryVariable('busStopName')) {
-            busStopName = decodeURI(getQueryVariable('busStopName'));
-        } else {
-            busStopName = _busStopName;
-        }
+        getBusStopName();
 
         lookupBusId(busStopId, busStopName);
 
@@ -166,6 +162,8 @@ function processData(xml) {
         etaMin = '',
         icon = '';
 
+    getBusStopName();
+
     if ($monitoredStopVisit.length || $monitoringRef.length) {
         if (busStopName != undefined) {
             obj = {
@@ -230,6 +228,14 @@ function processData(xml) {
         ease: Expo.easeOut,
         delay: 0.1
     }, 0.1);
+};
+
+function getBusStopName() {
+    if (getQueryVariable('busStopName')) {
+        busStopName = decodeURI(getQueryVariable('busStopName'));
+    } else {
+        busStopName = _busStopName;
+    }
 };
 
 export { lookupBusId }

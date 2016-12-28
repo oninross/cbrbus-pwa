@@ -113,24 +113,26 @@ body
             .card(data-servicenum='{{! it.serviceNo }}')
                 .card__wrapper
                     .wrap
-                        .bus
-                            p {{! it.serviceNo }}
+                        .col-9
+                            .bus
+                                p {{! it.serviceNo }}
+
+                            .eta
+                                | {{? it.estimatedArrival < 0 }}
+                                p.departed Departed
+                                | {{?? it.estimatedArrival == 0 }}
+                                p.due Due
+                                | {{?? it.estimatedArrival == 1 }}
+                                p.arriving Arriving
+                                | {{??}}
+                                p {{! it.estimatedArrival }} mins
+                                | {{?}}
                         .feature
                             |{{? it.feature.length > 0 }}
                             |{{~ it.feature :value:index }}
                             i.icon(class='icon-{{= value}}')
                             |{{~ }}
                             |{{? }}
-                        .eta
-                            | {{? it.estimatedArrival < 0 }}
-                            p.departed Departed
-                            | {{?? it.estimatedArrival == 0 }}
-                            p.due Due
-                            | {{?? it.estimatedArrival == 1 }}
-                            p.arriving Arriving
-                            | {{??}}
-                            p {{! it.estimatedArrival }} mins
-                            | {{?}}
 
         script#card-empty-template(type='text/template')
             .card.warning
