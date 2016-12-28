@@ -32,7 +32,6 @@ $(() => {
                             // we found it
                             // obj[i].name is the matched result
                             busStopName = services[j].name;
-                            console.log(busStopName)
                         }
                     }
 

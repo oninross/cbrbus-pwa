@@ -41,7 +41,7 @@ $(() => {
                 top: -50,
                 ease: Expo.easeOut
             }, 0.1, function() {
-                lookupBusId(busStopId, null);
+                lookupBusId(busStopId, busStopName);
             });
         });
 

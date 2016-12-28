@@ -233,7 +233,7 @@ function processData(xml) {
 function getBusStopName() {
     if (getQueryVariable('busStopName')) {
         busStopName = decodeURI(getQueryVariable('busStopName'));
-    } else {
+    } else if (busStopName == '') {
         busStopName = _busStopName;
     }
 };
