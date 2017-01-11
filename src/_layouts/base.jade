@@ -110,29 +110,43 @@ body
                         i.icon.icon-star.active
 
         script#card-template(type='text/template')
-            .card(data-servicenum='{{! it.serviceNo }}')
+            .card(data-servicenum='{{! it.serviceNum }}')
                 .card__wrapper
                     .wrap
-                        .col-9
-                            .bus
-                                p {{! it.serviceNo }}
-
-                            .eta
-                                | {{? it.estimatedArrival < 0 }}
-                                p.departed Departed
-                                | {{?? it.estimatedArrival == 0 }}
-                                p.due Due
-                                | {{?? it.estimatedArrival == 1 }}
-                                p.arriving Arriving
-                                | {{??}}
-                                p {{! it.estimatedArrival }} mins
-                                | {{?}}
+                        .bus {{! it.serviceNum }}
                         .feature
                             |{{? it.feature.length > 0 }}
                             |{{~ it.feature :value:index }}
                             i.icon(class='icon-{{= value}}')
                             |{{~ }}
                             |{{? }}
+                        .eta
+                            //- for loop
+                            |{{~ it.estimatedArrival :value:index }}
+
+                            //- begin if index > 0
+                            |{{? index == 0 }}
+
+                            |{{? value < 0 }}
+                            strong.departed Departed
+                            |{{?? value == 0 }}
+                            strong.due Due
+                            |{{?? value == 1 }}
+                            strong.arriving Arriving
+                            |{{?? }}
+                            strong {{= value }} mins
+                            |{{? }}
+
+                            //- else
+                            |{{?? }}
+
+                            .next {{= value }} mins
+
+                            //- end if index > 0
+                            |{{? }}
+
+                            //- end for loop
+                            |{{~ }}
 
         script#card-empty-template(type='text/template')
             .card.warning

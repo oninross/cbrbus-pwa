@@ -76,6 +76,7 @@
 
     p {
         font-weight: $bold;
+        height: 65px;
         line-height: 1;
     }
 
@@ -126,11 +127,16 @@
         @include material-shadow(1);
 
         background-color: $white;
-        line-height: normal;
-        height: 90px;
+        line-height: 1;
+        height: 164px;
         margin: 0 $gutter;
-        padding: 15px;
+        padding: 10px 22px 22px;
         position: relative;
+        // text-align: center;
+
+        h2 {
+            margin-top: 12px;
+        }
 
         .wrap {
             margin: 0;
@@ -181,30 +187,22 @@
     }
 
     .bus {
-        font-size: 2.5em;
+        font-size: 5.20em;
         font-weight: $ultra-bold;
-
-        p {
-            position: relative;
-            top: -5px;
-        }
+        line-height: 1;
     }
 
     .feature {
-        float: right;
-        max-width: 25px;
         padding: 0;
-        text-align: right;
-        width: 25%;
 
         .icon {
+            @include inline-block;
+
             background-color: $black;
             border-radius: 50%;
             color: $white;
-            display: block;
-            // font-size: 2.5em;
             height: 25px;
-            margin-bottom: 5px;
+            margin-right: 5px;
             padding: 4px;
             vertical-align: middle;
             text-align: center;
@@ -222,11 +220,14 @@
     }
 
     .eta {
-        float: left;
-        width: 100%;
+        border-top: 1px solid $grey;
+        clear: both;
+        font-size: 1.8em;
+        margin-top: 10px;
+        padding-top: 10px;
 
-        p {
-            font-weight: $normal;
+        .next {
+            font-size: 0.778em;
         }
     }
 
