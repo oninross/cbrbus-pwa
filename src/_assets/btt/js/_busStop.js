@@ -5,11 +5,25 @@ import { ripple, toaster } from './_material';
 import { checkBookmark, setBookmark } from './_bookmark';
 
 let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
-    isLoading = true;
+    isLoading = true,
+    // API_KEY = 'A6F762', // Development
+    API_KEY = 'AE9887', // Production
+    busArr = [],
+    busObjArr= [],
+    busStopId,
+    busStopName;
 
 $(() => {
     if ($('.timetable').length) {
-        lookupBusId(getQueryVariable('busStopId'), null);
+        if (getQueryVariable('busStopId')) {
+            busStopId = getQueryVariable('busStopId');
+        } else {
+            busStopId = _busStopId;
+        }
+
+        getBusStopName();
+
+        lookupBusId(busStopId, busStopName);
 
         $('.js-refresh').on('click', function() {
             if (isLoading) {
@@ -23,7 +37,7 @@ $(() => {
                 top: -50,
                 ease: Expo.easeOut
             }, 0.1, function() {
-                lookupBusId(getQueryVariable('busStopId'), null);
+                lookupBusId(busStopId, null);
             });
         });
 
@@ -53,9 +67,10 @@ function getQueryVariable(variable) {
     return false;
 };
 
-let lookupBusId = function (id) {
+let lookupBusId = function (id, name) {
     let $xml = '';
 
+    busStopName = name;
     isLoading = false;
 
     $xml = '<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>';
@@ -65,14 +80,14 @@ let lookupBusId = function (id) {
     // Check status
     //$xml += '<CheckStatusRequest>';
     //$xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-    //$xml += '<RequestorRef>A6F762</RequestorRef>';
+    //$xml += '<RequestorRef>' + API_KEY +'</RequestorRef>';
     //$xml += '</CheckStatusRequest>';
 
 
     // Vehicle monitoring request
     // $xml += '<ServiceRequest>';
     // $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-    // $xml += '<RequestorRef>A6F762</RequestorRef>';
+    // $xml += '<RequestorRef>' + API_KEY +'</RequestorRef>';
     // $xml += '<VehicleMonitoringRequest version="2.0">';
     // $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
     // $xml += '<VehicleMonitoringRef>VM_ACT_0200</VehicleMonitoringRef>';
@@ -84,7 +99,7 @@ let lookupBusId = function (id) {
     // BusStop Monitoring request
     $xml += '<ServiceRequest>';
     $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-    $xml += '<RequestorRef>A6F762</RequestorRef>';
+    $xml += '<RequestorRef>' + API_KEY +'</RequestorRef>';
     $xml += '<StopMonitoringRequest version="2.0">';
     $xml += '<PreviewInterval>PT60M</PreviewInterval>';
     $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
@@ -97,8 +112,8 @@ let lookupBusId = function (id) {
 
 
     $.ajax({
-        // url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/A6F762/vm/service.xml',
-        url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/A6F762/sm/service.xml',
+        // url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY +'/vm/service.xml',
+        url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY +'/sm/service.xml',
         data: $xml,
         type: 'POST',
         contentType: "text/xml",
@@ -126,14 +141,24 @@ let lookupBusId = function (id) {
 function processData(xml) {
     let xmlDoc = $.parseXML(xml),
         $xml = $(xmlDoc),
-        $monitoredStopVisit = $xml.find('MonitoredStopVisit'),
-        $monitoringRef = $xml.find('MonitoringRef')[0].innerHTML,
+        $status = $xml.find('Status')[0].innerHTML == 'true' ? true : false,
+        $monitoringRef = $xml.find('MonitoringRef');
+
+    if (!$status) {
+        toaster('Whoops! Something went wrong! Error (' + $xml.find('ErrorText')[0].innerHTML + ')');
+        return false;
+    }
+
+    console.log(xmlDoc)
+
+    let $monitoredStopVisit = $xml.find('MonitoredStopVisit'),
         cardHeader = doT.template($('#card-header').html()),
         cardTemplate = doT.template($('#card-template').html()),
         cardEmptyTemplate = doT.template($('#card-empty-template').html()),
         now = new Date(),
         obj = {},
         vehicleFeatureArr = [],
+        etaArr = [],
         cardMarkup = '',
         vehicleFeatureRef = '',
         serviceNum = '',
@@ -142,18 +167,19 @@ function processData(xml) {
         etaMin = '',
         icon = '';
 
-    if (getQueryVariable('busStopName')) {
-        obj = {
-            busStopName: decodeURIComponent(getQueryVariable('busStopName')),
-            busStopId: $monitoringRef,
-            isBookmarked: checkBookmark($monitoringRef) == true ? 'active' : ''
-        };
+    getBusStopName();
 
-        cardMarkup += cardHeader(obj);
-    }
+    if ($monitoredStopVisit.length || $monitoringRef.length) {
+        if (busStopName != undefined) {
+            obj = {
+                busStopName: busStopName,
+                busStopId: $monitoringRef[0].innerHTML,
+                isBookmarked: checkBookmark($monitoringRef[0].innerHTML) == true ? 'active' : ''
+            };
 
+            cardMarkup += cardHeader(obj);
+        }
 
-    if ($monitoredStopVisit.length) {
         $monitoredStopVisit.each(function (i, v) {
             if ($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0] == undefined) {
                 if ($($monitoredStopVisit[i]).find('AimedArrivalTime')[0] == undefined ) {
@@ -171,35 +197,87 @@ function processData(xml) {
             etaMin = Math.round(eta / 60000);
             serviceNum = $($monitoredStopVisit[i]).find('PublishedLineName')[0].innerHTML;
 
-            // $monitoredStopVisit.each(function (i, v) {
-            //     console.log($(v).find('PublishedLineName')[0].innerHTML)
-            // });
-
             for (let j = 0, m = vehicleFeatureRef.length; j < m; j++) {
                 icon = vehicleFeatureRef[j].innerHTML;
                 icon = icon.replace(' ', '-').toLowerCase();
                 vehicleFeatureArr.push(icon);
             }
 
+            etaArr = [];
+            etaArr.push(etaMin);
+
             obj = {
-                serviceNo: serviceNum,
+                serviceNum: serviceNum,
                 feature: vehicleFeatureArr,
-                estimatedArrival: etaMin
+                estimatedArrival: etaArr
             };
 
-            cardMarkup += cardTemplate(obj);
+            // Initial push for busArr
+            if (i == 0) {
+                busArr.push(serviceNum);
+                busObjArr.push(obj);
+            }
+
+            // console.log(busObjArr)
+            // Check if bus is already present in array
+            if (busArr.indexOf(serviceNum) == -1) {
+                // New Bus Service
+                busArr.push(serviceNum);
+                busObjArr.push(obj);
+            } else {
+                // Existing Bus Service
+                let busArrEta = busObjArr[busArr.indexOf(serviceNum)].estimatedArrival;
+
+                if (busArrEta.length < 2 && busObjArr[0].estimatedArrival != etaMin) {
+                    busArrEta.push(etaMin);
+                    busArrEta.sort(function(a, b) {
+                        return a - b;
+                    });
+                }
+            }
         });
+
+        let byServiceNum = busObjArr.slice(0);
+
+        byServiceNum.sort(function(a, b) {
+            return a.serviceNum - b.serviceNum;
+        });
+
+        $.each(byServiceNum, function (i, v) {
+            // Append Markup
+            cardMarkup += cardTemplate(byServiceNum[i]);
+        })
     } else {
         cardMarkup += cardEmptyTemplate({});
     }
 
-    $('.cards-wrapper.col-12').html(cardMarkup);
+    // Render Markup
+    $('.cards-wrapper').html(cardMarkup);
+
+    TweenMax.to('.btn-refresh', 0.75, {
+        opacity: 1,
+        top: 0,
+        ease: Expo.easeOut,
+    });
 
     TweenMax.staggerTo('.card', 0.75, {
         opacity: 1,
         top: 0,
-        ease: Expo.easeOut
+        ease: Expo.easeOut,
+        delay: 0.1
     }, 0.1);
+};
+
+function sortCards() {
+
+};
+
+function getBusStopName() {
+    if (getQueryVariable('busStopName')) {
+        busStopName = decodeURI(getQueryVariable('busStopName'));
+    } else if (busStopName == '') {
+        busStopName = _busStopName;
+    }
 };
 
 export { lookupBusId }

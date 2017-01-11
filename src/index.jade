@@ -4,6 +4,7 @@ block config
     //- Correct base url pathing for this page
     - var baseUrl = '../'
     - var isSearch = true
+    - var pageTitle = ' Search'
 
 block content
     section.container.search
@@ -14,4 +15,9 @@ block content
                     span.sr-only clear
                     i.icon.icon-cross
 
-            .cards-wrapper.col-12
+            .col-12
+                button(type="button").btn-refresh.js-refresh
+                    span.sr-only Refresh
+                    i.icon.icon-refresh
+
+            .cards-wrapper

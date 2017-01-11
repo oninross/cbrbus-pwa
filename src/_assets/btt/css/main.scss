@@ -47,114 +47,59 @@
 .bookmark {
     padding-top: $gutterTablet;
 
-    [class^="col-"], [class*=" col-"] {
-        float: left;
-        margin-bottom: 0;
-    }
-
-    .col-1 {
-        width: 8.333333%;
-    }
-
-    .col-2 {
-        width: 16.666667%;
-    }
-
-    .col-3 {
-        width: 25%;
-    }
-
-    .col-4 {
-        width: 33.333333%;
-    }
-
-    .col-5 {
-        width: 41.666667%;
-    }
-
-    .col-6 {
-        width: 50%;
-    }
-
-    .col-7 {
-        width: 58.333333%;
-    }
-
-    .col-8 {
-        width: 66.666667%;
-    }
-
-    .col-9 {
-        width: 75%;
-    }
-
-    .col-10 {
-        width: 83.333333%;
-    }
-
-    .col-11 {
-        width: 91.666667%;
-    }
-
-    .col-12 {
-        width: 100%;
-    }
-
-    .feature {
-        margin: 18px 0;
-        padding: 0;
-        text-align: center;
-
-        .icon {
-            @include inline-block;
-
-            font-size: 2.5em;
-            margin: 0 5px;
-            vertical-align: top;
-
-            &-bike-rack {
-                font-size: 3.5em;
-            }
-
-            &-wheel-chair {
-                position: relative;
-                top: 4px;
-            }
-        }
-    }
-
     p {
-        font-size: 2em;
-        line-height: 3.5;
+    //     font-size: 2em;
+    //     line-height: 3.5;
         margin: 0;
     }
 }
 
+.cards-wrapper {
+    @extend %clearfix;
+
+    float: left;
+    width: 100%;
+
+    // .card {
+    //     &:only-child {
+    //         width: 100%;
+    //     }
+    // }
+}
+
 .card {
     @include reset-transitions;
-
-    @include material-shadow(1);
-
-    background-color: $white;
-    margin-bottom: $gutter;
-    overflow: hidden;
-    padding: 0 $gutter;
+    float: left;
+    margin-bottom: 30px;
+    width: 50%;
     z-index: 5;
 
     p {
         font-weight: $bold;
+        height: 65px;
+        line-height: 1;
     }
 
     &__header {
+        background-color: transparent;
         border: 0;
-        display: block;
+        // display: block;
         font-size: 1em;
-        padding-right: 40px;
+        margin-bottom: 20px;
+        padding: 0;
         text-align: left;
         width: 100%;
 
         h2 {
-            margin: $gutter 0;
+            margin: 0;
+        }
+
+        .card__wrapper {
+            background-color: $black;
+            color: $white;
+            height: auto;
+            margin: 0 $gutter;
+            padding-right: 40px;
         }
 
         .icon {
@@ -178,9 +123,41 @@
         }
     }
 
+    &__wrapper {
+        @include material-shadow(1);
+
+        background-color: $white;
+        line-height: 1;
+        height: 164px;
+        margin: 0 $gutter;
+        padding: 10px 22px 22px;
+        position: relative;
+        // text-align: center;
+
+        h2 {
+            margin-top: 12px;
+        }
+
+        .wrap {
+            margin: 0;
+        }
+
+        .col-9 {
+            float: left;
+            margin-bottom: 0;
+            padding: 0;
+            width: 75%;
+        }
+    }
+
     &.warning {
-        background-color: $red;
-        text-align: center;
+        margin-bottom: 0;
+        width: 100%;
+
+        .card__wrapper {
+            background-color: $red;
+            text-align: center
+        }
 
         p {
             color: $white;
@@ -209,8 +186,49 @@
         width: 40px !important;
     }
 
+    .bus {
+        font-size: 5.20em;
+        font-weight: $ultra-bold;
+        line-height: 1;
+    }
+
+    .feature {
+        padding: 0;
+
+        .icon {
+            @include inline-block;
+
+            background-color: $black;
+            border-radius: 50%;
+            color: $white;
+            height: 25px;
+            margin-right: 5px;
+            padding: 4px;
+            vertical-align: middle;
+            text-align: center;
+            width: 25px;
+
+            &-bike-rack {
+                font-size: 1.5em;
+            }
+
+            &-wheel-chair {
+                font-size: 1.4em;
+                padding: 5px;
+            }
+        }
+    }
+
     .eta {
-        text-align: right;
+        border-top: 1px solid $grey;
+        clear: both;
+        font-size: 1.8em;
+        margin-top: 10px;
+        padding-top: 10px;
+
+        .next {
+            font-size: 0.778em;
+        }
     }
 
     .operational {
@@ -228,6 +246,7 @@
     .due,
     .arriving {
         color: $green;
+        font-weight: $bold;
     }
 }
 
@@ -305,9 +324,29 @@
     border: 0;
     color: $white;
     font-size: 3em;
-    margin-bottom: 15px;
     overflow: hidden;
+    opacity: 0;
+    padding: 0;
     position: relative;
+    top: 150px;
     width: 100%;
     z-index: 100;
+
+    .icon {
+        position: relative;
+        top: 3px;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

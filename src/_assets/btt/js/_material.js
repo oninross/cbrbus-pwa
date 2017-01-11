@@ -4,7 +4,7 @@ let $body = $('body'),
     $window = $(window),
     isMobileDevice = $window.width() < 1024 ? 1 : 0;
 
-import dot from 'dot';
+import doT from 'dot';
 import scrollMonitor from 'scrollMonitor';
 import mCustomScrollbar from 'mCustomScrollbar';
 
@@ -293,7 +293,8 @@ let toaster = function (msg) {
     });
 
     TweenMax.to(toaster, 0.75, {
-        scale: 0,
+        scale: 0.25,
+        autoAlpha: 0,
         ease: Expo.easeOut,
         delay: 5,
         onComplete: function () {
@@ -305,7 +306,8 @@ let toaster = function (msg) {
         e.preventDefault();
 
         TweenMax.to($(this), 0.75, {
-            scale: 0,
+            scale: 0.25,
+            autoAlpha: 0,
             ease: Expo.easeOut,
             onComplete: function () {
                 $(toaster).remove();
