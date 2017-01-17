@@ -74,6 +74,10 @@
     width: 50%;
     z-index: 5;
 
+    @include tablet {
+        width: 25%;
+    }
+
     p {
         font-weight: $bold;
         height: 65px;
