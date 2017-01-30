@@ -6,8 +6,10 @@
 import $ from 'jquery';
 import 'lazyload';
 import 'TweenMax';
+import './_modernizr';
 
 import PrimaryNav from '../../../_modules/primary-nav/primary-nav';
+import NearBy from  './_nearby';
 
 import { debounce } from './_helper';
 import './_busStop';
@@ -23,6 +25,11 @@ var $window = $(window),
 
 $(() => {
     new PrimaryNav();   // Activate Primary NAv modules logic
+
+    if ($('.nearby').length) {
+        window.II = {};
+        new NearBy();
+    }
 
     ////////////////////////////
     // Set framerate to 60fps //

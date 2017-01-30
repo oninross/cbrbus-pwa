@@ -1,13 +1,12 @@
 'use strict';
 
 import doT from 'doT';
+import { API_KEY } from './_helper';
 import { ripple, toaster } from './_material';
 import { checkBookmark, setBookmark } from './_bookmark';
 
 let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
     isLoading = true,
-    // API_KEY = 'A6F762', // Development
-    API_KEY = 'AE9887', // Production
     busArr = [],
     busObjArr= [],
     busStopId,
@@ -84,18 +83,6 @@ let lookupBusId = function (id, name) {
     //$xml += '</CheckStatusRequest>';
 
 
-    // Vehicle monitoring request
-    // $xml += '<ServiceRequest>';
-    // $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-    // $xml += '<RequestorRef>' + API_KEY +'</RequestorRef>';
-    // $xml += '<VehicleMonitoringRequest version="2.0">';
-    // $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-    // $xml += '<VehicleMonitoringRef>VM_ACT_0200</VehicleMonitoringRef>';
-    // $xml += '</VehicleMonitoringRequest>';
-    // $xml += '</ServiceRequest>';
-
-
-
     // BusStop Monitoring request
     $xml += '<ServiceRequest>';
     $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
@@ -114,6 +101,7 @@ let lookupBusId = function (id, name) {
     $.ajax({
         // url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY +'/vm/service.xml',
         url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY +'/sm/service.xml',
+        // url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY +'/pt/service.xml',
         data: $xml,
         type: 'POST',
         contentType: "text/xml",
@@ -130,7 +118,7 @@ let lookupBusId = function (id, name) {
                 }
             });
         },
-        error: function (msg) {
+        error: function (error) {
             console.log(error);
 
             toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
@@ -266,10 +254,6 @@ function processData(xml) {
         ease: Expo.easeOut,
         delay: 0.1
     }, 0.1);
-};
-
-function sortCards() {
-
 };
 
 function getBusStopName() {

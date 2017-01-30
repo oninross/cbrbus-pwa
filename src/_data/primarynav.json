@@ -8,5 +8,10 @@
         "label" : "Bookmarks",
         "link" : "/bookmarks/",
         "lvl2" : null
+    },
+    {
+        "label" : "Nearby",
+        "link" : "/nearby/",
+        "lvl2" : null
     }
 ]

@@ -26,9 +26,9 @@ $(() => {
 
                 for (let i = 0, l = tmpArr.length; i < l; i++) {
                     // iterate over each element in the array
-                    for (let j = 0, m = services.length; j < m; j++){
+                    for (let j = 0, m = services.length; j < m; j++) {
                         // look for the entry with a matching `code` value
-                        if (services[j].data == tmpArr[i]){
+                        if (services[j].data == tmpArr[i]) {
                             // we found it
                             // obj[i].name is the matched result
                             busStopName = services[j].name;

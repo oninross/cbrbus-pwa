@@ -1,13 +1,16 @@
 {
   "name": "btt",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "dependencies": {
     "browserify-shim": "^3.8.12",
+    "cartodb": "^0.5.1",
     "devbridge-autocomplete": "^1.2.26",
     "dot": "^1.0.3",
     "gsap": "^1.19.0",
     "jquery": "~2.2.0",
     "jquery-lazyload": "^1.9.7",
+    "leaflet": "^1.0.3",
+    "leaflet-providers": "^1.1.16",
     "malihu-custom-scrollbar-plugin": "^3.1.5",
     "normalize.css": "~3.0.3",
     "scrollmonitor": "^1.0.12",
@@ -79,7 +82,9 @@
     "mCustomScrollbar": "./node_modules/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js",
     "scrollMonitor": "./node_modules/scrollmonitor/scrollmonitor.js",
     "autocomplete": "./node_modules/devbridge-autocomplete/dist/jquery.autocomplete.js",
-    "typeahead": "./node_modules/typeahead.js/dist/typeahead.bundle.js"
+    "typeahead": "./node_modules/typeahead.js/dist/typeahead.bundle.js",
+    "leaflet": "./node_modules/leaflet/dist/leaflet.js",
+    "CartoDB": "./node_modules/cartodb/lib/cartodb.js"
   },
   "browserify-shim": {
     "jquery": "jQuery",
@@ -93,7 +98,7 @@
     "//": "Entry files",
     "host": "127.0.0.1",
     "port": "3000",
-    "baseUrl": "./",
+    "\baseUrl": "./",
     "directories": {
       "source": "src",
       "destination": "build",

@@ -16,6 +16,7 @@
 @import "../_modules/link/link";
 @import "../_modules/standard-banner/standard-banner";
 @import "../_modules/primary-nav/primary-nav";
+@import "../_modules/leaflet/leaflet";
 
 // Box sizing partial styles:
 // Apply a natural box layout model to all elements
@@ -48,8 +49,8 @@
     padding-top: $gutterTablet;
 
     p {
-    //     font-size: 2em;
-    //     line-height: 3.5;
+        //     font-size: 2em;
+        //     line-height: 3.5;
         margin: 0;
     }
 }
@@ -69,6 +70,7 @@
 
 .card {
     @include reset-transitions;
+
     float: left;
     margin-bottom: 30px;
     width: 50%;
@@ -77,6 +79,7 @@
     @include tablet {
         width: 25%;
     }
+
 
     p {
         font-weight: $bold;
@@ -87,6 +90,7 @@
     &__header {
         background-color: transparent;
         border: 0;
+
         // display: block;
         font-size: 1em;
         margin-bottom: 20px;
@@ -136,6 +140,7 @@
         margin: 0 $gutter;
         padding: 10px 22px 22px;
         position: relative;
+
         // text-align: center;
 
         h2 {
@@ -160,11 +165,13 @@
 
         .card__wrapper {
             background-color: $red;
-            text-align: center
+            height: auto;
+            text-align: center;
         }
 
         p {
             color: $white;
+            height: auto;
         }
     }
 
@@ -342,15 +349,28 @@
     }
 }
 
+.map {
+    height: 520px;
+}
 
+/* required styles */
+.leaflet-control-zoom {
+    a {
+        margin-bottom: 0;
+    }
+}
 
-
-
-
-
-
-
-
-
-
-
+.busMarkerIcon {
+    background-color: $matte-black;
+    border-radius: 50%;
+    color: $white;
+    height: 50px !important;
+    font-weight: $bold;
+    left: -22px;
+    padding-top: 15px;
+    // position: relative;
+    text-align: center;
+    top: -18px;
+    width: 50px !important;
+    z-index: 10;
+}
