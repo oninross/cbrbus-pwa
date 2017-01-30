@@ -1,6 +1,6 @@
 {
   "name": "btt",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "dependencies": {
     "browserify-shim": "^3.8.12",
     "cartodb": "^0.5.1",
@@ -84,6 +84,7 @@
     "autocomplete": "./node_modules/devbridge-autocomplete/dist/jquery.autocomplete.js",
     "typeahead": "./node_modules/typeahead.js/dist/typeahead.bundle.js",
     "leaflet": "./node_modules/leaflet/dist/leaflet.js",
+    "providers": "./node_modules/leaflet-providers/leaflet-providers.js",
     "CartoDB": "./node_modules/cartodb/lib/cartodb.js"
   },
   "browserify-shim": {

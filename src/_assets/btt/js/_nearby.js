@@ -1,6 +1,7 @@
 'use strict';
 
 import L from 'leaflet';
+import provider from 'providers';
 import CartoDB from 'cartodb';
 import { ripple, toaster } from './_material';
 import { debounce } from './_helper';
@@ -56,7 +57,9 @@ export default class NearBy {
     initMap() {
         var that = this,
             map = L.map('map', {
-                attributionControl: false
+                attributionControl: false,
+                force_http: false,
+                control: 'position'
             }).setView([that.mapSettings.lat, that.mapSettings.long], that.mapSettings.zoom),
             currentMarker = L.icon({
                 iconUrl: that.mapSettings.marker,
@@ -89,7 +92,17 @@ export default class NearBy {
                 toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
             });
 
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
+        // L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
+        L.tileLayer.provider('OpenMapSurfer.Roads', {
+            force_http: false
+        }).addTo(map);
+
+        L.tileLayer.provider('Stamen.TonerLabels', {
+            force_http: false
+        }).addTo(map);
+
+        // Change the position of the Zoom Control to a newly created placeholder.
+        map.zoomControl.setPosition('bottomright');
 
         L.marker([that.mapSettings.lat, that.mapSettings.long], { icon: currentMarker })
             .addTo(map);
