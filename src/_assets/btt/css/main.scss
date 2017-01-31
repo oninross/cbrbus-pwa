@@ -361,6 +361,8 @@
 }
 
 .busMarkerIcon {
+    @include material-shadow(2);
+
     background-color: $matte-black;
     border-radius: 50%;
     color: $white;

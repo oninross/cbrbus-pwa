@@ -23,6 +23,8 @@ export default class NearBy {
     constructor() {
         var that = this;
 
+        that.isGeolocationEnabled = true;
+
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 that.mapSettings = {
@@ -31,17 +33,32 @@ export default class NearBy {
                     'zoom': 17,
                     'marker': '/assets/btt/images/currentMarker.png'
                 };
+
                 that.initMap();
             });
 
+            setInterval(function () {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    that.mapSettings = {
+                        'lat': position.coords.latitude,
+                        'long': position.coords.longitude,
+                        'zoom': 17,
+                        'marker': '/assets/btt/images/currentMarker.png'
+                    };
+                });
+
+                that.updateMarker();
+            }, 5000);
         } else {
-            toaster('Geolocation is not supported by this browser.');
+            toaster('Geolocation is not supported or disabled by this browser.');
+
+            that.isGeolocationEnabled = false;
 
             that.mapSettings = {
                 'lat': -35.2823083,
                 'long': 149.1285561,
                 'zoom': 15,
-                'marker': null
+                'marker': '/assets/btt/images/currentMarker.png'
             };
 
             that.initMap();
@@ -61,38 +78,44 @@ export default class NearBy {
                 force_http: false,
                 control: 'position'
             }).setView([that.mapSettings.lat, that.mapSettings.long], that.mapSettings.zoom),
-            currentMarker = L.icon({
+            currentIcon = L.icon({
                 iconUrl: that.mapSettings.marker,
                 iconSize: [24, 24],
                 iconAnchor: [12, 12]
             }),
-            sql = new CartoDB.SQL({
-                user: 'oninross'
-            });
+            sql = new CartoDB.SQL({ user: 'oninross' });
 
-        sql.execute('SELECT * FROM services s1 WHERE (ST_Distance(the_geom::geography, CDB_LatLng(' + that.mapSettings.lat + ',' + that.mapSettings.long + ')::geography) / 1000) < 0.5')
+        if (that.isGeolocationEnabled) {
+            // sql.execute('SELECT * FROM services s1 WHERE (ST_Distance(the_geom::geography, CDB_LatLng(' + that.mapSettings.lat + ',' + that.mapSettings.long + ')::geography) / 1000) < 0.5')
+            sql.execute('SELECT * FROM services s1')
 
-            //you can listen for 'done' and 'error' promise events
-            .done(function (data) {
-                var rows = data.rows;
+                //you can listen for 'done' and 'error' promise events
+                .done(function (data) {
+                    var rows = data.rows;
 
-                $.each(rows, function (i, v) {
-                    var $marker = L.marker(
-                            [rows[i].lat, rows[i].long],
-                            { icon: that.createLabelIcon('busMarkerIcon', rows[i].data) }
-                        ).addTo(map);
+                    $.each(rows, function (i, v) {
+                        var $marker = L.marker(
+                                [rows[i].lat, rows[i].long],
+                                { icon: that.createLabelIcon('busMarkerIcon', rows[i].data) }
+                            ).addTo(map);
 
-                    $marker.on('click', function (e) {
-                        window.location.href = '/busstop/?busStopId=' + this._icon.innerText;
-                    })
+                        $marker.on('click', function (e) {
+                            window.location.href = '/busstop/?busStopId=' + this._icon.innerText;
+                        })
+                    });
+                })
+                .error(function (e) {
+                    console.log(e);
+                    toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
                 });
-            })
-            .error(function (e) {
-                console.log(e);
-                toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
-            });
 
-        // L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
+            that.currentMarker = L.marker([that.mapSettings.lat, that.mapSettings.long], { icon: currentIcon })
+                .addTo(map);
+        }
+
+        // L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        //     .addTo(map);
+
         L.tileLayer.provider('OpenMapSurfer.Roads', {
             force_http: false
         }).addTo(map);
@@ -103,9 +126,6 @@ export default class NearBy {
 
         // Change the position of the Zoom Control to a newly created placeholder.
         map.zoomControl.setPosition('bottomright');
-
-        L.marker([that.mapSettings.lat, that.mapSettings.long], { icon: currentMarker })
-            .addTo(map);
     }
 
     createLabelIcon(labelClass, labelText) {
@@ -113,5 +133,10 @@ export default class NearBy {
             className: labelClass,
             html: labelText
         })
+    }
+
+    updateMarker() {
+        this.currentMarker.setLatLng([this.mapSettings.lat, this.mapSettings.long])
+            .update();
     }
 }
