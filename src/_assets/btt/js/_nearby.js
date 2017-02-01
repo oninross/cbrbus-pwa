@@ -4,7 +4,7 @@ import L from 'leaflet';
 import provider from 'providers';
 import CartoDB from 'cartodb';
 import { ripple, toaster } from './_material';
-import { debounce } from './_helper';
+import { debounce, easeOutExpo } from './_helper';
 
 let $window = $(window),
     loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
@@ -104,37 +104,31 @@ export default class NearBy {
                 lat: that.mapSettings.lat,
                 lng: that.mapSettings.long
             },
+            currentIcon = {
+                url: that.mapSettings.marker,
+                size: new google.maps.Size(24, 24),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(12, 12)
+            },
+            stopIcon = {
+                url: '/assets/btt/images/stopMarker.png',
+                size: new google.maps.Size(40, 48),
+                origin: new google.maps.Point(0, -10),
+                anchor: new google.maps.Point(20, 48)
+            },
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: that.mapSettings.zoom,
                 center: center,
                 streetViewControl: false,
                 mapTypeControl: false
             }),
-            currentIcon = {
-                url: that.mapSettings.marker,
-                // This marker is 20 pixels wide by 32 pixels high.
-                size: new google.maps.Size(24, 24),
-                // The origin for this image is (0, 0).
-                origin: new google.maps.Point(0, 0),
-                // The anchor for this image is the base of the flagpole at (0, 32).
-                anchor: new google.maps.Point(12, 12)
-            },
-            stopIcon = {
-                url: '/assets/btt/images/stopMarker.png',
-                // This marker is 20 pixels wide by 32 pixels high.
-                size: new google.maps.Size(40, 48),
-                // The origin for this image is (0, 0).
-                origin: new google.maps.Point(0, -10),
-                // The anchor for this image is the base of the flagpole at (0, 32).
-                anchor: new google.maps.Point(20, 48)
-            },
             busMarker;
 
         that.currentMarker = new google.maps.Marker({
             icon: currentIcon,
             position: center,
             map: map
-        }),
+        });
 
         $.each(json, function (i, v) {
             busMarker = new google.maps.Marker({
@@ -151,13 +145,26 @@ export default class NearBy {
                 window.location.href = '/busstop/?busStopId=' + this.label;
             });
         });
+
+        if (that.isGeolocationEnabled) {
+            $('.widget-mylocation-button')
+                .fadeIn()
+                .on('click', function (e) {
+                    e.preventDefault();
+
+                    map.setCenter({
+                        lat: that.mapSettings.lat,
+                        lng: that.mapSettings.long
+                    });
+                });
+        }
+
     }
 
     updateMarker() {
         console.log(this);
 
         var that = this;
-
         that.currentMarker.setPosition({
             lat: this.mapSettings.lat,
             lng: this.mapSettings.long
