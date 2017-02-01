@@ -16,6 +16,7 @@
 @import "../_modules/link/link";
 @import "../_modules/standard-banner/standard-banner";
 @import "../_modules/primary-nav/primary-nav";
+@import "../_modules/leaflet/leaflet";
 
 // Box sizing partial styles:
 // Apply a natural box layout model to all elements
@@ -48,8 +49,8 @@
     padding-top: $gutterTablet;
 
     p {
-    //     font-size: 2em;
-    //     line-height: 3.5;
+        //     font-size: 2em;
+        //     line-height: 3.5;
         margin: 0;
     }
 }
@@ -69,6 +70,7 @@
 
 .card {
     @include reset-transitions;
+
     float: left;
     margin-bottom: 30px;
     width: 50%;
@@ -77,6 +79,7 @@
     @include tablet {
         width: 25%;
     }
+
 
     p {
         font-weight: $bold;
@@ -87,6 +90,7 @@
     &__header {
         background-color: transparent;
         border: 0;
+
         // display: block;
         font-size: 1em;
         margin-bottom: 20px;
@@ -136,6 +140,7 @@
         margin: 0 $gutter;
         padding: 10px 22px 22px;
         position: relative;
+
         // text-align: center;
 
         h2 {
@@ -160,11 +165,13 @@
 
         .card__wrapper {
             background-color: $red;
-            text-align: center
+            height: auto;
+            text-align: center;
         }
 
         p {
             color: $white;
+            height: auto;
         }
     }
 
@@ -342,15 +349,134 @@
     }
 }
 
+.map {
+    height: 520px;
+}
 
+/* required styles */
 
+// for goglemap
 
+.bus-label {
+    border: 1px solid red;
+}
 
+.widget-mylocation {
+    width: 28px;
+    height: 28px;
+    position: absolute;
+    bottom: 90px;
+    right: 10px;
+}
 
+.widget-mylocation-button {
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 2px;
+    border: 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    display: block;
+    width: 29px;
+    height: 29px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background-color 0.16s ease-out;
+    position: relative;
+    display: none;
 
+    &[disabled] {
+        cursor: default;
+    }
+}
 
+.widget-mylocation-button-icon-common {
+    display: block;
+    height: 18px;
+    left: 6px;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 6px;
+    width: 18px;
+}
 
+.widget-mylocation-button .widget-mylocation-cookie {
+    background-image: url(//maps.gstatic.com/tactile/mylocation/mylocation-sprite-1x.png);
+    background-size: 180px 18px;
+}
 
+.highres .widget-mylocation-button .widget-mylocation-cookie {
+    background-image: url(//maps.gstatic.com/tactile/mylocation/mylocation-sprite-2x.png);
+}
 
+.widget-mylocation-button .widget-mylocation-cookieless {
+    background-image: url(//maps.gstatic.com/tactile/mylocation/mylocation-sprite-cookieless-v2-1x.png);
+    background-size: 180px 18px;
+}
 
+.widget-mylocation-button {
+    .widget-mylocation-button-normal {
+        background-position: 0 0;
+    }
 
+    &:hover .widget-mylocation-button-normal {
+        background-position: -36px 0;
+    }
+
+    &:active .widget-mylocation-button-normal {
+        background-position: -54px 0;
+    }
+
+    .widget-mylocation-button-disabled {
+        background-position: -18px 0;
+    }
+
+    .widget-mylocation-button-blue {
+        background-position: -144px 0;
+    }
+
+    &:hover .widget-mylocation-button-blue, &:active .widget-mylocation-button-blue {
+        background-position: -162px 0;
+    }
+}
+
+.widget-mylocation-button .widget-mylocation-button-acquiring {
+    background-image: url(//maps.gstatic.com/tactile/mylocation/mylocation-sprite-acquiring-1x.png);
+    background-size: 36px 18px;
+    opacity: 0.8;
+    -webkit-animation: acquiring-animation 1s steps(1) infinite;
+    animation: acquiring-animation 1s steps(1) infinite;
+}
+
+.widget-mylocation-tooltip {
+    position: absolute;
+    transition: opacity 0.13s ease-out 0.109s;
+    vertical-align: baseline;
+    line-height: normal;
+    right: 100%;
+    top: -1px;
+}
+
+// for leaflet
+.leaflet-control-zoom {
+    a {
+        margin-bottom: 0;
+    }
+}
+
+.busMarkerIcon {
+    @include material-shadow(2);
+
+    background-color: $matte-black;
+    border-radius: 50%;
+    color: $white;
+    height: 50px !important;
+    font-weight: $bold;
+    left: -22px;
+    padding-top: 15px;
+
+    // position: relative;
+    text-align: center;
+    top: -18px;
+    width: 50px !important;
+    z-index: 10;
+}

@@ -6,8 +6,10 @@
 import $ from 'jquery';
 import 'lazyload';
 import 'TweenMax';
+import './_modernizr';
 
 import PrimaryNav from '../../../_modules/primary-nav/primary-nav';
+import NearBy from  './_nearby';
 
 import { debounce } from './_helper';
 import './_busStop';
@@ -23,6 +25,11 @@ var $window = $(window),
 
 $(() => {
     new PrimaryNav();   // Activate Primary NAv modules logic
+
+    if ($('.nearby').length) {
+        window.II = {};
+        new NearBy();
+    }
 
     ////////////////////////////
     // Set framerate to 60fps //
@@ -161,28 +168,28 @@ $(() => {
 });
 
 // Simple Service Worker to make App Install work
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     var outputElement = document.getElementById('output');
 
     navigator.serviceWorker.register('/service-worker.js', { scope: './' })
-        .then(function(r) {
-          console.log('registered service worker');
-      })
-    .catch(function(whut) {
+        .then(function (r) {
+            console.log('registered service worker');
+        })
+    .catch(function (whut) {
         console.error('uh oh... ');
         console.error(whut);
     });
 
-    window.addEventListener('beforeinstallprompt', function(e) {
+    window.addEventListener('beforeinstallprompt', function (e) {
         outputElement.textContent = 'beforeinstallprompt Event fired';
     });
 });
 
-window.addEventListener('beforeinstallprompt', function(e) {
+window.addEventListener('beforeinstallprompt', function (e) {
     outputElement.textContent = 'beforeinstallprompt Event fired';
 
     // e.userChoice will return a Promise. For more details read: http://www.html5rocks.com/en/tutorials/es6/promises/
-    e.userChoice.then(function(choiceResult) {
+    e.userChoice.then(function (choiceResult) {
         console.log(choiceResult.outcome);
 
         if (choiceResult.outcome == 'dismissed') {

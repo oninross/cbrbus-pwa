@@ -1,25 +1,48 @@
 'use strict';
 
 let bp = {
-	"maxMobile": 767,
-	"minDesktop": 1025,
-	"longDesktop": 875
+    "maxMobile": 767,
+    "minDesktop": 1025
 }
 
-let debounce = function(func, wait, immediate) {
-	var timeout;
-	return function() {
-		var context = this, args = arguments;
-		var later = function() {
-			timeout = null;
-			if (!immediate) func.apply(context, args);
-		};
-		var callNow = immediate && !timeout;
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-		if (callNow) func.apply(context, args);
-	};
+let API_KEY = 'A6F762'; // Development
+// let API_KEY = 'AE9887'; // Production
+
+let debounce = function (func, wait, immediate) {
+    var timeout;
+    return function () {
+        var context = this, args = arguments;
+        var later = function () {
+            timeout = null;
+            if (!immediate) {
+                func.apply(context, args);
+            }
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) {
+            func.apply(context, args);
+        }
+    };
 }
+
+let isMobile = function () {
+    return Modernizr.mq('(max-width: 767px)');
+};
+
+let isTablet = function () {
+    return Modernizr.mq('(min-width: 768px)');
+}
+
+let isDesktop = function () {
+    return Modernizr.mq('(min-width: 1024px)');
+}
+
+let isLargeDesktop = function () {
+    return Modernizr.mq('(min-width: 1200px)');
+}
+
 
 /*
  * jQuery Easing v1.3 - http://gsgd.co.uk/sandbox/jquery/easing/
@@ -29,7 +52,7 @@ let debounce = function(func, wait, immediate) {
 */
 
 // t: current time, b: begInnIng value, c: change In value, d: duration
-jQuery.easing['jswing'] = jQuery.easing['swing'];
+jQuery.easing.jswing = jQuery.easing.swing;
 
 jQuery.extend(jQuery.easing, {
     def: 'easeOutQuad',
@@ -53,4 +76,19 @@ jQuery.extend(jQuery.easing, {
     }
 });
 
-export { bp, debounce };
+let easeOutExpo = {
+    duration: 500,
+    easing: 'easeOutExpo',
+    queue: false
+};
+
+export {
+    bp,
+    debounce,
+    isMobile,
+    isTablet,
+    isDesktop,
+    isLargeDesktop,
+    easeOutExpo,
+    API_KEY
+};
