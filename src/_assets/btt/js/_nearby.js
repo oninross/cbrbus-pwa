@@ -6,24 +6,25 @@ import CartoDB from 'cartodb';
 import { ripple, toaster } from './_material';
 import { debounce } from './_helper';
 
-let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
+let $window = $(window),
+    loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
+    GMAP_API_KEY = 'AIzaSyD3jWuvQ-wlm5iSbEg8hvjHy03tyYd8szQ',
     isLoading = true,
+    isMapInit = false,
+    isAnimating = false,
+    markers = [],
     busArr = [],
     busObjArr = [],
     busId,
-    busStopName,
-    $googleMap = $('.map'),
-    GMAP_API_KEY = 'AIzaSyD3jWuvQ-wlm5iSbEg8hvjHy03tyYd8szQ',
-    $window = $(window),
-    markers = [],
-    isMapInit = false,
-    isAnimating = false;;
+    busStopName;
 
 export default class NearBy {
     constructor() {
         var that = this;
 
         that.isGeolocationEnabled = true;
+
+        window.II.googleMap = this;
 
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
@@ -34,7 +35,7 @@ export default class NearBy {
                     'marker': '/assets/btt/images/currentMarker.png'
                 };
 
-                that.initMap();
+                that.loadGoogleMap();
             });
 
             setInterval(function () {
@@ -61,7 +62,7 @@ export default class NearBy {
                 'marker': '/assets/btt/images/currentMarker.png'
             };
 
-            that.initMap();
+            that.loadGoogleMap();
         }
 
         $(window).on('resize', debounce(function () {
@@ -71,72 +72,95 @@ export default class NearBy {
         }, 250)).trigger('resize');
     }
 
-    initMap() {
-        var that = this,
-            map = L.map('map', {
-                attributionControl: false,
-                force_http: false,
-                control: 'position'
-            }).setView([that.mapSettings.lat, that.mapSettings.long], that.mapSettings.zoom),
-            currentIcon = L.icon({
-                iconUrl: that.mapSettings.marker,
-                iconSize: [24, 24],
-                iconAnchor: [12, 12]
-            }),
-            sql = new CartoDB.SQL({ user: 'oninross' });
+    loadGoogleMap() {
+        var script = document.createElement('script'),
+            scriptStr = 'https://maps.googleapis.com/maps/api/js?key=' + GMAP_API_KEY + '&callback=II.googleMap.loadData';
 
-        if (that.isGeolocationEnabled) {
-            // sql.execute('SELECT * FROM services s1 WHERE (ST_Distance(the_geom::geography, CDB_LatLng(' + that.mapSettings.lat + ',' + that.mapSettings.long + ')::geography) / 1000) < 0.5')
-            sql.execute('SELECT * FROM services s1')
-
-                //you can listen for 'done' and 'error' promise events
-                .done(function (data) {
-                    var rows = data.rows;
-
-                    $.each(rows, function (i, v) {
-                        var $marker = L.marker(
-                                [rows[i].lat, rows[i].long],
-                                { icon: that.createLabelIcon('busMarkerIcon', rows[i].data) }
-                            ).addTo(map);
-
-                        $marker.on('click', function (e) {
-                            window.location.href = '/busstop/?busStopId=' + this._icon.innerText;
-                        })
-                    });
-                })
-                .error(function (e) {
-                    console.log(e);
-                    toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
-                });
-
-            that.currentMarker = L.marker([that.mapSettings.lat, that.mapSettings.long], { icon: currentIcon })
-                .addTo(map);
-        }
-
-        // L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-        //     .addTo(map);
-
-        L.tileLayer.provider('OpenMapSurfer.Roads', {
-            force_http: false
-        }).addTo(map);
-
-        L.tileLayer.provider('Stamen.TonerLabels', {
-            force_http: false
-        }).addTo(map);
-
-        // Change the position of the Zoom Control to a newly created placeholder.
-        map.zoomControl.setPosition('bottomright');
+        script.type = 'text/javascript';
+        script.src = scriptStr;
+        document.body.appendChild(script);
     }
 
-    createLabelIcon(labelClass, labelText) {
-        return L.divIcon({
-            className: labelClass,
-            html: labelText
-        })
+    loadData() {
+        var that = this;
+
+        $.ajax({
+            url: '/assets/btt/api/services.json',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                that.initMap(data);
+            },
+            error: function (error) {
+                console.log(error);
+                RR.materialDesign.toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
+            }
+        });
+    }
+
+    initMap(json) {
+        var that = this,
+            center = {
+                lat: that.mapSettings.lat,
+                lng: that.mapSettings.long
+            },
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: that.mapSettings.zoom,
+                center: center,
+                streetViewControl: false,
+                mapTypeControl: false
+            }),
+            currentIcon = {
+                url: that.mapSettings.marker,
+                // This marker is 20 pixels wide by 32 pixels high.
+                size: new google.maps.Size(24, 24),
+                // The origin for this image is (0, 0).
+                origin: new google.maps.Point(0, 0),
+                // The anchor for this image is the base of the flagpole at (0, 32).
+                anchor: new google.maps.Point(12, 12)
+            },
+            stopIcon = {
+                url: '/assets/btt/images/stopMarker.png',
+                // This marker is 20 pixels wide by 32 pixels high.
+                size: new google.maps.Size(40, 48),
+                // The origin for this image is (0, 0).
+                origin: new google.maps.Point(0, -10),
+                // The anchor for this image is the base of the flagpole at (0, 32).
+                anchor: new google.maps.Point(20, 48)
+            },
+            busMarker;
+
+        that.currentMarker = new google.maps.Marker({
+            icon: currentIcon,
+            position: center,
+            map: map
+        }),
+
+        $.each(json, function (i, v) {
+            busMarker = new google.maps.Marker({
+                icon: stopIcon,
+                label: v.data,
+                position: {
+                    lat: v.lat,
+                    lng: v.long
+                },
+                map: map
+            });
+
+            google.maps.event.addListener(busMarker, 'click', function (e) {
+                window.location.href = '/busstop/?busStopId=' + this.label;
+            });
+        });
     }
 
     updateMarker() {
-        this.currentMarker.setLatLng([this.mapSettings.lat, this.mapSettings.long])
-            .update();
+        console.log(this);
+
+        var that = this;
+
+        that.currentMarker.setPosition({
+            lat: this.mapSettings.lat,
+            lng: this.mapSettings.long
+        });
     }
 }

@@ -8,7 +8,7 @@ import { checkBookmark, setBookmark } from './_bookmark';
 let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
     isLoading = true,
     busArr = [],
-    busObjArr= [],
+    busObjArr = [],
     busStopId,
     busStopName;
 
@@ -24,7 +24,7 @@ $(() => {
 
         lookupBusId(busStopId, busStopName);
 
-        $('.js-refresh').on('click', function() {
+        $('.js-refresh').on('click', function () {
             if (isLoading) {
                 return false;
             }
@@ -35,7 +35,7 @@ $(() => {
                 opacity: 0,
                 top: -50,
                 ease: Expo.easeOut
-            }, 0.1, function() {
+            }, 0.1, function () {
                 lookupBusId(busStopId, null);
             });
         });
@@ -83,10 +83,10 @@ let lookupBusId = function (id, name) {
     //$xml += '</CheckStatusRequest>';
 
 
-    // BusStop Monitoring request
+    // (Bus) Stop Monitoring Request
     $xml += '<ServiceRequest>';
     $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-    $xml += '<RequestorRef>' + API_KEY +'</RequestorRef>';
+    $xml += '<RequestorRef>' + API_KEY + '</RequestorRef>';
     $xml += '<StopMonitoringRequest version="2.0">';
     $xml += '<PreviewInterval>PT60M</PreviewInterval>';
     $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
@@ -95,13 +95,13 @@ let lookupBusId = function (id, name) {
     $xml += '</ServiceRequest>';
 
 
+
     $xml += '</Siri>';
 
 
     $.ajax({
         // url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY +'/vm/service.xml',
-        url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY +'/sm/service.xml',
-        // url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY +'/pt/service.xml',
+        url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY + '/sm/service.xml',
         data: $xml,
         type: 'POST',
         contentType: "text/xml",
@@ -218,7 +218,7 @@ function processData(xml) {
 
                 if (busArrEta.length < 2 && busObjArr[0].estimatedArrival != etaMin) {
                     busArrEta.push(etaMin);
-                    busArrEta.sort(function(a, b) {
+                    busArrEta.sort(function (a, b) {
                         return a - b;
                     });
                 }
@@ -227,7 +227,7 @@ function processData(xml) {
 
         let byServiceNum = busObjArr.slice(0);
 
-        byServiceNum.sort(function(a, b) {
+        byServiceNum.sort(function (a, b) {
             return a.serviceNum - b.serviceNum;
         });
 

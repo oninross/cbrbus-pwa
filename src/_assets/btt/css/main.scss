@@ -354,6 +354,14 @@
 }
 
 /* required styles */
+
+// for goglemap
+
+.bus-label {
+    border: 1px solid red;
+}
+
+// for leaflet
 .leaflet-control-zoom {
     a {
         margin-bottom: 0;
