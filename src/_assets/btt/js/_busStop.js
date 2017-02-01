@@ -170,7 +170,7 @@ function processData(xml) {
 
         $monitoredStopVisit.each(function (i, v) {
             if ($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0] == undefined) {
-                if ($($monitoredStopVisit[i]).find('AimedArrivalTime')[0] == undefined ) {
+                if ($($monitoredStopVisit[i]).find('AimedArrivalTime')[0] == undefined) {
                     arr = new Date($($monitoredStopVisit[i]).find('AimedDepartureTime')[0].innerHTML);
                 } else {
                     arr = new Date($($monitoredStopVisit[i]).find('AimedArrivalTime')[0].innerHTML);
