@@ -4,11 +4,10 @@ import L from 'leaflet';
 import provider from 'providers';
 import CartoDB from 'cartodb';
 import { ripple, toaster } from './_material';
-import { debounce, easeOutExpo } from './_helper';
+import { GMAP_API_KEY, debounce, easeOutExpo } from './_helper';
 
 let $window = $(window),
     loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
-    GMAP_API_KEY = 'AIzaSyD3jWuvQ-wlm5iSbEg8hvjHy03tyYd8szQ',
     markers = [],
     busArr = [],
     busObjArr = [],

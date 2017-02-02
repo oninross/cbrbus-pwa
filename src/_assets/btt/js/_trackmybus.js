@@ -4,10 +4,9 @@ import L from 'leaflet';
 import provider from 'providers';
 import CartoDB from 'cartodb';
 import { ripple, toaster } from './_material';
-import { API_KEY, debounce, easeOutExpo } from './_helper';
+import { API_KEY, GMAP_API_KEY, debounce, easeOutExpo } from './_helper';
 
 let $window = $(window),
-    GMAP_API_KEY = 'AIzaSyD3jWuvQ-wlm5iSbEg8hvjHy03tyYd8szQ',
     isIntervalInit = false,
     markers = [],
     busId;
@@ -39,12 +38,18 @@ export default class TrackMyBus {
     }
 
     loadGoogleMap() {
-        let script = document.createElement('script'),
-            scriptStr = 'https://maps.googleapis.com/maps/api/js?key=' + GMAP_API_KEY + '&callback=II.googleMap.loadData';
+        var script = document.createElement('script'),
+            scriptStr = 'https://maps.googleapis.com/maps/api/js?key=' + GMAP_API_KEY + '&callback=II.googleMap.loadData',
+            clusterScript = document.createElement('script'),
+            clusterScriptStr = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js';
 
         script.type = 'text/javascript';
         script.src = scriptStr;
         document.body.appendChild(script);
+
+        clusterScript.type = 'text/javascript';
+        clusterScript.src = clusterScriptStr;
+        document.body.appendChild(clusterScript);
     }
 
     loadData() {
@@ -76,6 +81,12 @@ export default class TrackMyBus {
                 origin: new google.maps.Point(0, -10),
                 anchor: new google.maps.Point(20, 48)
             },
+            currentIcon = {
+                url: that.mapSettings.marker,
+                size: new google.maps.Size(24, 24),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(12, 12)
+            },
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: that.mapSettings.zoom,
                 center: center,
@@ -86,21 +97,37 @@ export default class TrackMyBus {
 
         that.map = map;
 
-        // $.each(json, function (i, v) {
-        //     stopMarker = new google.maps.Marker({
-        //         icon: stopIcon,
-        //         label: v.data,
-        //         position: {
-        //             lat: v.lat,
-        //             lng: v.long
-        //         },
-        //         map: map
-        //     });
+        that.currentMarker = new google.maps.Marker({
+            icon: currentIcon,
+            position: center,
+            map: map
+        });
 
-        //     google.maps.event.addListener(stopMarker, 'click', function (e) {
-        //         window.location.href = '/busstop/?busStopId=' + this.label;
-        //     });
-        // });
+        $.each(json, function (i, v) {
+            stopMarker = new google.maps.Marker({
+                icon: stopIcon,
+                label: v.data,
+                position: {
+                    lat: v.lat,
+                    lng: v.long
+                },
+                map: map,
+                zIndex: 1
+            });
+
+            markers.push(stopMarker);
+
+            google.maps.event.addListener(stopMarker, 'click', function (e) {
+                window.location.href = '/busstop/?busStopId=' + this.label;
+            });
+        });
+
+        // Add a marker clusterer to manage the markers.
+        let markerCluster = new MarkerClusterer(map, markers, {
+            imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+            maxZoom: 18,
+            averageCenter: true
+        });
 
         that.callApi();
     }
@@ -140,10 +167,11 @@ export default class TrackMyBus {
             vehicleRef,
             stopPointRef,
             directionRef,
-            busMarker;
+            busMarker,
+            $v;
 
         $.each($vehicleActivity, function (i, v) {
-            var $v = $(v);
+            $v = $(v);
 
             vehicleLocation = $v.find('VehicleLocation');
             $vehicleLocation = vehicleLocation;
@@ -167,7 +195,8 @@ export default class TrackMyBus {
                             lat: Number($vehicleLat[0].innerHTML),
                             lng: Number($vehicleLng[0].innerHTML)
                         },
-                        map: that.map
+                        map: that.map,
+                        zIndex: 99999999
                     });
 
                     that.map.setCenter({
@@ -175,7 +204,14 @@ export default class TrackMyBus {
                         lng: Number($vehicleLng[0].innerHTML)
                     });
 
-                    that.map.setZoom(16);
+                    // that.map.setZoom(16);0
+                    var pt1 = new google.maps.LatLng($vehicleLat[0].innerHTML, $vehicleLng[0].innerHTML),
+                        pt2 = new google.maps.LatLng(that.mapSettings.lat, that.mapSettings.long),
+                        bounds = new google.maps.LatLngBounds();
+
+                    bounds.extend(pt1);
+                    bounds.extend(pt2);
+                    that.map.fitBounds(bounds);
 
                     markers.push(busMarker);
                     return false;
