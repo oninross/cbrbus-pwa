@@ -12,7 +12,7 @@ let $window = $(window),
     markers = [],
     busId;
 
-export default class GroundZero {
+export default class TrackMyBus {
     constructor() {
         let that = this;
 
@@ -127,7 +127,7 @@ export default class GroundZero {
             isIntervalInit = true;
             setInterval(function () {
                 that.callApi();
-            }, 30000);
+            }, 15000);
         }
 
         let $vehicleRefQuery = that.getQueryVariable('vehicleRef'),
@@ -137,6 +137,7 @@ export default class GroundZero {
             $vehicleLat,
             $vehicleLng,
             blockRef,
+            vehicleRef,
             stopPointRef,
             directionRef,
             busMarker;
@@ -149,14 +150,19 @@ export default class GroundZero {
             $vehicleLat = $vehicleLocation.find('Latitude');
             $vehicleLng = $vehicleLocation.find('Longitude');
             blockRef = $v.find('BlockRef'),
+            vehicleRef = $v.find('VehicleRef'),
             stopPointRef = $v.find('StopPointRef');
             directionRef = $v.find('DirectionRef');
 
-            if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && blockRef[0] != undefined) {
-                if (blockRef[0].innerHTML == $vehicleRefQuery) {
+            // if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && blockRef[0] != undefined) {
+            if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && vehicleRef[0] != undefined) {
+
+                // if (blockRef[0].innerHTML == $vehicleRefQuery) {
+                console.log(vehicleRef[0].innerHTML)
+                if (vehicleRef[0].innerHTML == $vehicleRefQuery) {
                     busMarker = new google.maps.Marker({
                         // icon: stopIcon,
-                        icon: 'http://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '.png',
+                        icon: 'http://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '_maps.png',
                         position: {
                             lat: Number($vehicleLat[0].innerHTML),
                             lng: Number($vehicleLng[0].innerHTML)
@@ -169,8 +175,10 @@ export default class GroundZero {
                         lng: Number($vehicleLng[0].innerHTML)
                     });
 
+                    that.map.setZoom(16);
+
                     markers.push(busMarker);
-                    // return false;
+                    return false;
                 }
             }
         });

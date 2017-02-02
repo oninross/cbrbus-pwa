@@ -168,22 +168,29 @@ function processData(xml) {
             cardMarkup += cardHeader(obj);
         }
 
+        let monitoredStopVisitArr,
+            $monitoredStopVisitArr,
+            vehicleRefNum;
+
         $monitoredStopVisit.each(function (i, v) {
-            if ($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0] == undefined) {
-                if ($($monitoredStopVisit[i]).find('AimedArrivalTime')[0] == undefined) {
-                    arr = new Date($($monitoredStopVisit[i]).find('AimedDepartureTime')[0].innerHTML);
+            monitoredStopVisitArr = $monitoredStopVisit[i];
+            $monitoredStopVisitArr = $(monitoredStopVisitArr);
+
+            if ($monitoredStopVisitArr.find('ExpectedArrivalTime')[0] == undefined) {
+                if ($monitoredStopVisitArr.find('AimedArrivalTime')[0] == undefined) {
+                    arr = new Date($monitoredStopVisitArr.find('AimedDepartureTime')[0].innerHTML);
                 } else {
-                    arr = new Date($($monitoredStopVisit[i]).find('AimedArrivalTime')[0].innerHTML);
+                    arr = new Date($monitoredStopVisitArr.find('AimedArrivalTime')[0].innerHTML);
                 }
             } else {
-                arr = new Date($($monitoredStopVisit[i]).find('ExpectedArrivalTime')[0].innerHTML);
+                arr = new Date($monitoredStopVisitArr.find('ExpectedArrivalTime')[0].innerHTML);
             }
 
             vehicleFeatureArr = [];
-            vehicleFeatureRef = $($monitoredStopVisit[i]).find('VehicleFeatureRef'),
+            vehicleFeatureRef = $monitoredStopVisitArr.find('VehicleFeatureRef'),
             eta = arr.getTime() - now.getTime(); // This will give difference in milliseconds
             etaMin = Math.round(eta / 60000);
-            serviceNum = $($monitoredStopVisit[i]).find('PublishedLineName')[0].innerHTML;
+            serviceNum = $monitoredStopVisitArr.find('PublishedLineName')[0].innerHTML;
 
             for (let j = 0, m = vehicleFeatureRef.length; j < m; j++) {
                 icon = vehicleFeatureRef[j].innerHTML;
@@ -194,7 +201,14 @@ function processData(xml) {
             etaArr = [];
             etaArr.push(etaMin);
 
+            if ($monitoredStopVisitArr.find('VehicleRef')[0] == undefined) {
+                vehicleRefNum = null;
+            } else {
+                vehicleRefNum = $monitoredStopVisitArr.find('VehicleRef')[0].innerHTML;
+            }
+
             obj = {
+                vehicleRefNum: vehicleRefNum,
                 serviceNum: serviceNum,
                 feature: vehicleFeatureArr,
                 estimatedArrival: etaArr
@@ -254,6 +268,18 @@ function processData(xml) {
         ease: Expo.easeOut,
         delay: 0.1
     }, 0.1);
+
+    $('.cards-wrapper').on('click', '.card', function (e) {
+        let $this = $(this),
+            $vehicleRefNum = $this.data('vehicleref'),
+            $serviceRefNum = $this.data('servicenum');
+
+        if ($vehicleRefNum == '') {
+            toaster('Sorry, we can\t track this bus service.');
+        } else {
+            window.location.href = '/trackmybus/?busId=' + $serviceRefNum + '&vehicleRef=' + $vehicleRefNum;
+        }
+    });
 };
 
 function getBusStopName() {

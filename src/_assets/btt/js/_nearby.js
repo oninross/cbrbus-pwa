@@ -154,7 +154,7 @@ export default class NearBy {
         // Add a marker clusterer to manage the markers.
         let markerCluster = new MarkerClusterer(map, markers, {
             imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
-            gridSize: 75,
+            maxZoom: 18,
             averageCenter: true
         });
 

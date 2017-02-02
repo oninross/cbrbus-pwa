@@ -10,7 +10,7 @@ import './_modernizr';
 
 import PrimaryNav from '../../../_modules/primary-nav/primary-nav';
 import NearBy from  './_nearby';
-import GroundZero from  './_groundzero';
+import TrackMyBus from  './_trackmybus';
 
 import { debounce } from './_helper';
 import './_busStop';
@@ -32,9 +32,9 @@ $(() => {
         new NearBy();
     }
 
-    if ($('.groundzero').length) {
+    if ($('.trackMyBus').length) {
         window.II = {};
-        new GroundZero();
+        new TrackMyBus();
     }
 
     ////////////////////////////
