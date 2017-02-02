@@ -39,15 +39,6 @@ $(() => {
                 lookupBusId(busStopId, null);
             });
         });
-
-        $('body').on('click', '.js-bookmark', function (e) {
-            e.preventDefault();
-
-            let $this = $(this),
-                $id = $this.data('id');
-
-            setBookmark($id);
-        });
     }
 });
 
@@ -273,6 +264,15 @@ function processData(xml) {
         let $this = $(this),
             $vehicleRefNum = $this.data('vehicleref'),
             $serviceRefNum = $this.data('servicenum');
+
+        if ($this.hasClass('card__header')) {
+            let $this = $(this),
+                $id = $this.data('id');
+
+            setBookmark($id);
+
+            return false;
+        }
 
         if ($vehicleRefNum == '') {
             toaster('Sorry, we can\t track this bus service.');
