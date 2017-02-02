@@ -136,7 +136,7 @@ export default class GroundZero {
             $vehicleLocation,
             $vehicleLat,
             $vehicleLng,
-            vehicleRef,
+            blockRef,
             stopPointRef,
             directionRef,
             busMarker;
@@ -148,20 +148,12 @@ export default class GroundZero {
             $vehicleLocation = vehicleLocation;
             $vehicleLat = $vehicleLocation.find('Latitude');
             $vehicleLng = $vehicleLocation.find('Longitude');
-            vehicleRef = $v.find('VehicleRef'),
+            blockRef = $v.find('BlockRef'),
             stopPointRef = $v.find('StopPointRef');
             directionRef = $v.find('DirectionRef');
 
-            if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && vehicleRef[0] != undefined) {
-                console.log(vehicleRef[0].innerHTML)
-                // 973
-                if (vehicleRef[0].innerHTML == 973) {
-                    window.focus();
-                    alert('The bus is available again!');
-                }
-
-                if (vehicleRef[0].innerHTML == $vehicleRefQuery) {
-                    console.log(v)
+            if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && blockRef[0] != undefined) {
+                if (blockRef[0].innerHTML == $vehicleRefQuery) {
                     busMarker = new google.maps.Marker({
                         // icon: stopIcon,
                         icon: 'http://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '.png',
