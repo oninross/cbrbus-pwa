@@ -184,9 +184,8 @@ export default class TrackMyBus {
 
             // if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && blockRef[0] != undefined) {
             if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && vehicleRef[0] != undefined) {
-
-                // if (blockRef[0].innerHTML == $vehicleRefQuery) {
                 console.log(vehicleRef[0].innerHTML)
+                // if (blockRef[0].innerHTML == $vehicleRefQuery) {
                 if (vehicleRef[0].innerHTML == $vehicleRefQuery) {
                     busMarker = new google.maps.Marker({
                         // icon: stopIcon,

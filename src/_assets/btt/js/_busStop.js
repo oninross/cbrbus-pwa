@@ -161,12 +161,16 @@ function processData(xml) {
 
         let monitoredStopVisitArr,
             $monitoredStopVisitArr,
-            vehicleRefNum;
+            vehicleRefNum,
+            vehicleRefArr;
 
         $monitoredStopVisit.each(function (i, v) {
             monitoredStopVisitArr = $monitoredStopVisit[i];
             $monitoredStopVisitArr = $(monitoredStopVisitArr);
+            serviceNum = $monitoredStopVisitArr.find('PublishedLineName')[0].innerHTML;
 
+
+            // Check for Arrival time
             if ($monitoredStopVisitArr.find('ExpectedArrivalTime')[0] == undefined) {
                 if ($monitoredStopVisitArr.find('AimedArrivalTime')[0] == undefined) {
                     arr = new Date($monitoredStopVisitArr.find('AimedDepartureTime')[0].innerHTML);
@@ -177,29 +181,36 @@ function processData(xml) {
                 arr = new Date($monitoredStopVisitArr.find('ExpectedArrivalTime')[0].innerHTML);
             }
 
-            vehicleFeatureArr = [];
-            vehicleFeatureRef = $monitoredStopVisitArr.find('VehicleFeatureRef'),
-            eta = arr.getTime() - now.getTime(); // This will give difference in milliseconds
-            etaMin = Math.round(eta / 60000);
-            serviceNum = $monitoredStopVisitArr.find('PublishedLineName')[0].innerHTML;
 
+            // Check for Vehicle Features (Wheelchair or Bike Rack)
+            vehicleFeatureArr = [];
+            vehicleFeatureRef = $monitoredStopVisitArr.find('VehicleFeatureRef');
             for (let j = 0, m = vehicleFeatureRef.length; j < m; j++) {
                 icon = vehicleFeatureRef[j].innerHTML;
                 icon = icon.replace(' ', '-').toLowerCase();
                 vehicleFeatureArr.push(icon);
             }
 
+
+            // Calculate ETA
+            eta = arr.getTime() - now.getTime();
+            etaMin = Math.round(eta / 60000);
             etaArr = [];
             etaArr.push(etaMin);
 
+
+            // Get vehicle reference number
             if ($monitoredStopVisitArr.find('VehicleRef')[0] == undefined) {
                 vehicleRefNum = null;
             } else {
                 vehicleRefNum = $monitoredStopVisitArr.find('VehicleRef')[0].innerHTML;
             }
 
+            vehicleRefArr = [];
+            vehicleRefArr.push(vehicleRefNum);
+
             obj = {
-                vehicleRefNum: vehicleRefNum,
+                vehicleRefNum: vehicleRefArr,
                 serviceNum: serviceNum,
                 feature: vehicleFeatureArr,
                 estimatedArrival: etaArr
@@ -219,11 +230,15 @@ function processData(xml) {
                 busObjArr.push(obj);
             } else {
                 // Existing Bus Service
-                let busArrEta = busObjArr[busArr.indexOf(serviceNum)].estimatedArrival;
+                let busArrEta = busObjArr[busArr.indexOf(serviceNum)].estimatedArrival,
+                    busArrVehicleRef = busObjArr[busArr.indexOf(serviceNum)].vehicleRefNum;
 
                 if (busArrEta.length < 2 && busObjArr[0].estimatedArrival != etaMin) {
                     busArrEta.push(etaMin);
+                    busArrVehicleRef.push(vehicleRefNum);
                     busArrEta.sort(function (a, b) {
+                        busArrVehicleRef.swap(0, 1);
+                        busArrVehicleRef.splice(1, 1);
                         return a - b;
                     });
                 }
@@ -239,7 +254,7 @@ function processData(xml) {
         $.each(byServiceNum, function (i, v) {
             // Append Markup
             cardMarkup += cardTemplate(byServiceNum[i]);
-        })
+        });
     } else {
         cardMarkup += cardEmptyTemplate({});
     }
@@ -250,7 +265,7 @@ function processData(xml) {
     TweenMax.to('.btn-refresh', 0.75, {
         opacity: 1,
         top: 0,
-        ease: Expo.easeOut,
+        ease: Expo.easeOut
     });
 
     TweenMax.staggerTo('.card', 0.75, {
@@ -289,5 +304,12 @@ function getBusStopName() {
         busStopName = _busStopName;
     }
 };
+
+Array.prototype.swap = function (x, y) {
+    var b = this[x];
+    this[x] = this[y];
+    this[y] = b;
+    return this;
+}
 
 export { lookupBusId }
