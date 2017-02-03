@@ -13,6 +13,7 @@ import NearBy from  './_nearby';
 import TrackMyBus from  './_trackmybus';
 
 import { debounce } from './_helper';
+import { toaster } from './_material';
 import './_busStop';
 import './_search';
 import './_bookmark';
@@ -169,39 +170,71 @@ $(() => {
         };
     })();
 
-
     console.log("I'm a firestarter!");
 });
 
 // Simple Service Worker to make App Install work
-// window.addEventListener('load', function () {
-//     var outputElement = document.getElementById('output');
+var endpoint,
+    key,
+    authSecret,
+    rawAuthSecret;
 
-//     navigator.serviceWorker.register('/service-worker.js', { scope: './' })
-//         .then(function (r) {
-//             console.log('registered service worker');
-//         })
-//     .catch(function (whut) {
-//         console.error('uh oh... ');
-//         console.error(whut);
-//     });
+window.addEventListener('load', function () {
+    var outputElement = document.getElementById('output');
 
-//     window.addEventListener('beforeinstallprompt', function (e) {
-//         outputElement.textContent = 'beforeinstallprompt Event fired';
-//     });
-// });
+    navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+        .then(function (registration) {
+            return registration.pushManager.getSubscription()
+            .then(function (subscription) {
+                if (subscription) {
+                    return subscription;
+                }
+                return registration.pushManager.subscribe({ userVisibleOnly: true });
+            });
+        }).then(function (subscription) {
+            var rawKey = subscription.getKey ? subscription.getKey('p256dh') : '';
+            key = rawKey ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawKey))) : '';
+            var rawAuthSecret = subscription.getKey ? subscription.getKey('auth') : '';
+            authSecret = rawAuthSecret ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawAuthSecret))) : '';
 
-// window.addEventListener('beforeinstallprompt', function (e) {
-//     outputElement.textContent = 'beforeinstallprompt Event fired';
+            endpoint = subscription.endpoint;
 
-//     // e.userChoice will return a Promise. For more details read: http://www.html5rocks.com/en/tutorials/es6/promises/
-//     e.userChoice.then(function (choiceResult) {
-//         console.log(choiceResult.outcome);
+            console.log("ENDPOINT")
+            console.log(subscription.endpoint)
 
-//         if (choiceResult.outcome == 'dismissed') {
-//             console.log('User cancelled homescreen install');
-//         } else {
-//             console.log('User added to homescreen');
-//         }
-//     });
-// });
+            fetch('//10.16.0.107:8888/trackmybus', {
+                method: 'post',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    endpoint: subscription.endpoint,
+                    key: key,
+                    authSecret: authSecret
+                })
+            });
+        })
+        .catch(function (whut) {
+            console.error('uh oh... ');
+            console.error(whut);
+        });
+
+    window.addEventListener('beforeinstallprompt', function (e) {
+        outputElement.textContent = 'beforeinstallprompt Event fired';
+    });
+});
+
+window.addEventListener('beforeinstallprompt', function (e) {
+    outputElement.textContent = 'beforeinstallprompt Event fired';
+
+    // e.userChoice will return a Promise. For more details read: http://www.html5rocks.com/en/tutorials/es6/promises/
+    e.userChoice.then(function (choiceResult) {
+        console.log(choiceResult.outcome);
+
+        if (choiceResult.outcome == 'dismissed') {
+            console.log('User cancelled homescreen install');
+        } else {
+            console.log('User added to homescreen');
+        }
+    });
+});

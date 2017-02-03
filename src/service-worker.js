@@ -18,7 +18,7 @@ var offlineFundamentals = [
     'assets/btt/css/fonts/icomoon.woff',
     'assets/btt/css/fonts/HelveticaNeue-Bold.woff',
     'assets/btt/css/fonts/HelveticaNeue.woff',
-    'index.html?pwa=23072010',
+    'index.html?homescreen=1',
     '/'
 ];
 
@@ -207,5 +207,11 @@ self.addEventListener("activate", function (event) {
 */
 self.addEventListener("push", function (event) {
     console.log('Push message received', event);
-    // TODO
+    var payload = event.data ? event.data.text() : 'no payload';
+
+    event.waitUntil(
+        self.registration.showNotification('ServiceWorker Cookbook', {
+            body: payload
+        })
+    );
 });

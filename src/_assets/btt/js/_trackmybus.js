@@ -120,6 +120,7 @@ export default class TrackMyBus {
 
             google.maps.event.addListener(stopMarker, 'click', function (e) {
                 // window.location.href = '/busstop/?busStopId=' + this.label;
+                that.notifyMe();
             });
         });
 
@@ -131,6 +132,24 @@ export default class TrackMyBus {
         });
 
         that.callApi();
+    }
+
+    notifyMe() {
+        $.ajax({
+            url: '//10.16.0.107:8888/trackmybus',
+            type: 'GET',
+            success: function (data) {
+                console.log(data)
+            },
+            error: function (error) {
+                console.log(error);
+
+                toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
+            },
+            statusCode: function (code) {
+                console.log(code);
+            }
+        });
     }
 
     processData(xml) {
