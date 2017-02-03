@@ -119,7 +119,7 @@ export default class TrackMyBus {
             markers.push(stopMarker);
 
             google.maps.event.addListener(stopMarker, 'click', function (e) {
-                window.location.href = '/busstop/?busStopId=' + this.label;
+                // window.location.href = '/busstop/?busStopId=' + this.label;
             });
         });
 
@@ -200,14 +200,13 @@ export default class TrackMyBus {
                         zIndex: 99999999
                     });
 
-                    // that.map.setZoom(16);0
-                    var pt1 = new google.maps.LatLng($vehicleLat[0].innerHTML, $vehicleLng[0].innerHTML),
-                        pt2 = new google.maps.LatLng(that.mapSettings.lat, that.mapSettings.long),
-                        bounds = new google.maps.LatLngBounds();
+                    // var pt1 = new google.maps.LatLng($vehicleLat[0].innerHTML, $vehicleLng[0].innerHTML),
+                    //     pt2 = new google.maps.LatLng(that.mapSettings.lat, that.mapSettings.long),
+                    //     bounds = new google.maps.LatLngBounds();
 
-                    bounds.extend(pt1);
-                    bounds.extend(pt2);
-                    that.map.fitBounds(bounds);
+                    // bounds.extend(pt1);
+                    // bounds.extend(pt2);
+                    // that.map.fitBounds(bounds);
 
                     markers.push(busMarker);
 
