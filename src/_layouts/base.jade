@@ -110,7 +110,7 @@ body
                         i.icon.icon-star.active
 
         script#card-template(type='text/template')
-            .card(data-servicenum='{{! it.serviceNum }}')
+            .card(data-servicenum='{{! it.serviceNum }}', data-vehicleref='{{! it.vehicleRefNum }}')
                 .card__wrapper
                     .wrap
                         .bus {{! it.serviceNum }}

@@ -8,6 +8,8 @@ let bp = {
 let API_KEY = 'A6F762'; // Development
 // let API_KEY = 'AE9887'; // Production
 
+let GMAP_API_KEY = 'AIzaSyD3jWuvQ-wlm5iSbEg8hvjHy03tyYd8szQ';
+
 let debounce = function (func, wait, immediate) {
     var timeout;
     return function () {
@@ -90,5 +92,6 @@ export {
     isDesktop,
     isLargeDesktop,
     easeOutExpo,
-    API_KEY
+    API_KEY,
+    GMAP_API_KEY
 };

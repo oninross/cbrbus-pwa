@@ -10,6 +10,7 @@ import './_modernizr';
 
 import PrimaryNav from '../../../_modules/primary-nav/primary-nav';
 import NearBy from  './_nearby';
+import TrackMyBus from  './_trackmybus';
 
 import { debounce } from './_helper';
 import './_busStop';
@@ -29,6 +30,11 @@ $(() => {
     if ($('.nearby').length) {
         window.II = {};
         new NearBy();
+    }
+
+    if ($('.trackMyBus').length) {
+        window.II = {};
+        new TrackMyBus();
     }
 
     ////////////////////////////
@@ -168,34 +174,34 @@ $(() => {
 });
 
 // Simple Service Worker to make App Install work
-window.addEventListener('load', function () {
-    var outputElement = document.getElementById('output');
+// window.addEventListener('load', function () {
+//     var outputElement = document.getElementById('output');
 
-    navigator.serviceWorker.register('/service-worker.js', { scope: './' })
-        .then(function (r) {
-            console.log('registered service worker');
-        })
-    .catch(function (whut) {
-        console.error('uh oh... ');
-        console.error(whut);
-    });
+//     navigator.serviceWorker.register('/service-worker.js', { scope: './' })
+//         .then(function (r) {
+//             console.log('registered service worker');
+//         })
+//     .catch(function (whut) {
+//         console.error('uh oh... ');
+//         console.error(whut);
+//     });
 
-    window.addEventListener('beforeinstallprompt', function (e) {
-        outputElement.textContent = 'beforeinstallprompt Event fired';
-    });
-});
+//     window.addEventListener('beforeinstallprompt', function (e) {
+//         outputElement.textContent = 'beforeinstallprompt Event fired';
+//     });
+// });
 
-window.addEventListener('beforeinstallprompt', function (e) {
-    outputElement.textContent = 'beforeinstallprompt Event fired';
+// window.addEventListener('beforeinstallprompt', function (e) {
+//     outputElement.textContent = 'beforeinstallprompt Event fired';
 
-    // e.userChoice will return a Promise. For more details read: http://www.html5rocks.com/en/tutorials/es6/promises/
-    e.userChoice.then(function (choiceResult) {
-        console.log(choiceResult.outcome);
+//     // e.userChoice will return a Promise. For more details read: http://www.html5rocks.com/en/tutorials/es6/promises/
+//     e.userChoice.then(function (choiceResult) {
+//         console.log(choiceResult.outcome);
 
-        if (choiceResult.outcome == 'dismissed') {
-            console.log('User cancelled homescreen install');
-        } else {
-            console.log('User added to homescreen');
-        }
-    });
-});
+//         if (choiceResult.outcome == 'dismissed') {
+//             console.log('User cancelled homescreen install');
+//         } else {
+//             console.log('User added to homescreen');
+//         }
+//     });
+// });

@@ -4,14 +4,10 @@ import L from 'leaflet';
 import provider from 'providers';
 import CartoDB from 'cartodb';
 import { ripple, toaster } from './_material';
-import { debounce, easeOutExpo } from './_helper';
+import { GMAP_API_KEY, debounce, easeOutExpo } from './_helper';
 
 let $window = $(window),
     loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
-    GMAP_API_KEY = 'AIzaSyD3jWuvQ-wlm5iSbEg8hvjHy03tyYd8szQ',
-    isLoading = true,
-    isMapInit = false,
-    isAnimating = false,
     markers = [],
     busArr = [],
     busObjArr = [],
@@ -74,11 +70,17 @@ export default class NearBy {
 
     loadGoogleMap() {
         var script = document.createElement('script'),
-            scriptStr = 'https://maps.googleapis.com/maps/api/js?key=' + GMAP_API_KEY + '&callback=II.googleMap.loadData';
+            scriptStr = 'https://maps.googleapis.com/maps/api/js?key=' + GMAP_API_KEY + '&callback=II.googleMap.loadData',
+            clusterScript = document.createElement('script'),
+            clusterScriptStr = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js';
 
         script.type = 'text/javascript';
         script.src = scriptStr;
         document.body.appendChild(script);
+
+        clusterScript.type = 'text/javascript';
+        clusterScript.src = clusterScriptStr;
+        document.body.appendChild(clusterScript);
     }
 
     loadData() {
@@ -141,9 +143,18 @@ export default class NearBy {
                 map: map
             });
 
+            markers.push(busMarker);
+
             google.maps.event.addListener(busMarker, 'click', function (e) {
                 window.location.href = '/busstop/?busStopId=' + this.label;
             });
+        });
+
+        // Add a marker clusterer to manage the markers.
+        let markerCluster = new MarkerClusterer(map, markers, {
+            imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+            maxZoom: 18,
+            averageCenter: true
         });
 
         if (that.isGeolocationEnabled) {
@@ -158,7 +169,6 @@ export default class NearBy {
                     });
                 });
         }
-
     }
 
     updateMarker() {
