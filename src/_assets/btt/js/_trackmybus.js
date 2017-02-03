@@ -9,7 +9,8 @@ import { API_KEY, GMAP_API_KEY, debounce, easeOutExpo } from './_helper';
 let $window = $(window),
     isIntervalInit = false,
     markers = [],
-    busId;
+    busId,
+    refreshInterval;
 
 export default class TrackMyBus {
     constructor() {
@@ -137,7 +138,8 @@ export default class TrackMyBus {
             xmlDoc = $.parseXML(xml),
             $xml = $(xmlDoc),
             $status = $xml.find('Status')[0].innerHTML == 'true' ? true : false,
-            $monitoringRef = $xml.find('MonitoringRef');
+            $monitoringRef = $xml.find('MonitoringRef'),
+            isVehicleFound = false;
 
         if (!$status) {
             toaster('Whoops! Something went wrong! Error (' + $xml.find('ErrorText')[0].innerHTML + ')');
@@ -152,7 +154,7 @@ export default class TrackMyBus {
             });
         } else {
             isIntervalInit = true;
-            setInterval(function () {
+            refreshInterval = setInterval(function () {
                 that.callApi();
             }, 15000);
         }
@@ -198,11 +200,6 @@ export default class TrackMyBus {
                         zIndex: 99999999
                     });
 
-                    that.map.setCenter({
-                        lat: Number($vehicleLat[0].innerHTML),
-                        lng: Number($vehicleLng[0].innerHTML)
-                    });
-
                     // that.map.setZoom(16);0
                     var pt1 = new google.maps.LatLng($vehicleLat[0].innerHTML, $vehicleLng[0].innerHTML),
                         pt2 = new google.maps.LatLng(that.mapSettings.lat, that.mapSettings.long),
@@ -213,10 +210,17 @@ export default class TrackMyBus {
                     that.map.fitBounds(bounds);
 
                     markers.push(busMarker);
+
+                    isVehicleFound = true;
                     return false;
                 }
             }
         });
+
+        if (!isVehicleFound) {
+            toaster('Whoops! Sorry the vehicle you are tracking can not be found. Try again later.');
+            clearInterval(refreshInterval);
+        }
     }
 
     callApi() {
