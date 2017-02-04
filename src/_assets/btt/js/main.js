@@ -200,19 +200,59 @@ window.addEventListener('load', function () {
             endpoint = subscription.endpoint;
 
             console.log("ENDPOINT")
-            console.log(subscription.endpoint)
+            console.log(endpoint)
 
-            fetch('//10.16.0.107:8888/trackmybus', {
+            // $.post({
+            //     url: '//192.168.1.10:8888/sendNotification',
+            //     type: 'POST',
+            //     dataType: 'json',
+            //     data: {
+            //         endpoint: endpoint,
+            //         key: key,
+            //         authSecret: authSecret
+            //     },
+            //     success: function (data) {
+            //         console.log(data)
+            //         toaster('fuck this shit');
+            //     },
+            //     error: function (error) {
+            //         console.log(error);
+
+            //         toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
+            //     },
+            //     statusCode: function (code) {
+            //         console.log(code);
+            //         toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
+            //     }
+            // });
+
+            console.log(JSON.stringify({
+                    endpoint: endpoint,
+                    key: key,
+                    authSecret: authSecret
+                }))
+
+            fetch('//192.168.1.10:8888/sendNotification', {
+            // fetch('https://cbrbuses.herokuapp.com/sendNotification', {
                 method: 'post',
                 headers: {
-                    'Content-type': 'application/json'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    endpoint: subscription.endpoint,
+                    endpoint: endpoint,
                     key: key,
                     authSecret: authSecret
                 })
+            }).then(function (response) {
+                return response.json();
+            })
+            .then(function (result) {
+                alert(result);
+            })
+            .catch (function (error) {
+                console.log('Request failed', error);
             });
+
         })
         .catch(function (whut) {
             console.error('uh oh... ');

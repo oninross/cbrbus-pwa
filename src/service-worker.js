@@ -207,11 +207,16 @@ self.addEventListener("activate", function (event) {
 */
 self.addEventListener("push", function (event) {
     console.log('Push message received', event);
-    var payload = event.data ? event.data.text() : 'no payload';
+    var title = 'CBR Buses',
+        body = event.data ? event.data.text() : 'no payload',
+        icon = '/images/icon-192x192.png',
+        tag = 'simple-push-demo-notification-tag';
 
     event.waitUntil(
-        self.registration.showNotification('ServiceWorker Cookbook', {
-            body: payload
+        self.registration.showNotification(title, {
+            body: body,
+            icon: icon,
+            tag: tag
         })
     );
 });
