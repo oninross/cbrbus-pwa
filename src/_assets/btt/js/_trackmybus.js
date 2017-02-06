@@ -67,7 +67,7 @@ export default class TrackMyBus {
             },
             error: function (error) {
                 console.log(error);
-                RR.materialDesign.toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
+                toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
             }
         });
     }
@@ -115,7 +115,6 @@ export default class TrackMyBus {
             google.maps.event.addListener(stopMarker, 'click', function (e) {
                 // window.location.href = '/busstop/?busStopId=' + this.label;
                 that.notifyMe();
-                console.log('::CLICKED::')
             });
         });
 
@@ -130,9 +129,7 @@ export default class TrackMyBus {
     }
 
     notifyMe() {
-        console.log('::notifyMe::')
-        console.log(window.II.pushData)
-
+        // fetch('//cbrbuses.firebaseapp.com/sendNotification', {
         fetch('//10.16.0.107:8888/sendNotification', {
             method: 'post',
             headers: {

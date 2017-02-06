@@ -180,6 +180,22 @@ var endpoint,
 
 window.II.pushData = {};
 
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+
+    return outputArray;
+}
+
 // Register a Service Worker.
 navigator.serviceWorker.register('/service-worker.js')
     .then(function (registration) {
@@ -197,11 +213,15 @@ navigator.serviceWorker.register('/service-worker.js')
                         return subscription;
                     }
 
+                    const vapidPublicKey = 'BF53n-vO9AR0Yc501-Ck0iyV85af4bpOhF5WKnwsHTArI5BXIqfSba3iPU4Blmj-8m4rC5gNoj88W_9Vhx8pOUY',
+                        convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+
                     // Otherwise, subscribe the user (userVisibleOnly allows to specify that we don't plan to
                     // send browser push notifications that don't have a visible effect for the user).
                     return serviceWorkerRegistration.pushManager.subscribe({
-                        userVisibleOnly: true
-                    });
+                            userVisibleOnly: true,
+                            applicationServerKey: convertedVapidKey
+                        });
                 });
         });
     }).then(function (subscription) { //chaining the subscription promise object
@@ -221,6 +241,7 @@ navigator.serviceWorker.register('/service-worker.js')
             authSecret: authSecret
         };
 
+        // fetch('//cbrbuses.firebaseapp.com/register', {
         fetch('//10.16.0.107:8888/register', {
             method: 'post',
             headers: {
