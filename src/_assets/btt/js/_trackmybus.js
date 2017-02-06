@@ -4,7 +4,7 @@ import L from 'leaflet';
 import provider from 'providers';
 import CartoDB from 'cartodb';
 import { ripple, toaster } from './_material';
-import { API_KEY, GMAP_API_KEY, debounce, easeOutExpo } from './_helper';
+import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo } from './_helper';
 
 let $window = $(window),
     isIntervalInit = false,
@@ -113,7 +113,6 @@ export default class TrackMyBus {
             markers.push(stopMarker);
 
             google.maps.event.addListener(stopMarker, 'click', function (e) {
-                // window.location.href = '/busstop/?busStopId=' + this.label;
                 that.notifyMe();
             });
         });
@@ -129,8 +128,7 @@ export default class TrackMyBus {
     }
 
     notifyMe() {
-        fetch('//cbrbuses.herokuapp.com/sendNotification', {
-        // fetch('//10.16.0.107:8888/sendNotification', {
+        fetch('//' + BASE_URL + '/sendNotification', {
             method: 'post',
             headers: {
                 'Content-type': 'application/json'

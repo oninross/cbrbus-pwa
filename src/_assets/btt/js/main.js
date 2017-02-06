@@ -12,7 +12,7 @@ import PrimaryNav from '../../../_modules/primary-nav/primary-nav';
 import NearBy from  './_nearby';
 import TrackMyBus from  './_trackmybus';
 
-import { debounce } from './_helper';
+import { BASE_URL, debounce } from './_helper';
 import { toaster } from './_material';
 import './_busStop';
 import './_search';
@@ -30,8 +30,7 @@ window.II = {};
 
 console.log('call the bloody thing');
 $.ajax({
-    url: '//cbrbuses.herokuapp.com/getPublicKey',
-    // url: '//10.16.0.107:8888/getPublicKey',
+    url: '//' + BASE_URL + '/getPublicKey',
     success: function (data) {
         console.log(data)
         vapidPublicKey = data.key;
@@ -260,8 +259,7 @@ navigator.serviceWorker.register('/service-worker.js')
             authSecret: authSecret
         };
 
-        fetch('//cbrbuses.herokuapp.com/register', {
-        // fetch('//10.16.0.107:8888/register', {
+        fetch('//' + BASE_URL + '/register', {
             method: 'post',
             headers: {
                 'Content-type': 'application/json'
@@ -302,9 +300,7 @@ navigator.serviceWorker.register('/service-worker.js')
 //                 authSecret: authSecret
 //             };
 
-//             // fetch('//192.168.1.10:8888/register', {
-//             // fetch('https://cbrbuses.herokuapp.com/register', {
-//             fetch('//10.16.0.107:8888/register', {
+//             fetch('//'//' + BASE_URL + '/register', {
 //                 method: 'post',
 //                 headers: {
 //                     'Content-type': 'application/json'
