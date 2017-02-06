@@ -102,6 +102,7 @@ export default class TrackMyBus {
 
         $.each(json, function (i, v) {
             stopMarker = new google.maps.Marker({
+                id: v.data,
                 position: {
                     lat: v.lat,
                     lng: v.long
@@ -113,7 +114,10 @@ export default class TrackMyBus {
             markers.push(stopMarker);
 
             google.maps.event.addListener(stopMarker, 'click', function (e) {
-                that.notifyMe();
+                let busStopId = $(this)[0].id;
+                that.notifyMe(busStopId);
+
+                toaster('You will be notified when your stop is approaching. ' + busStopId);
             });
         });
 
@@ -127,13 +131,22 @@ export default class TrackMyBus {
         that.callApi();
     }
 
-    notifyMe() {
+    notifyMe(id) {
+        var that = this;
+
         fetch('//' + BASE_URL + '/sendNotification', {
             method: 'post',
             headers: {
                 'Content-type': 'application/json'
             },
-            body: JSON.stringify(window.II.pushData)
+            body: JSON.stringify({
+                endpoint: window.II.pushData.endpoint,
+                key: window.II.pushData.key,
+                authSecret: window.II.pushData.authSecret,
+                busId: that.getQueryVariable('busId'),
+                busStopId: id,
+                vehicleRef: that.getQueryVariable('vehicleRef')
+            })
         });
     }
 

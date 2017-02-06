@@ -5,8 +5,8 @@ let bp = {
     "minDesktop": 1025
 }
 
-let BASE_URL = '192.168.1.10:8888'; // local
-// let BASE_URL = '10.16.0.107:8888'; // local
+// let BASE_URL = '192.168.1.10:8888'; // local
+let BASE_URL = '10.16.0.107:8888'; // local
 // let BASE_URL = 'cbrbuses.herokuapp.com'; // Production
 
 let API_KEY = 'A6F762'; // Development

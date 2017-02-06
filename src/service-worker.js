@@ -209,8 +209,8 @@ self.addEventListener("push", function (event) {
     console.log('Push message received', event);
 
     var payload = {
-        title: 'Hello world',
-        body: 'Lorem ipsum dolor',
+        title: 'CBR Buses',
+        body: 'Your bus stop is next',
         icon: 'https://cbrbuses.firebaseapp.com/assets/btt/images/favicon/favicon-96x96.png',
         url: 'https://cbrbuses.firebaseapp.com/'
     };
