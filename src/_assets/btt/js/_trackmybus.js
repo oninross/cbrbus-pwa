@@ -129,8 +129,8 @@ export default class TrackMyBus {
     }
 
     notifyMe() {
-        // fetch('//cbrbuses.firebaseapp.com/sendNotification', {
-        fetch('//10.16.0.107:8888/sendNotification', {
+        fetch('//cbrbuses.herokuapp.com/sendNotification', {
+        // fetch('//10.16.0.107:8888/sendNotification', {
             method: 'post',
             headers: {
                 'Content-type': 'application/json'

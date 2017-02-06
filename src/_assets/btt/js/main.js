@@ -30,7 +30,8 @@ window.II = {};
 
 console.log('call the bloody thing');
 $.ajax({
-    url: '//10.16.0.107:8888/getPublicKey',
+    url: '//cbrbuses.herokuapp.com/getPublicKey',
+    // url: '//10.16.0.107:8888/getPublicKey',
     success: function (data) {
         console.log(data)
         vapidPublicKey = data.key;
@@ -259,8 +260,8 @@ navigator.serviceWorker.register('/service-worker.js')
             authSecret: authSecret
         };
 
-        // fetch('//cbrbuses.firebaseapp.com/register', {
-        fetch('//10.16.0.107:8888/register', {
+        fetch('//cbrbuses.herokuapp.com/register', {
+        // fetch('//10.16.0.107:8888/register', {
             method: 'post',
             headers: {
                 'Content-type': 'application/json'
