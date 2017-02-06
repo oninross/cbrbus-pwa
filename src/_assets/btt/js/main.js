@@ -23,9 +23,26 @@ var $window = $(window),
     $body = $('body'),
     $header = $('.header'),
     isMobileDevice = $window.width() < 768 ? true : false,
-    lastScrollTop = 0;
+    lastScrollTop = 0,
+    vapidPublicKey;
 
 window.II = {};
+
+console.log('call the bloody thing');
+$.ajax({
+    url: '//10.16.0.107:8888/getPublicKey',
+    success: function (data) {
+        console.log(data)
+        vapidPublicKey = data.key;
+    },
+    error: function (error) {
+        console.log("Error:: ");
+        console.log(error);
+    },
+    statusCode: function (code) {
+        console.log("Status code:: " + code);
+    }
+});
 
 $(() => {
     new PrimaryNav();   // Activate Primary NAv modules logic
@@ -213,8 +230,9 @@ navigator.serviceWorker.register('/service-worker.js')
                         return subscription;
                     }
 
-                    const vapidPublicKey = 'BF53n-vO9AR0Yc501-Ck0iyV85af4bpOhF5WKnwsHTArI5BXIqfSba3iPU4Blmj-8m4rC5gNoj88W_9Vhx8pOUY',
-                        convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+                    console.log(vapidPublicKey)
+
+                    const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
 
                     // Otherwise, subscribe the user (userVisibleOnly allows to specify that we don't plan to
                     // send browser push notifications that don't have a visible effect for the user).
