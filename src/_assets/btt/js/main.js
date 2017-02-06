@@ -25,16 +25,16 @@ var $window = $(window),
     isMobileDevice = $window.width() < 768 ? true : false,
     lastScrollTop = 0;
 
+window.II = {};
+
 $(() => {
     new PrimaryNav();   // Activate Primary NAv modules logic
 
     if ($('.nearby').length) {
-        window.II = {};
         new NearBy();
     }
 
     if ($('.trackMyBus').length) {
-        window.II = {};
         new TrackMyBus();
     }
 
@@ -176,93 +176,111 @@ $(() => {
 // Simple Service Worker to make App Install work
 var endpoint,
     key,
-    authSecret,
-    rawAuthSecret;
+    authSecret;
 
-window.addEventListener('load', function () {
-    var outputElement = document.getElementById('output');
+window.II.pushData = {};
 
-    navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-        .then(function (registration) {
-            return registration.pushManager.getSubscription()
-            .then(function (subscription) {
-                if (subscription) {
-                    return subscription;
-                }
-                return registration.pushManager.subscribe({ userVisibleOnly: true });
-            });
-        }).then(function (subscription) {
-            var rawKey = subscription.getKey ? subscription.getKey('p256dh') : '';
-            key = rawKey ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawKey))) : '';
-            var rawAuthSecret = subscription.getKey ? subscription.getKey('auth') : '';
-            authSecret = rawAuthSecret ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawAuthSecret))) : '';
+// Register a Service Worker.
+navigator.serviceWorker.register('/service-worker.js')
+    .then(function (registration) {
+        // Use the PushManager to get the user's subscription to the push service.
 
-            endpoint = subscription.endpoint;
+        //service worker.ready will return the promise once the service worker is registered. This can help to get rid of
+        //errors that occur while fetching subscription information before registration of the service worker
 
-            console.log("ENDPOINT")
-            console.log(endpoint)
+        return navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
+            return serviceWorkerRegistration.pushManager.getSubscription()
+                .then(function (subscription) {
 
-            // $.post({
-            //     url: '//192.168.1.10:8888/sendNotification',
-            //     type: 'POST',
-            //     dataType: 'json',
-            //     data: {
-            //         endpoint: endpoint,
-            //         key: key,
-            //         authSecret: authSecret
-            //     },
-            //     success: function (data) {
-            //         console.log(data)
-            //         toaster('fuck this shit');
-            //     },
-            //     error: function (error) {
-            //         console.log(error);
+                    // If a subscription was found, return it.
+                    if (subscription) {
+                        return subscription;
+                    }
 
-            //         toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
-            //     },
-            //     statusCode: function (code) {
-            //         console.log(code);
-            //         toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
-            //     }
-            // });
-
-            console.log(JSON.stringify({
-                    endpoint: endpoint,
-                    key: key,
-                    authSecret: authSecret
-                }))
-
-            fetch('//192.168.1.10:8888/sendNotification', {
-            // fetch('https://cbrbuses.herokuapp.com/sendNotification', {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    endpoint: endpoint,
-                    key: key,
-                    authSecret: authSecret
-                })
-            }).then(function (response) {
-                return response.json();
-            })
-            .then(function (result) {
-                alert(result);
-            })
-            .catch (function (error) {
-                console.log('Request failed', error);
-            });
-
-        })
-        .catch(function (whut) {
-            console.error('uh oh... ');
-            console.error(whut);
+                    // Otherwise, subscribe the user (userVisibleOnly allows to specify that we don't plan to
+                    // send browser push notifications that don't have a visible effect for the user).
+                    return serviceWorkerRegistration.pushManager.subscribe({
+                        userVisibleOnly: true
+                    });
+                });
         });
+    }).then(function (subscription) { //chaining the subscription promise object
 
-    window.addEventListener('beforeinstallprompt', function (e) {
-        outputElement.textContent = 'beforeinstallprompt Event fired';
+        // Retrieve the user's public key.
+        var rawKey = subscription.getKey ? subscription.getKey('p256dh') : '';
+        key = rawKey ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawKey))) : '';
+        var rawAuthSecret = subscription.getKey ? subscription.getKey('auth') : '';
+        authSecret = rawAuthSecret ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawAuthSecret))) : '';
+
+        endpoint = subscription.endpoint;
+
+        // Send the subscription details to the server using the Fetch API.
+        window.II.pushData = {
+            endpoint: endpoint,
+            key: key,
+            authSecret: authSecret
+        };
+
+        fetch('//10.16.0.107:8888/register', {
+            method: 'post',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(window.II.pushData)
+        });
     });
-});
+
+// window.II.pushData = {};
+
+// window.addEventListener('load', function () {
+//     var outputElement = document.getElementById('output');
+
+//     navigator.serviceWorker.register('/service-worker.js')
+//         .then(function (registration) {
+//             return registration.pushManager.getSubscription()
+//             .then(function (subscription) {
+//                 if (subscription) {
+//                     return subscription;
+//                 }
+//                 return registration.pushManager.subscribe({ userVisibleOnly: true });
+//             });
+//         }).then(function (subscription) {
+//             var rawKey = subscription.getKey ? subscription.getKey('p256dh') : '';
+//             key = rawKey ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawKey))) : '';
+//             var rawAuthSecret = subscription.getKey ? subscription.getKey('auth') : '';
+//             authSecret = rawAuthSecret ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawAuthSecret))) : '';
+
+//             endpoint = subscription.endpoint;
+
+//             console.log("ENDPOINT");
+//             console.log(endpoint);
+//             console.log(" ");
+
+//             window.II.pushData = {
+//                 endpoint: endpoint,
+//                 key: key,
+//                 authSecret: authSecret
+//             };
+
+//             // fetch('//192.168.1.10:8888/register', {
+//             // fetch('https://cbrbuses.herokuapp.com/register', {
+//             fetch('//10.16.0.107:8888/register', {
+//                 method: 'post',
+//                 headers: {
+//                     'Content-type': 'application/json'
+//                 },
+//                 body: JSON.stringify(window.II.pushData)
+//             });
+//         })
+//         .catch(function (whut) {
+//             console.error('uh oh... ');
+//             console.error(whut);
+//         });
+
+//     window.addEventListener('beforeinstallprompt', function (e) {
+//         outputElement.textContent = 'beforeinstallprompt Event fired';
+//     });
+// });
 
 window.addEventListener('beforeinstallprompt', function (e) {
     outputElement.textContent = 'beforeinstallprompt Event fired';

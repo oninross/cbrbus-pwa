@@ -8,8 +8,6 @@
     "orientation": "portrait",
     "background_color": "#ffffff",
     "theme_color": "#383838",
-    "gcm_sender_id": "135415812168",
-    "applicationServerKey": "AAAAH4dpUEg:APA91bHxlJlKldQNvo8Yos9q0DXiU__bv68WSbSb7NGeQS_pXrmFuAvCrWV6A9KvQhzjJq0hxKGchF2m0kdhb-0eQhjmsWmJRac_sBtSfKnpY_Z7QLAkrEUAtydEVsxy8xuWvHcHp0LyjwpMCtQ1fGrdqS9HDlysRA",
     "icons": [
         {
             "src": "/assets/btt/images/favicon/android-icon-36x36.png",

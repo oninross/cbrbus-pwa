@@ -44,13 +44,15 @@ export default class TrackMyBus {
             clusterScript = document.createElement('script'),
             clusterScriptStr = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js';
 
-        script.type = 'text/javascript';
-        script.src = scriptStr;
-        document.body.appendChild(script);
-
         clusterScript.type = 'text/javascript';
         clusterScript.src = clusterScriptStr;
         document.body.appendChild(clusterScript);
+
+        setTimeout(function () {
+            script.type = 'text/javascript';
+            script.src = scriptStr;
+            document.body.appendChild(script);
+        }, 1000);
     }
 
     loadData() {
@@ -76,12 +78,6 @@ export default class TrackMyBus {
                 lat: that.mapSettings.lat,
                 lng: that.mapSettings.long
             },
-            stopIcon = {
-                url: '/assets/btt/images/stopMarker.png',
-                size: new google.maps.Size(40, 48),
-                origin: new google.maps.Point(0, -10),
-                anchor: new google.maps.Point(20, 48)
-            },
             currentIcon = {
                 url: that.mapSettings.marker,
                 size: new google.maps.Size(24, 24),
@@ -106,8 +102,6 @@ export default class TrackMyBus {
 
         $.each(json, function (i, v) {
             stopMarker = new google.maps.Marker({
-                icon: stopIcon,
-                label: v.data,
                 position: {
                     lat: v.lat,
                     lng: v.long
@@ -121,6 +115,7 @@ export default class TrackMyBus {
             google.maps.event.addListener(stopMarker, 'click', function (e) {
                 // window.location.href = '/busstop/?busStopId=' + this.label;
                 that.notifyMe();
+                console.log('::CLICKED::')
             });
         });
 
@@ -135,20 +130,15 @@ export default class TrackMyBus {
     }
 
     notifyMe() {
-        $.ajax({
-            url: '//10.16.0.107:8888/trackmybus',
-            type: 'GET',
-            success: function (data) {
-                console.log(data)
-            },
-            error: function (error) {
-                console.log(error);
+        console.log('::notifyMe::')
+        console.log(window.II.pushData)
 
-                toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
+        fetch('//10.16.0.107:8888/sendNotification', {
+            method: 'post',
+            headers: {
+                'Content-type': 'application/json'
             },
-            statusCode: function (code) {
-                console.log(code);
-            }
+            body: JSON.stringify(window.II.pushData)
         });
     }
 
