@@ -5,7 +5,7 @@ console.log('WORKER: executing.');
 /* A version number is useful when updating the worker logic,
    allowing you to remove outdated cache entries during the update.
 */
-var version = '0.6.0';
+var version = '0.7.0';
 
 /* These resources will be downloaded and cached by the service worker
    during the installation process. If any resource fails to be downloaded,lk
@@ -211,7 +211,7 @@ self.addEventListener("push", function (event) {
     var payload = {
         title: 'CBR Buses',
         body: 'Your bus stop is next',
-        icon: 'https://cbrbuses.firebaseapp.com/assets/btt/images/favicon/favicon-96x96.png',
+        icon: 'https://cbrbuses.firebaseapp.com/assets/btt/images/notify-image.jpg',
         url: 'https://cbrbuses.firebaseapp.com/'
     };
 

@@ -206,6 +206,7 @@ export default class TrackMyBus {
                 console.log(vehicleRef[0].innerHTML)
                 // if (blockRef[0].innerHTML == $vehicleRefQuery) {
                 if (vehicleRef[0].innerHTML == $vehicleRefQuery) {
+                    console.log('stopPointRef:: ' + stopPointRef[0].innerHTML)
                     busMarker = new google.maps.Marker({
                         // icon: stopIcon,
                         icon: 'http://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '_maps.png',
