@@ -38,6 +38,8 @@ $(() => {
             }, 0.1, function () {
                 lookupBusId(busStopId, null);
             });
+
+            $('.cards-wrapper').off('click', '.card');
         });
     }
 });

@@ -173,7 +173,7 @@ export default class TrackMyBus {
             isIntervalInit = true;
             refreshInterval = setInterval(function () {
                 that.callApi();
-            }, 15000);
+            }, 10000);
         }
 
         let $vehicleRefQuery = that.getQueryVariable('vehicleRef'),

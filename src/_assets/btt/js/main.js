@@ -36,8 +36,7 @@ $.ajax({
         vapidPublicKey = data.key;
     },
     error: function (error) {
-        console.log("Error:: ");
-        console.log(error);
+        console.log("Error:: " + error);
     },
     statusCode: function (code) {
         console.log("Status code:: " + code);
