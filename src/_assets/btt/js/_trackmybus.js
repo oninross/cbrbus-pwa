@@ -4,12 +4,13 @@ import L from 'leaflet';
 import provider from 'providers';
 import CartoDB from 'cartodb';
 import { ripple, toaster } from './_material';
-import { API_KEY, GMAP_API_KEY, debounce, easeOutExpo } from './_helper';
+import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo } from './_helper';
 
 let $window = $(window),
     isIntervalInit = false,
     markers = [],
-    busId;
+    busId,
+    refreshInterval;
 
 export default class TrackMyBus {
     constructor() {
@@ -43,13 +44,15 @@ export default class TrackMyBus {
             clusterScript = document.createElement('script'),
             clusterScriptStr = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js';
 
-        script.type = 'text/javascript';
-        script.src = scriptStr;
-        document.body.appendChild(script);
-
         clusterScript.type = 'text/javascript';
         clusterScript.src = clusterScriptStr;
         document.body.appendChild(clusterScript);
+
+        setTimeout(function () {
+            script.type = 'text/javascript';
+            script.src = scriptStr;
+            document.body.appendChild(script);
+        }, 1000);
     }
 
     loadData() {
@@ -64,7 +67,7 @@ export default class TrackMyBus {
             },
             error: function (error) {
                 console.log(error);
-                RR.materialDesign.toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
+                toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
             }
         });
     }
@@ -74,12 +77,6 @@ export default class TrackMyBus {
             center = {
                 lat: that.mapSettings.lat,
                 lng: that.mapSettings.long
-            },
-            stopIcon = {
-                url: '/assets/btt/images/stopMarker.png',
-                size: new google.maps.Size(40, 48),
-                origin: new google.maps.Point(0, -10),
-                anchor: new google.maps.Point(20, 48)
             },
             currentIcon = {
                 url: that.mapSettings.marker,
@@ -105,8 +102,7 @@ export default class TrackMyBus {
 
         $.each(json, function (i, v) {
             stopMarker = new google.maps.Marker({
-                icon: stopIcon,
-                label: v.data,
+                id: v.data,
                 position: {
                     lat: v.lat,
                     lng: v.long
@@ -118,7 +114,10 @@ export default class TrackMyBus {
             markers.push(stopMarker);
 
             google.maps.event.addListener(stopMarker, 'click', function (e) {
-                window.location.href = '/busstop/?busStopId=' + this.label;
+                let busStopId = $(this)[0].id;
+                that.notifyMe(busStopId);
+
+                toaster('You will be notified when your stop is approaching. ' + busStopId);
             });
         });
 
@@ -132,12 +131,32 @@ export default class TrackMyBus {
         that.callApi();
     }
 
+    notifyMe(id) {
+        var that = this;
+
+        fetch('//' + BASE_URL + '/sendNotification', {
+            method: 'post',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                endpoint: window.II.pushData.endpoint,
+                key: window.II.pushData.key,
+                authSecret: window.II.pushData.authSecret,
+                busId: that.getQueryVariable('busId'),
+                busStopId: id,
+                vehicleRef: that.getQueryVariable('vehicleRef')
+            })
+        });
+    }
+
     processData(xml) {
         let that = this,
             xmlDoc = $.parseXML(xml),
             $xml = $(xmlDoc),
             $status = $xml.find('Status')[0].innerHTML == 'true' ? true : false,
-            $monitoringRef = $xml.find('MonitoringRef');
+            $monitoringRef = $xml.find('MonitoringRef'),
+            isVehicleFound = false;
 
         if (!$status) {
             toaster('Whoops! Something went wrong! Error (' + $xml.find('ErrorText')[0].innerHTML + ')');
@@ -152,7 +171,7 @@ export default class TrackMyBus {
             });
         } else {
             isIntervalInit = true;
-            setInterval(function () {
+            refreshInterval = setInterval(function () {
                 that.callApi();
             }, 15000);
         }
@@ -187,6 +206,7 @@ export default class TrackMyBus {
                 console.log(vehicleRef[0].innerHTML)
                 // if (blockRef[0].innerHTML == $vehicleRefQuery) {
                 if (vehicleRef[0].innerHTML == $vehicleRefQuery) {
+                    console.log('stopPointRef:: ' + stopPointRef[0].innerHTML)
                     busMarker = new google.maps.Marker({
                         // icon: stopIcon,
                         icon: 'http://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '_maps.png',
@@ -198,25 +218,26 @@ export default class TrackMyBus {
                         zIndex: 99999999
                     });
 
-                    that.map.setCenter({
-                        lat: Number($vehicleLat[0].innerHTML),
-                        lng: Number($vehicleLng[0].innerHTML)
-                    });
+                    // var pt1 = new google.maps.LatLng($vehicleLat[0].innerHTML, $vehicleLng[0].innerHTML),
+                    //     pt2 = new google.maps.LatLng(that.mapSettings.lat, that.mapSettings.long),
+                    //     bounds = new google.maps.LatLngBounds();
 
-                    // that.map.setZoom(16);0
-                    var pt1 = new google.maps.LatLng($vehicleLat[0].innerHTML, $vehicleLng[0].innerHTML),
-                        pt2 = new google.maps.LatLng(that.mapSettings.lat, that.mapSettings.long),
-                        bounds = new google.maps.LatLngBounds();
-
-                    bounds.extend(pt1);
-                    bounds.extend(pt2);
-                    that.map.fitBounds(bounds);
+                    // bounds.extend(pt1);
+                    // bounds.extend(pt2);
+                    // that.map.fitBounds(bounds);
 
                     markers.push(busMarker);
+
+                    isVehicleFound = true;
                     return false;
                 }
             }
         });
+
+        if (!isVehicleFound) {
+            toaster('Whoops! Sorry the vehicle you are tracking can not be found. Try again later.');
+            clearInterval(refreshInterval);
+        }
     }
 
     callApi() {

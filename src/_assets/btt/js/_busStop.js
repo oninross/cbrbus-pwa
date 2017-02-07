@@ -263,7 +263,7 @@ function processData(xml) {
     $('.cards-wrapper').html(cardMarkup);
 
     TweenMax.to('.btn-refresh', 0.75, {
-        opacity: 1,
+        autoAlpha: 1,
         top: 0,
         ease: Expo.easeOut
     });
