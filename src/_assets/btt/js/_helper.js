@@ -1,18 +1,15 @@
 'use strict';
 
-let bp = {
-    "maxMobile": 767,
-    "minDesktop": 1025
-}
+const loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>';
 
-// let BASE_URL = '192.168.1.10:8888'; // local
-// let BASE_URL = '10.16.0.107:8888'; // local
-let BASE_URL = 'cbrbuses.herokuapp.com'; // Production
+// const BASE_URL = '192.168.1.10:8888'; // local
+const BASE_URL = '10.16.0.107:8888'; // local
+// const BASE_URL = 'cbrserver.herokuapp.com'; // Production
 
-let API_KEY = 'A6F762'; // Development
-// let API_KEY = 'AE9887'; // Production
+const API_KEY = 'A6F762'; // Development
+// const API_KEY = 'AE9887'; // Production
 
-let GMAP_API_KEY = 'AIzaSyD3jWuvQ-wlm5iSbEg8hvjHy03tyYd8szQ';
+const GMAP_API_KEY = 'AIzaSyD3jWuvQ-wlm5iSbEg8hvjHy03tyYd8szQ';
 
 let debounce = function (func, wait, immediate) {
     var timeout;
@@ -31,7 +28,7 @@ let debounce = function (func, wait, immediate) {
             func.apply(context, args);
         }
     };
-}
+};
 
 let isMobile = function () {
     return Modernizr.mq('(max-width: 767px)');
@@ -39,15 +36,30 @@ let isMobile = function () {
 
 let isTablet = function () {
     return Modernizr.mq('(min-width: 768px)');
-}
+};
 
 let isDesktop = function () {
     return Modernizr.mq('(min-width: 1024px)');
-}
+};
 
 let isLargeDesktop = function () {
     return Modernizr.mq('(min-width: 1200px)');
-}
+};
+
+function getQueryVariable(variable) {
+    let query = window.location.search.substring(1),
+        vars = query.split("&");
+
+    for (let i = 0; i < vars.length; i++) {
+        let pair = vars[i].split("=");
+
+        if (pair[0] == variable) {
+            return pair[1];
+        }
+    }
+
+    return false;
+};
 
 
 /*
@@ -89,12 +101,13 @@ let easeOutExpo = {
 };
 
 export {
-    bp,
+    loader,
     debounce,
     isMobile,
     isTablet,
     isDesktop,
     isLargeDesktop,
+    getQueryVariable,
     easeOutExpo,
     BASE_URL,
     API_KEY,

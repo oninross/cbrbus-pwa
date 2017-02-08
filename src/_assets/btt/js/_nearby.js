@@ -1,16 +1,17 @@
 'use strict';
 
-import L from 'leaflet';
-import provider from 'providers';
-import CartoDB from 'cartodb';
+// import L from 'leaflet';
+// import provider from 'providers';
+// import CartoDB from 'cartodb';
 import { ripple, toaster } from './_material';
-import { GMAP_API_KEY, debounce, easeOutExpo } from './_helper';
+import { loader, GMAP_API_KEY, debounce, easeOutExpo } from './_helper';
 
 let $window = $(window),
-    loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
     markers = [],
     busArr = [],
     busObjArr = [],
+    markerUrl = '/assets/btt/images/currentMarker.png',
+    zoomLevel = 17,
     busId,
     busStopName;
 
@@ -27,8 +28,8 @@ export default class NearBy {
                 that.mapSettings = {
                     'lat': position.coords.latitude,
                     'long': position.coords.longitude,
-                    'zoom': 17,
-                    'marker': '/assets/btt/images/currentMarker.png'
+                    'zoom': zoomLevel,
+                    'marker': markerUrl
                 };
 
                 that.loadGoogleMap();
@@ -39,8 +40,8 @@ export default class NearBy {
                     that.mapSettings = {
                         'lat': position.coords.latitude,
                         'long': position.coords.longitude,
-                        'zoom': 17,
-                        'marker': '/assets/btt/images/currentMarker.png'
+                        'zoom': zoomLevel,
+                        'marker': markerUrl
                     };
                 });
 
@@ -55,13 +56,13 @@ export default class NearBy {
                 'lat': -35.2823083,
                 'long': 149.1285561,
                 'zoom': 15,
-                'marker': '/assets/btt/images/currentMarker.png'
+                'marker': markerUrl
             };
 
             that.loadGoogleMap();
         }
 
-        $(window).on('resize', debounce(function () {
+        $window.on('resize', debounce(function () {
             $('#map').css({
                 height: $(document).outerHeight() - $('.header').outerHeight()
             });
@@ -76,11 +77,14 @@ export default class NearBy {
 
         script.type = 'text/javascript';
         script.src = scriptStr;
-        document.body.appendChild(script);
+        document.body.appendChild(clusterScript);
 
         clusterScript.type = 'text/javascript';
         clusterScript.src = clusterScriptStr;
-        document.body.appendChild(clusterScript);
+
+        setInterval(function () {
+            document.body.appendChild(script);
+        }, 2500);
     }
 
     loadData() {
@@ -95,7 +99,7 @@ export default class NearBy {
             },
             error: function (error) {
                 console.log(error);
-                RR.materialDesign.toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
+                toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
             }
         });
     }

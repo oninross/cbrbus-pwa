@@ -12,7 +12,7 @@ import PrimaryNav from '../../../_modules/primary-nav/primary-nav';
 import NearBy from  './_nearby';
 import TrackMyBus from  './_trackmybus';
 
-import { BASE_URL, debounce } from './_helper';
+import { BASE_URL, debounce, isMobile } from './_helper';
 import { toaster } from './_material';
 import './_busStop';
 import './_search';
@@ -22,7 +22,7 @@ import './_bookmark';
 var $window = $(window),
     $body = $('body'),
     $header = $('.header'),
-    isMobileDevice = $window.width() < 768 ? true : false,
+    isMobileDevice = isMobile(),
     lastScrollTop = 0,
     vapidPublicKey;
 
@@ -36,8 +36,7 @@ $.ajax({
         vapidPublicKey = data.key;
     },
     error: function (error) {
-        console.log("Error:: ");
-        console.log(error);
+        console.log("Error:: " + error);
     },
     statusCode: function (code) {
         console.log("Status code:: " + code);
@@ -165,7 +164,7 @@ $(() => {
             var st = $(this).scrollTop(),
                 $headerHeight = $header.height();
 
-            isMobileDevice = $window.width() < 1024 ? 1 : 0;
+            isMobileDevice = isMobile();
 
             if (!isMobileDevice) {
                 if (st > lastScrollTop) {
@@ -213,110 +212,63 @@ function urlBase64ToUint8Array(base64String) {
     return outputArray;
 }
 
-// Register a Service Worker.
-navigator.serviceWorker.register('/service-worker.js')
-    .then(function (registration) {
-        // Use the PushManager to get the user's subscription to the push service.
+window.addEventListener('load', function () {
+    var outputElement = document.getElementById('output');
 
-        //service worker.ready will return the promise once the service worker is registered. This can help to get rid of
-        //errors that occur while fetching subscription information before registration of the service worker
+    navigator.serviceWorker.register('/service-worker.js')
+        .then(function (registration) {
+            // Use the PushManager to get the user's subscription to the push service.
 
-        return navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
-            return serviceWorkerRegistration.pushManager.getSubscription()
-                .then(function (subscription) {
+            //service worker.ready will return the promise once the service worker is registered. This can help to get rid of
+            //errors that occur while fetching subscription information before registration of the service worker
 
-                    // If a subscription was found, return it.
-                    if (subscription) {
-                        return subscription;
-                    }
+            return navigator.serviceWorker.ready.then(function (serviceWorkerRegistration) {
+                return serviceWorkerRegistration.pushManager.getSubscription()
+                    .then(function (subscription) {
 
-                    console.log(vapidPublicKey)
+                        // If a subscription was found, return it.
+                        if (subscription) {
+                            return subscription;
+                        }
 
-                    const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+                        console.log(vapidPublicKey)
 
-                    // Otherwise, subscribe the user (userVisibleOnly allows to specify that we don't plan to
-                    // send browser push notifications that don't have a visible effect for the user).
-                    return serviceWorkerRegistration.pushManager.subscribe({
-                            userVisibleOnly: true,
-                            applicationServerKey: convertedVapidKey
-                        });
-                });
+                        const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+
+                        // Otherwise, subscribe the user (userVisibleOnly allows to specify that we don't plan to
+                        // send browser push notifications that don't have a visible effect for the user).
+                        return serviceWorkerRegistration.pushManager.subscribe({
+                                userVisibleOnly: true,
+                                applicationServerKey: convertedVapidKey
+                            });
+                    });
+            });
+        }).then(function (subscription) { //chaining the subscription promise object
+
+            // Retrieve the user's public key.
+            var rawKey = subscription.getKey ? subscription.getKey('p256dh') : '';
+            key = rawKey ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawKey))) : '';
+            var rawAuthSecret = subscription.getKey ? subscription.getKey('auth') : '';
+            authSecret = rawAuthSecret ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawAuthSecret))) : '';
+
+            endpoint = subscription.endpoint;
+
+            // Send the subscription details to the server using the Fetch API.
+            window.II.pushData = {
+                endpoint: endpoint,
+                key: key,
+                authSecret: authSecret
+            };
+        })
+        .catch(function (whut) {
+            console.error('uh oh... ');
+            console.error(whut);
         });
-    }).then(function (subscription) { //chaining the subscription promise object
 
-        // Retrieve the user's public key.
-        var rawKey = subscription.getKey ? subscription.getKey('p256dh') : '';
-        key = rawKey ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawKey))) : '';
-        var rawAuthSecret = subscription.getKey ? subscription.getKey('auth') : '';
-        authSecret = rawAuthSecret ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawAuthSecret))) : '';
-
-        endpoint = subscription.endpoint;
-
-        // Send the subscription details to the server using the Fetch API.
-        window.II.pushData = {
-            endpoint: endpoint,
-            key: key,
-            authSecret: authSecret
-        };
-
-        fetch('//' + BASE_URL + '/register', {
-            method: 'post',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify(window.II.pushData)
-        });
+    window.addEventListener('beforeinstallprompt', function (e) {
+        outputElement.textContent = 'beforeinstallprompt Event fired';
     });
-
-// window.II.pushData = {};
-
-// window.addEventListener('load', function () {
-//     var outputElement = document.getElementById('output');
-
-//     navigator.serviceWorker.register('/service-worker.js')
-//         .then(function (registration) {
-//             return registration.pushManager.getSubscription()
-//             .then(function (subscription) {
-//                 if (subscription) {
-//                     return subscription;
-//                 }
-//                 return registration.pushManager.subscribe({ userVisibleOnly: true });
-//             });
-//         }).then(function (subscription) {
-//             var rawKey = subscription.getKey ? subscription.getKey('p256dh') : '';
-//             key = rawKey ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawKey))) : '';
-//             var rawAuthSecret = subscription.getKey ? subscription.getKey('auth') : '';
-//             authSecret = rawAuthSecret ? btoa(String.fromCharCode.apply(null, new Uint8Array(rawAuthSecret))) : '';
-
-//             endpoint = subscription.endpoint;
-
-//             console.log("ENDPOINT");
-//             console.log(endpoint);
-//             console.log(" ");
-
-//             window.II.pushData = {
-//                 endpoint: endpoint,
-//                 key: key,
-//                 authSecret: authSecret
-//             };
-
-//             fetch('//'//' + BASE_URL + '/register', {
-//                 method: 'post',
-//                 headers: {
-//                     'Content-type': 'application/json'
-//                 },
-//                 body: JSON.stringify(window.II.pushData)
-//             });
-//         })
-//         .catch(function (whut) {
-//             console.error('uh oh... ');
-//             console.error(whut);
-//         });
-
-//     window.addEventListener('beforeinstallprompt', function (e) {
-//         outputElement.textContent = 'beforeinstallprompt Event fired';
-//     });
-// });
+});
 
 window.addEventListener('beforeinstallprompt', function (e) {
     outputElement.textContent = 'beforeinstallprompt Event fired';

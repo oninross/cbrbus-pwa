@@ -13,10 +13,8 @@
 @import "common/_mCustomScrollbar";
 
 // Import Modules
-@import "../_modules/link/link";
-@import "../_modules/standard-banner/standard-banner";
 @import "../_modules/primary-nav/primary-nav";
-@import "../_modules/leaflet/leaflet";
+// @import "../_modules/leaflet/leaflet";
 
 // Box sizing partial styles:
 // Apply a natural box layout model to all elements
@@ -49,8 +47,6 @@
     padding-top: $gutterTablet;
 
     p {
-        //     font-size: 2em;
-        //     line-height: 3.5;
         margin: 0;
     }
 }
@@ -60,12 +56,6 @@
 
     float: left;
     width: 100%;
-
-    // .card {
-    //     &:only-child {
-    //         width: 100%;
-    //     }
-    // }
 }
 
 .card {
@@ -90,8 +80,6 @@
     &__header {
         background-color: transparent;
         border: 0;
-
-        // display: block;
         font-size: 1em;
         margin-bottom: 20px;
         padding: 0;
@@ -140,8 +128,6 @@
         margin: 0 $gutter;
         padding: 10px 22px 22px;
         position: relative;
-
-        // text-align: center;
 
         h2 {
             margin-top: 12px;

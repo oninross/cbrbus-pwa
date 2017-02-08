@@ -1,10 +1,10 @@
 'use strict';
 
-import L from 'leaflet';
-import provider from 'providers';
-import CartoDB from 'cartodb';
+// import L from 'leaflet';
+// import provider from 'providers';
+// import CartoDB from 'cartodb';
 import { ripple, toaster } from './_material';
-import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo } from './_helper';
+import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariable } from './_helper';
 
 let $window = $(window),
     isIntervalInit = false,
@@ -31,7 +31,7 @@ export default class TrackMyBus {
             that.loadGoogleMap();
         });
 
-        $(window).on('resize', debounce(function () {
+        $window.on('resize', debounce(function () {
             $('#map').css({
                 height: $(document).outerHeight() - $('.header').outerHeight()
             });
@@ -44,15 +44,16 @@ export default class TrackMyBus {
             clusterScript = document.createElement('script'),
             clusterScriptStr = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js';
 
-        clusterScript.type = 'text/javascript';
-        clusterScript.src = clusterScriptStr;
+        script.type = 'text/javascript';
+        script.src = scriptStr;
         document.body.appendChild(clusterScript);
 
-        setTimeout(function () {
-            script.type = 'text/javascript';
-            script.src = scriptStr;
+        clusterScript.type = 'text/javascript';
+        clusterScript.src = clusterScriptStr;
+
+        setInterval(function () {
             document.body.appendChild(script);
-        }, 1000);
+        }, 2500);
     }
 
     loadData() {
@@ -143,9 +144,9 @@ export default class TrackMyBus {
                 endpoint: window.II.pushData.endpoint,
                 key: window.II.pushData.key,
                 authSecret: window.II.pushData.authSecret,
-                busId: that.getQueryVariable('busId'),
+                busId: getQueryVariable('busId'),
                 busStopId: id,
-                vehicleRef: that.getQueryVariable('vehicleRef')
+                vehicleRef: getQueryVariable('vehicleRef')
             })
         });
     }
@@ -173,10 +174,10 @@ export default class TrackMyBus {
             isIntervalInit = true;
             refreshInterval = setInterval(function () {
                 that.callApi();
-            }, 15000);
+            }, 10000);
         }
 
-        let $vehicleRefQuery = that.getQueryVariable('vehicleRef'),
+        let $vehicleRefQuery = getQueryVariable('vehicleRef'),
             $vehicleActivity = $xml.find('VehicleActivity'),
             vehicleLocation,
             $vehicleLocation,
@@ -201,14 +202,11 @@ export default class TrackMyBus {
             stopPointRef = $v.find('StopPointRef');
             directionRef = $v.find('DirectionRef');
 
-            // if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && blockRef[0] != undefined) {
             if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && vehicleRef[0] != undefined) {
                 console.log(vehicleRef[0].innerHTML)
-                // if (blockRef[0].innerHTML == $vehicleRefQuery) {
+                console.log('stopPointRef:: ' + stopPointRef[0].innerHTML)
                 if (vehicleRef[0].innerHTML == $vehicleRefQuery) {
-                    console.log('stopPointRef:: ' + stopPointRef[0].innerHTML)
                     busMarker = new google.maps.Marker({
-                        // icon: stopIcon,
                         icon: 'http://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '_maps.png',
                         position: {
                             lat: Number($vehicleLat[0].innerHTML),
@@ -242,7 +240,7 @@ export default class TrackMyBus {
 
     callApi() {
         let that = this,
-            busId = that.getQueryVariable('busId'),
+            busId = getQueryVariable('busId'),
             $xml = '';
 
         if (busId < 10) {
@@ -282,20 +280,5 @@ export default class TrackMyBus {
                 toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
             }
         });
-    }
-
-    getQueryVariable(variable) {
-        let query = window.location.search.substring(1),
-            vars = query.split("&");
-
-        for (let i = 0; i < vars.length; i++) {
-            let pair = vars[i].split("=");
-
-            if (pair[0] == variable) {
-                return pair[1];
-            }
-        }
-
-        return (false);
     }
 }
