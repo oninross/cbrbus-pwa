@@ -6,8 +6,8 @@ let bp = {
 }
 
 // let BASE_URL = '192.168.1.10:8888'; // local
-// let BASE_URL = '10.16.0.107:8888'; // local
-let BASE_URL = 'cbrbuses.herokuapp.com'; // Production
+let BASE_URL = '10.16.0.107:8888'; // local
+// let BASE_URL = 'cbrserver.herokuapp.com'; // Production
 
 let API_KEY = 'A6F762'; // Development
 // let API_KEY = 'AE9887'; // Production

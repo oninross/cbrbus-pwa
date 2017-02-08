@@ -201,14 +201,11 @@ export default class TrackMyBus {
             stopPointRef = $v.find('StopPointRef');
             directionRef = $v.find('DirectionRef');
 
-            // if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && blockRef[0] != undefined) {
             if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && vehicleRef[0] != undefined) {
                 console.log(vehicleRef[0].innerHTML)
-                // if (blockRef[0].innerHTML == $vehicleRefQuery) {
+                console.log('stopPointRef:: ' + stopPointRef[0].innerHTML)
                 if (vehicleRef[0].innerHTML == $vehicleRefQuery) {
-                    console.log('stopPointRef:: ' + stopPointRef[0].innerHTML)
                     busMarker = new google.maps.Marker({
-                        // icon: stopIcon,
                         icon: 'http://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '_maps.png',
                         position: {
                             lat: Number($vehicleLat[0].innerHTML),
