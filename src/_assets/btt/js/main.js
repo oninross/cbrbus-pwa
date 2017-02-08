@@ -12,7 +12,7 @@ import PrimaryNav from '../../../_modules/primary-nav/primary-nav';
 import NearBy from  './_nearby';
 import TrackMyBus from  './_trackmybus';
 
-import { BASE_URL, debounce } from './_helper';
+import { BASE_URL, debounce, isMobile } from './_helper';
 import { toaster } from './_material';
 import './_busStop';
 import './_search';
@@ -22,7 +22,7 @@ import './_bookmark';
 var $window = $(window),
     $body = $('body'),
     $header = $('.header'),
-    isMobileDevice = $window.width() < 768 ? true : false,
+    isMobileDevice = isMobile(),
     lastScrollTop = 0,
     vapidPublicKey;
 
@@ -164,7 +164,7 @@ $(() => {
             var st = $(this).scrollTop(),
                 $headerHeight = $header.height();
 
-            isMobileDevice = $window.width() < 1024 ? 1 : 0;
+            isMobileDevice = isMobile();
 
             if (!isMobileDevice) {
                 if (st > lastScrollTop) {
@@ -259,14 +259,6 @@ window.addEventListener('load', function () {
                 key: key,
                 authSecret: authSecret
             };
-
-            fetch('//' + BASE_URL + '/register', {
-                method: 'post',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(window.II.pushData)
-            });
         })
         .catch(function (whut) {
             console.error('uh oh... ');

@@ -1,12 +1,11 @@
 'use strict';
 
 import doT from 'doT';
-import { API_KEY } from './_helper';
+import { API_KEY, loader, getQueryVariable } from './_helper';
 import { ripple, toaster } from './_material';
 import { checkBookmark, setBookmark } from './_bookmark';
 
-let loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>',
-    isLoading = true,
+let isLoading = true,
     busArr = [],
     busObjArr = [],
     busStopId,
@@ -44,20 +43,7 @@ $(() => {
     }
 });
 
-function getQueryVariable(variable) {
-    let query = window.location.search.substring(1),
-        vars = query.split("&");
 
-    for (let i = 0; i < vars.length; i++) {
-        let pair = vars[i].split("=");
-
-        if (pair[0] == variable) {
-            return pair[1];
-        }
-    }
-
-    return false;
-};
 
 let lookupBusId = function (id, name) {
     let $xml = '';

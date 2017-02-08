@@ -1,14 +1,15 @@
 'use strict';
 
-let $body = $('body'),
-    $window = $(window),
-    isMobileDevice = $window.width() < 1024 ? 1 : 0;
 
 import doT from 'dot';
 import scrollMonitor from 'scrollMonitor';
 import mCustomScrollbar from 'mCustomScrollbar';
 
-import { debounce } from './_helper';
+import { debounce, isMobile } from './_helper';
+
+let $body = $('body'),
+    $window = $(window),
+    isMobileDevice = isMobile();
 
 /////////////////////////////
 // Select Box Materializer //
@@ -261,7 +262,7 @@ $(() => {
     }
 
     $window.on('resize', debounce(function () {
-        isMobileDevice = $window.width() < 1024 ? true : false;
+        isMobileDevice = isMobile();
     }, 250));
 });
 
