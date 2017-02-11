@@ -337,6 +337,10 @@ let ripple = function (e, el) {
         x = e.offsetX,
         y = e.offsetY;
 
+    if (x == undefined) {
+        return false;
+    }
+
     svg.setAttributeNS(null, 'class', 'ripple ripple' + inc);
     g.setAttributeNS(null, 'transform', 'translate(' + x + ', ' + y + ')');
     circle.setAttributeNS(null, 'r', (parseInt(el.outerWidth()) + x));

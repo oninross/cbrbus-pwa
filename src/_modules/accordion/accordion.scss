@@ -1,0 +1,70 @@
+// accordion styles
+.accordion {
+    margin-bottom: 10px;
+
+    &__header {
+        @extend h3;
+
+        margin: 0;
+        padding: 13px 0;
+        position: relative;
+    }
+
+    &__body {
+        display: none;
+    }
+
+    &__btn {
+        background-color: transparent;
+        border: 0;
+        height: 50px;
+        padding: 0;
+        width: 50px;
+        overflow: hidden;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 10;
+
+        &:before,
+        &:after {
+            @include transition( all, 0.5s, $easeOutExpo );
+
+            background-color: $black;
+            content: '';
+            display: block;
+            height: 2px;
+            left: 0;
+            margin: auto;
+            position: absolute;
+            right: 0;
+            width: 15px;
+        }
+
+        &:before {
+            @include rotate(45deg);
+
+            left: -9px;
+        }
+
+        &:after {
+            @include rotate(-45deg);
+
+            right: -9px;
+        }
+
+        &.active {
+            &:before {
+                @include rotate(-45deg);
+
+                left: -9px;
+            }
+
+            &:after {
+                @include rotate(45deg);
+
+                right: -9px;
+            }
+        }
+    }
+}
