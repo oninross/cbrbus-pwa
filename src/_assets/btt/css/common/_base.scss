@@ -70,6 +70,16 @@ ol, ul {
     code, kbd, pre, samp {
         font-size: inherit;
     }
+
+    a {
+        font-size: 1em;
+        font-weight: $bold;
+        text-decoration: underline;
+
+        &:hover {
+            color: $blue;
+        }
+    }
 }
 
 dl {
@@ -152,6 +162,12 @@ p {
 
     a {
         font-size: 1em;
+        font-weight: $bold;
+        text-decoration: underline;
+
+        &:hover {
+            color: $blue;
+        }
     }
 }
 
