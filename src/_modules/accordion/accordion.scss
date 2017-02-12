@@ -6,12 +6,32 @@
         @extend h3;
 
         margin: 0;
-        padding: 13px 0;
+        padding: 13px 50px 13px 0;
         position: relative;
     }
 
     &__body {
         display: none;
+
+        ol {
+            padding: 0 0 0 20px;
+        }
+
+        img {
+            @include material-shadow(2);
+
+            margin: 20px auto;
+        }
+
+        .image-wrap {
+            text-align: center;
+
+            img {
+                @include inline-block;
+
+                margin: 20px 5px;
+            }
+        }
     }
 
     &__btn {
