@@ -60,6 +60,7 @@ $(() => {
                         busStopName = suggestion.name;
 
                         getData(suggestion.data);
+                        ga('send', 'event', 'Bus Stop Search', 'click', busStopId);
                     },
                     onSearchStart: function (query) {
                         TweenMax.to('.search .btn', 0.75, {
