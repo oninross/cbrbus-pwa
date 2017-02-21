@@ -38,7 +38,7 @@ $(() => {
                 lookupBusId(busStopId, null);
             });
 
-            $('.cards-wrapper').off('click', '.card');
+            $('.cards-wrapper').off('click', '.card', cardListener);
         });
     }
 });
@@ -263,27 +263,29 @@ function processData(xml) {
         delay: 0.1
     }, 0.1);
 
-    $('.cards-wrapper').on('click', '.card', function (e) {
-        let $this = $(this),
-            $vehicleRefNum = $this.data('vehicleref'),
-            $serviceRefNum = $this.data('servicenum');
-
-        if ($this.hasClass('card__header')) {
-            let $this = $(this),
-                $id = $this.data('id');
-
-            setBookmark($id);
-
-            return false;
-        }
-
-        if ($vehicleRefNum == '') {
-            toaster('Sorry, we can\t track this bus service.');
-        } else {
-            window.location.href = '/trackmybus/?busId=' + $serviceRefNum + '&vehicleRef=' + $vehicleRefNum;
-        }
-    });
+    $('.cards-wrapper').on('click', '.card', cardListener);
 };
+
+function cardListener() {
+    let $this = $(this),
+        $vehicleRefNum = $this.data('vehicleref'),
+        $serviceRefNum = $this.data('servicenum');
+
+    if ($this.hasClass('card__header')) {
+        let $this = $(this),
+            $id = $this.data('id');
+
+        setBookmark($id);
+
+        return false;
+    }
+
+    if ($vehicleRefNum == '') {
+        toaster('Sorry, we can\t track this bus service.');
+    } else {
+        window.location.href = '/trackmybus/?busId=' + $serviceRefNum + '&vehicleRef=' + $vehicleRefNum;
+    }
+}
 
 function getBusStopName() {
     if (getQueryVariable('busStopName')) {
