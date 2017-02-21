@@ -7,7 +7,11 @@ html {
 
 body {
     background: $material-background;
-    font: 62.5%/1.618 'HelveticaNeue', Helvetica, Arial, sans-serif;
+    font: 62.5%/1.618 sans-serif;
+    font-family:
+/* 1 */ -apple-system, BlinkMacSystemFont,
+/* 2 */ "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+/* 3 */ "Helvetica Neue", sans-serif;
     margin: 0 !important;
 }
 
