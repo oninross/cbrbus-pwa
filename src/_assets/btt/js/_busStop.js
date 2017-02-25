@@ -1,7 +1,7 @@
 'use strict';
 
 import doT from 'doT';
-import { API_KEY, loader, getQueryVariable } from './_helper';
+import { API_KEY, loader, getQueryVariable, isNotificationGranted } from './_helper';
 import { ripple, toaster } from './_material';
 import { checkBookmark, setBookmark } from './_bookmark';
 
@@ -35,6 +35,7 @@ $(() => {
                 top: -50,
                 ease: Expo.easeOut
             }, 0.1, function () {
+                $('.cards-wrapper').html('');
                 lookupBusId(busStopId, null);
             });
 
@@ -278,6 +279,10 @@ function cardListener() {
         setBookmark($id);
 
         return false;
+    }
+
+    if (!isNotificationGranted) {
+        toaster('Please enable your notifications to know if your bus is approaching.');
     }
 
     if ($vehicleRefNum == '') {

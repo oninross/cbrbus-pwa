@@ -4,7 +4,7 @@
 // import provider from 'providers';
 // import CartoDB from 'cartodb';
 import { ripple, toaster } from './_material';
-import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariable } from './_helper';
+import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariable, isNotificationGranted } from './_helper';
 
 let $window = $(window),
     isIntervalInit = false,
@@ -115,10 +115,14 @@ export default class TrackMyBus {
             markers.push(stopMarker);
 
             google.maps.event.addListener(stopMarker, 'click', function (e) {
-                let busStopId = $(this)[0].id;
-                that.notifyMe(busStopId);
+                if (isNotificationGranted) {
+                    let busStopId = $(this)[0].id;
+                    that.notifyMe(busStopId);
 
-                toaster('You will be notified when your stop is approaching. ' + busStopId);
+                    toaster('You will be notified when your stop is approaching. ' + busStopId);
+                } else {
+                    toaster('Please enable your notifications to know if your bus is approaching.');
+                }
             });
         });
 
