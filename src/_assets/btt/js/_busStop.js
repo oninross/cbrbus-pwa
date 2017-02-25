@@ -151,14 +151,15 @@ function processData(xml) {
         let monitoredStopVisitArr,
             $monitoredStopVisitArr,
             vehicleRefNum,
-            vehicleRefArr;
+            vehicleRefArr,
+            tempArr = [];
 
         $monitoredStopVisit.each(function (i, v) {
             monitoredStopVisitArr = $monitoredStopVisit[i];
             $monitoredStopVisitArr = $(monitoredStopVisitArr);
             serviceNum = $monitoredStopVisitArr.find('PublishedLineName')[0].innerHTML;
 
-
+        // <fold>
             // Check for Arrival time
             if ($monitoredStopVisitArr.find('ExpectedArrivalTime')[0] == undefined) {
                 if ($monitoredStopVisitArr.find('AimedArrivalTime')[0] == undefined) {
@@ -194,11 +195,12 @@ function processData(xml) {
             } else {
                 vehicleRefNum = $monitoredStopVisitArr.find('VehicleRef')[0].innerHTML;
             }
+        // </fold>
 
             vehicleRefArr = [];
             vehicleRefArr.push(vehicleRefNum);
 
-            obj = {
+                obj = {
                 vehicleRefNum: vehicleRefArr,
                 serviceNum: serviceNum,
                 feature: vehicleFeatureArr,
@@ -207,43 +209,106 @@ function processData(xml) {
 
             // Initial push for busArr
             if (i == 0) {
-                busArr.push(serviceNum);
+                console.log('Initial Push');
                 busObjArr.push(obj);
+            } else {
+                console.log('Second Push');
+                $.each(busObjArr, function (i, v) {
+                    if (v.serviceNum == serviceNum) {
+                        // Bus Service is present
+
+                        if (v.estimatedArrival.length < 2) {
+                            // Estimated Arrival per service is less than 3
+                            tempArr = [];
+                            tempArr.push(etaMin);
+                            v.estimatedArrival = v.estimatedArrival.concat(tempArr);
+                        } else {
+                            // Sort to array and replace which is more closer to arriving
+                            $.each(v.estimatedArrival, function (ind, val) {
+                                if (val > etaMin) {
+                                    v.estimatedArrival[ind] = etaMin;
+                                }
+                            });
+
+                            // Sort time array in descending order
+                            v.estimatedArrival.sort(function (a, b) {
+                                return a - b;
+                            });
+                        }
+                    }
+                });
             }
+
+
+        // <fold>
+            // vehicleRefArr = [];
+            // vehicleRefArr.push(vehicleRefNum);
+
+            // obj = {
+            //     vehicleRefNum: vehicleRefArr,
+            //     serviceNum: serviceNum,
+            //     feature: vehicleFeatureArr,
+            //     estimatedArrival: etaArr
+            // };
+
+            // Initial push for busArr
+            // if (i == 0) {
+            //     busArr.push(serviceNum);
+            //     busObjArr.push(obj);
+            // }
 
             // console.log(busObjArr)
             // Check if bus is already present in array
-            if (busArr.indexOf(serviceNum) == -1) {
-                // New Bus Service
-                busArr.push(serviceNum);
-                busObjArr.push(obj);
-            } else {
-                // Existing Bus Service
-                let busArrEta = busObjArr[busArr.indexOf(serviceNum)].estimatedArrival,
-                    busArrVehicleRef = busObjArr[busArr.indexOf(serviceNum)].vehicleRefNum;
+            // if (busArr.indexOf(serviceNum) == -1) {
+            //     // New Bus Service
+            //     busArr.push(serviceNum);
+            //     busObjArr.push(obj);
+            // } else {
+            //     // Existing Bus Service
+            //     let busArrEta = busObjArr[busArr.indexOf(serviceNum)].estimatedArrival,
+            //         busArrVehicleRef = busObjArr[busArr.indexOf(serviceNum)].vehicleRefNum;
 
-                if (busArrEta.length < 2 && busObjArr[0].estimatedArrival != etaMin) {
-                    busArrEta.push(etaMin);
-                    busArrVehicleRef.push(vehicleRefNum);
-                    busArrEta.sort(function (a, b) {
-                        busArrVehicleRef.swap(0, 1);
-                        busArrVehicleRef.splice(1, 1);
-                        return a - b;
-                    });
-                }
-            }
+            //     if (busArrEta.length < 2 && busObjArr[0].estimatedArrival != etaMin) {
+            //         busArrEta.push(etaMin);
+            //         busArrVehicleRef.push(vehicleRefNum);
+            //         busArrEta.sort(function (a, b) {
+            //             busArrVehicleRef.swap(0, 1);
+            //             busArrVehicleRef.splice(1, 1);
+            //             return a - b;
+            //         });
+            //     }
+            // }
+        // </fold>
+
+
+            // B: For testing...
+            // obj = {
+            //     vehicleRefNum: vehicleRefNum,
+            //     serviceNum: serviceNum,
+            //     feature: vehicleFeatureArr,
+            //     estimatedArrival: etaArr
+            // };
+            // cardMarkup += cardTemplate(obj);
+            // E: For testing...
         });
 
-        let byServiceNum = busObjArr.slice(0);
+        console.log(busObjArr);
 
-        byServiceNum.sort(function (a, b) {
-            return a.serviceNum - b.serviceNum;
-        });
-
-        $.each(byServiceNum, function (i, v) {
+        $.each(busObjArr, function (i, v) {
             // Append Markup
-            cardMarkup += cardTemplate(byServiceNum[i]);
+            cardMarkup += cardTemplate(v);
         });
+
+        // let byServiceNum = busObjArr.slice(0);
+
+        // byServiceNum.sort(function (a, b) {
+        //     return a.serviceNum - b.serviceNum;
+        // });
+
+        // $.each(byServiceNum, function (i, v) {
+        //     // Append Markup
+        //     cardMarkup += cardTemplate(byServiceNum[i]);
+        // });
     } else {
         cardMarkup += cardEmptyTemplate({});
     }
@@ -305,6 +370,6 @@ Array.prototype.swap = function (x, y) {
     this[x] = this[y];
     this[y] = b;
     return this;
-}
+};
 
 export { lookupBusId }

@@ -219,7 +219,7 @@ $(() => {
             });
 
         if ($this.data('hint') !== undefined && $this.data('hint') !== '') {
-            $this.after('<span class="hint"><strong>*Hint: </strong>' + $this.data('hint') + '</span>');
+            $this.after('<span class="hint"><strong>*e.g.: </strong>' + $this.data('hint') + '</span>');
         }
 
         $('.placeholder').on('click', function () {

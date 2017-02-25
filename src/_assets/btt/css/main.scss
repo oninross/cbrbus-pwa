@@ -218,14 +218,16 @@
     }
 
     .eta {
-        border-top: 1px solid $grey;
+        border-top: 3px solid $black;
         clear: both;
-        font-size: 1.8em;
+        // font-size: 1.8em;
+        font-size: 1.3em;
         margin-top: 10px;
         padding-top: 10px;
 
         .next {
-            font-size: 0.778em;
+            // font-size: 0.778em;
+            margin-top: 5px;
         }
     }
 
