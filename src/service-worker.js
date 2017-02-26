@@ -13,11 +13,8 @@ var version = '0.8.3';
 */
 var offlineFundamentals = [
     'assets/btt/css/main.css',
-    // 'assets/btt/js/main.js',
     'assets/btt/api/services.json',
     'assets/btt/css/fonts/icomoon.woff',
-    'assets/btt/css/fonts/HelveticaNeue-Bold.woff',
-    'assets/btt/css/fonts/HelveticaNeue.woff',
     'index.html?homescreen=1',
     '/'
 ];
