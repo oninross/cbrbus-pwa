@@ -195,6 +195,7 @@ function processData(xml) {
             }
 
             obj = {
+                busStopId: busStopId,
                 vehicleRefNum: vehicleRefNum,
                 serviceNum: serviceNum,
                 feature: vehicleFeatureArr,
@@ -290,6 +291,7 @@ function processData(xml) {
 
 function cardListener() {
     let $this = $(this),
+        $busStopId = $this.data('busstopid'),
         $vehicleRefNum = $this.data('vehicleref'),
         $serviceRefNum = $this.data('servicenum');
 
@@ -309,7 +311,7 @@ function cardListener() {
     if ($vehicleRefNum == '') {
         toaster('Sorry, we can\t track this bus service.');
     } else {
-        window.location.href = '/trackmybus/?busId=' + $serviceRefNum + '&vehicleRef=' + $vehicleRefNum;
+        window.location.href = '/trackmybus/?busStopId=' + $busStopId + '&busId=' + $serviceRefNum + '&vehicleRef=' + $vehicleRefNum;
     }
 }
 

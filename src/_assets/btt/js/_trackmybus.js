@@ -80,8 +80,21 @@ export default class TrackMyBus {
                 lat: that.mapSettings.lat,
                 lng: that.mapSettings.long
             },
+            busStopCenter =  $.map(json, function (n) {
+                if (n.data == getQueryVariable('busStopId')) {
+                    return {
+                        lat: n.lat,
+                        lng: n.long
+                    };
+                }
+            }),
             currentIcon = {
                 url: that.mapSettings.marker,
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(32, 32)
+            },
+            busStopIcon = {
+                url: 'https://maps.google.com/mapfiles/kml/paddle/blu-blank_maps.png',
                 origin: new google.maps.Point(0, 0),
                 anchor: new google.maps.Point(32, 32)
             },
@@ -93,6 +106,10 @@ export default class TrackMyBus {
             }),
             stopMarker;
 
+            console.log('BUS:: ' + getQueryVariable('busStopId'))
+
+        console.log(busStopCenter[0])
+
         that.map = map;
 
         that.currentMarker = new google.maps.Marker({
@@ -100,6 +117,12 @@ export default class TrackMyBus {
             position: center,
             map: map
         });
+
+        that.busStopMarker = new google.maps.Marker({
+            icon: busStopIcon,
+            position: busStopCenter[0],
+            map: map
+        })
 
         $.each(json, function (i, v) {
             stopMarker = new google.maps.Marker({
