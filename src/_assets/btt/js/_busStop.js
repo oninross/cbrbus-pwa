@@ -227,12 +227,13 @@ function processData(xml) {
                                     v.vehicleRefNum = vehicleRefNum;
 
                                     // Sort time array in descending order
-                                    v.estimatedArrival.sort(function (a, b) {
-                                        return a - b;
-                                    });
 
                                     return false;
                                 }
+                            });
+
+                            v.estimatedArrival.sort(function (a, b) {
+                                return a - b;
                             });
                         }
 

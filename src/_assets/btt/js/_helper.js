@@ -2,8 +2,8 @@
 
 const loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/></svg></div>';
 
-// const BASE_URL = '192.168.1.8:8888'; // local
-const BASE_URL = '10.16.0.107:8888'; // local
+const BASE_URL = '192.168.1.7:8888'; // local
+// const BASE_URL = '10.16.0.107:8888'; // local
 // const BASE_URL = 'cbrserver.herokuapp.com'; // Production
 
 const API_KEY = 'A6F762'; // Development
