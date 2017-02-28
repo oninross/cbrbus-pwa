@@ -6,8 +6,8 @@ import { ripple, toaster } from './_material';
 import { checkBookmark, setBookmark } from './_bookmark';
 
 let isLoading = true,
-    busStopId,
-    busStopName;
+    busStopId = 0,
+    busStopName = '';
 
 $(() => {
     if ($('.timetable').length) {
@@ -45,6 +45,7 @@ $(() => {
 let lookupBusId = function (id, name) {
     let $xml = '';
 
+    busStopId = id;
     busStopName = name;
     isLoading = false;
 
@@ -145,6 +146,8 @@ function processData(xml) {
                 busStopId: busStopId,
                 isBookmarked: checkBookmark(busStopId) == true ? 'active' : ''
             };
+
+            console.log(obj)
 
             cardMarkup += cardHeader(obj);
         }
