@@ -109,7 +109,7 @@ function processData(xml) {
         serviceDelivery = json.Siri.ServiceDelivery,
         $status = serviceDelivery.Status;
 
-    console.log(json);;
+    // console.log(json);;
 
     if (!$status) {
         toaster('Whoops! Something went wrong!');
@@ -147,7 +147,7 @@ function processData(xml) {
                 isBookmarked: checkBookmark(busStopId) == true ? 'active' : ''
             };
 
-            console.log(obj)
+            // console.log(obj)
 
             cardMarkup += cardHeader(obj);
         }
@@ -207,47 +207,49 @@ function processData(xml) {
             }
 
             // Initial push for busArr
-            if (i == 0) {
-                console.log('Initial Push');
-                busArr.push(obj);
-            } else {
-                console.log('Second Push');
-                isBusPresent = false;
+            // if (i == 0) {
+            //     console.log('Initial Push');
+            //     busArr.push(obj);
+            // } else {
+            //     console.log('Second Push');
+            //     isBusPresent = false;
 
-                $.each(busArr, function (i, v) {
-                    if (v.serviceNum == serviceNum) {
-                        // Bus Service is present
-                        if (v.estimatedArrival.length < 2) {
-                            // Estimated Arrival per service is less than 3
-                            tempArr = [];
-                            tempArr.push(etaMin);
-                            v.estimatedArrival = v.estimatedArrival.concat(tempArr);
-                        } else {
-                            // Sort to array and replace which is more closer to arriving
-                            $.each(v.estimatedArrival, function (ind, val) {
-                                if (val > etaMin && v.estimatedArrival[ind] != etaMin) {
-                                    v.estimatedArrival[ind] = etaMin;
-                                    v.vehicleRefNum = vehicleRefNum;
+            //     $.each(busArr, function (i, v) {
+            //         if (v.serviceNum == serviceNum) {
+            //             // Bus Service is present
+            //             if (v.estimatedArrival.length < 2) {
+            //                 // Estimated Arrival per service is less than 3
+            //                 tempArr = [];
+            //                 tempArr.push(etaMin);
+            //                 v.estimatedArrival = v.estimatedArrival.concat(tempArr);
+            //             } else {
+            //                 // Sort to array and replace which is more closer to arriving
+            //                 $.each(v.estimatedArrival, function (ind, val) {
+            //                     if (val > etaMin && v.estimatedArrival[ind] != etaMin) {
+            //                         v.estimatedArrival[ind] = etaMin;
+            //                         v.vehicleRefNum = vehicleRefNum;
 
-                                    // Sort time array in descending order
+            //                         // Sort time array in descending order
 
-                                    return false;
-                                }
-                            });
+            //                         return false;
+            //                     }
+            //                 });
 
-                            v.estimatedArrival.sort(function (a, b) {
-                                return a - b;
-                            });
-                        }
+            //                 v.estimatedArrival.sort(function (a, b) {
+            //                     return a - b;
+            //                 });
+            //             }
 
-                        isBusPresent = true;
-                    }
-                });
+            //             isBusPresent = true;
+            //         }
+            //     });
 
-                if (!isBusPresent) {
-                    busArr.push(obj);
-                }
-            }
+            //     if (!isBusPresent) {
+            //         busArr.push(obj);
+            //     }
+            // }
+
+            busArr.push(obj);
         });
 
         // $.each(busArr, function (i, v) {

@@ -8,6 +8,7 @@ import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariabl
 
 let $window = $(window),
     isIntervalInit = false,
+    isNextStop = false,
     markers = [],
     busId,
     refreshInterval;
@@ -15,6 +16,8 @@ let $window = $(window),
 export default class TrackMyBus {
     constructor() {
         let that = this;
+
+        busId = getQueryVariable('busStopId');
 
         that.isGeolocationEnabled = true;
 
@@ -105,10 +108,6 @@ export default class TrackMyBus {
                 mapTypeControl: false
             }),
             stopMarker;
-
-            console.log('BUS:: ' + getQueryVariable('busStopId'))
-
-        console.log(busStopCenter[0])
 
         that.map = map;
 
@@ -218,11 +217,9 @@ export default class TrackMyBus {
 
         let $vehicleRefQuery = getQueryVariable('vehicleRef'),
             $vehicleActivity = $xml.find('VehicleActivity'),
-            vehicleLocation,
             $vehicleLocation,
             $vehicleLat,
             $vehicleLng,
-            blockRef,
             vehicleRef,
             stopPointRef,
             directionRef,
@@ -231,19 +228,14 @@ export default class TrackMyBus {
 
         $.each($vehicleActivity, function (i, v) {
             $v = $(v);
-
-            vehicleLocation = $v.find('VehicleLocation');
-            $vehicleLocation = vehicleLocation;
+            $vehicleLocation = $v.find('VehicleLocation');
             $vehicleLat = $vehicleLocation.find('Latitude');
             $vehicleLng = $vehicleLocation.find('Longitude');
-            blockRef = $v.find('BlockRef'),
             vehicleRef = $v.find('VehicleRef'),
             stopPointRef = $v.find('StopPointRef');
             directionRef = $v.find('DirectionRef');
 
             if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && vehicleRef[0] != undefined) {
-                console.log(vehicleRef[0].innerHTML)
-                console.log('stopPointRef:: ' + stopPointRef[0].innerHTML)
                 if (vehicleRef[0].innerHTML == $vehicleRefQuery) {
                     busMarker = new google.maps.Marker({
                         icon: 'https://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '_maps.png',     // small
@@ -268,11 +260,24 @@ export default class TrackMyBus {
                     isVehicleFound = true;
                     return false;
                 }
+
+                if (stopPointRef[0] != undefined && vehicleRef[0] != undefined) {
+                    console.log(stopPointRef[0].innerHTML + ' == ' +  busId);
+                    if (Number(stopPointRef[0].innerHTML) == Number(busId)) {
+                        isNextStop = true;
+                        return false;
+                    }
+                }
             }
         });
 
         if (!isVehicleFound) {
             toaster('Whoops! Sorry the vehicle you are tracking can not be found. Try again later.');
+            clearInterval(refreshInterval);
+        }
+
+        if (isNextStop) {
+            isNextStop = false;
             clearInterval(refreshInterval);
         }
     }
