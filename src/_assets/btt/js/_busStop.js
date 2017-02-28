@@ -6,7 +6,6 @@ import { ripple, toaster } from './_material';
 import { checkBookmark, setBookmark } from './_bookmark';
 
 let isLoading = true,
-    busObjArr = [],
     busStopId,
     busStopName;
 
@@ -105,203 +104,184 @@ let lookupBusId = function (id, name) {
 
 function processData(xml) {
     var xotree = new XML.ObjTree(),
-        json = xotree.parseXML(xml);
+        json = xotree.parseXML(xml),
+        serviceDelivery = json.Siri.ServiceDelivery,
+        $status = serviceDelivery.Status;
 
-    console.log(json);
-    // let $status = json.Siri.ServiceDelivery.Status,
-    //     $monitoringRef = json.Siri.ServiceDelivery.StopMonitoringDelivery.MonitoredStopVisit;
+    console.log(json);;
 
-    // if (!$status) {
-    //     toaster('Whoops! Something went wrong!');
-    //     return false;
-    // }
+    if (!$status) {
+        toaster('Whoops! Something went wrong!');
+        return false;
+    }
 
+    let $monitoredStopVisit = serviceDelivery.StopMonitoringDelivery.MonitoredStopVisit,
+        cardHeader = doT.template($('#card-header').html()),
+        cardTemplate = doT.template($('#card-template').html()),
+        cardEmptyTemplate = doT.template($('#card-empty-template').html()),
+        now = new Date(),
+        obj = {},
+        busArr = [],
+        vehicleFeatureArr = [],
+        tempArr = [],
+        etaMinArr = [],
+        vehicleRefNum = 0,
+        serviceNum = 0,
+        arr = 0,
+        eta = 0,
+        etaMin = 0,
+        icon = '',
+        cardMarkup = '',
+        vehicleFeatureRef = '',
+        isBusPresent = false;
 
+    getBusStopName();
 
+    if ($monitoredStopVisit.length) {
+        // Display Bus Stop Name if Available
+        if (busStopName != undefined) {
+            obj = {
+                busStopName: busStopName,
+                busStopId: busStopId,
+                isBookmarked: checkBookmark(busStopId) == true ? 'active' : ''
+            };
 
-    // let xmlDoc = $.parseXML(xml),
-    //     $xml = $(xmlDoc),
-    //     $status = $xml.find('Status')[0].innerHTML == 'true' ? true : false,
-    //     $monitoringRef = $xml.find('MonitoringRef');
+            cardMarkup += cardHeader(obj);
+        }
 
-    // if (!$status) {
-    //     toaster('Whoops! Something went wrong! Error (' + $xml.find('ErrorText')[0].innerHTML + ')');
-    //     return false;
-    // }
-
-    // console.log(xmlDoc)
-
-    // let $monitoredStopVisit = $xml.find('MonitoredStopVisit'),
-    //     cardHeader = doT.template($('#card-header').html()),
-    //     cardTemplate = doT.template($('#card-template').html()),
-    //     cardEmptyTemplate = doT.template($('#card-empty-template').html()),
-    //     now = new Date(),
-    //     isBusPresent = false,
-    //     obj = {},
-    //     vehicleFeatureArr = [],
-    //     etaArr = [],
-    //     cardMarkup = '',
-    //     vehicleFeatureRef = '',
-    //     serviceNum = '',
-    //     arr = '',
-    //     eta = '',
-    //     etaMin = '',
-    //     icon = '';
-
-    // getBusStopName();
-
-    // if ($monitoredStopVisit.length || $monitoringRef.length) {
-    //     busObjArr = [];
-
-    //     if (busStopName != undefined) {
-    //         obj = {
-    //             busStopName: busStopName,
-    //             busStopId: $monitoringRef[0].innerHTML,
-    //             isBookmarked: checkBookmark($monitoringRef[0].innerHTML) == true ? 'active' : ''
-    //         };
-
-    //         cardMarkup += cardHeader(obj);
-    //     }
-
-    //     let monitoredStopVisitArr,
-    //         $monitoredStopVisitArr,
-    //         vehicleRefNum,
-    //         tempArr = [];
-
-    //     $monitoredStopVisit.each(function (i, v) {
-    //         monitoredStopVisitArr = $monitoredStopVisit[i];
-    //         $monitoredStopVisitArr = $(monitoredStopVisitArr);
-    //         serviceNum = $monitoredStopVisitArr.find('PublishedLineName')[0].innerHTML;
-
-    //         // Check for Arrival time
-    //         if ($monitoredStopVisitArr.find('ExpectedArrivalTime')[0] == undefined) {
-    //             if ($monitoredStopVisitArr.find('AimedArrivalTime')[0] == undefined) {
-    //                 arr = new Date($monitoredStopVisitArr.find('AimedDepartureTime')[0].innerHTML);
-    //             } else {
-    //                 arr = new Date($monitoredStopVisitArr.find('AimedArrivalTime')[0].innerHTML);
-    //             }
-    //         } else {
-    //             arr = new Date($monitoredStopVisitArr.find('ExpectedArrivalTime')[0].innerHTML);
-    //         }
+        $.each($monitoredStopVisit, function (i, v) {
+            // Get vehicle reference number
+            vehicleRefNum = v.MonitoredVehicleJourney.VehicleRef;
+            if (vehicleRefNum == undefined) {
+                vehicleRefNum = null;
+            }
 
 
-    //         // Check for Vehicle Features (Wheelchair or Bike Rack)
-    //         vehicleFeatureArr = [];
-    //         vehicleFeatureRef = $monitoredStopVisitArr.find('VehicleFeatureRef');
-    //         for (let j = 0, m = vehicleFeatureRef.length; j < m; j++) {
-    //             icon = vehicleFeatureRef[j].innerHTML;
-    //             icon = icon.replace(' ', '-').toLowerCase();
-    //             vehicleFeatureArr.push(icon);
-    //         }
+            // Check for Arrival time
+            let $monitoredCall = v.MonitoredVehicleJourney.MonitoredCall;
+
+            if ($monitoredCall.ExpectedArrivalTime == undefined) {
+                if ($monitoredCall.AimedArrivalTime == undefined) {
+                    arr = new Date($monitoredCall.AimedDepartureTime);
+                } else {
+                    arr = new Date($monitoredCall.AimedArrivalTime);
+                }
+            } else {
+                arr = new Date($monitoredCall.ExpectedArrivalTime);
+            }
+
+            // Calculate ETA
+            eta = arr.getTime() - now.getTime();
+            etaMin = Math.round(eta / 60000);
+            etaMinArr = [];
+            etaMinArr.push(etaMin);
 
 
-    //         // Calculate ETA
-    //         eta = arr.getTime() - now.getTime();
-    //         etaMin = Math.round(eta / 60000);
-    //         etaArr = [];
-    //         etaArr.push(etaMin);
+            // Check for Vehicle Features (Wheelchair or Bike Rack)
+            vehicleFeatureArr = [];
+            vehicleFeatureRef = v.MonitoredVehicleJourney.VehicleFeatureRef;
+            if (Array.isArray(vehicleFeatureRef)) {
+                for (let j = 0, m = vehicleFeatureRef.length; j < m; j++) {
+                    icon = vehicleFeatureRef[j];
+                    icon = icon.replace(' ', '-').toLowerCase();
+                    vehicleFeatureArr.push(icon);
+                }
+            } else {
+                if (vehicleFeatureRef !== undefined) {
+                    icon = vehicleFeatureRef;
+                    icon = icon.replace(' ', '-').toLowerCase();
+                    vehicleFeatureArr.push(icon);
+                }
+            }
 
+            serviceNum = v.MonitoredVehicleJourney.PublishedLineName;
+            obj = {
+                busStopId: busStopId,
+                vehicleRefNum: vehicleRefNum,
+                serviceNum: serviceNum,
+                feature: vehicleFeatureArr,
+                estimatedArrival: etaMinArr
+            }
 
-    //         // Get vehicle reference number
-    //         if ($monitoredStopVisitArr.find('VehicleRef')[0] == undefined) {
-    //             vehicleRefNum = null;
-    //         } else {
-    //             vehicleRefNum = $monitoredStopVisitArr.find('VehicleRef')[0].innerHTML;
-    //         }
+            // Initial push for busArr
+            if (i == 0) {
+                console.log('Initial Push');
+                busArr.push(obj);
+            } else {
+                console.log('Second Push');
+                isBusPresent = false;
 
-    //         obj = {
-    //             busStopId: busStopId,
-    //             vehicleRefNum: vehicleRefNum,
-    //             serviceNum: serviceNum,
-    //             feature: vehicleFeatureArr,
-    //             estimatedArrival: etaArr
-    //         };
+                $.each(busArr, function (i, v) {
+                    if (v.serviceNum == serviceNum) {
+                        // Bus Service is present
+                        if (v.estimatedArrival.length < 2) {
+                            // Estimated Arrival per service is less than 3
+                            tempArr = [];
+                            tempArr.push(etaMin);
+                            v.estimatedArrival = v.estimatedArrival.concat(tempArr);
+                        } else {
+                            // Sort to array and replace which is more closer to arriving
+                            $.each(v.estimatedArrival, function (ind, val) {
+                                if (val > etaMin && v.estimatedArrival[ind] != etaMin) {
+                                    v.estimatedArrival[ind] = etaMin;
+                                    v.vehicleRefNum = vehicleRefNum;
 
-    //         // Initial push for busArr
-    //         if (i == 0) {
-    //             console.log('Initial Push');
-    //             busObjArr.push(obj);
-    //         } else {
-    //             console.log('Second Push');
-    //             isBusPresent = false;
+                                    // Sort time array in descending order
+                                    v.estimatedArrival.sort(function (a, b) {
+                                        return a - b;
+                                    });
 
-    //             $.each(busObjArr, function (i, v) {
-    //                 if (v.serviceNum == serviceNum) {
-    //                     // Bus Service is present
-    //                     if (v.estimatedArrival.length < 2) {
-    //                         // Estimated Arrival per service is less than 3
-    //                         tempArr = [];
-    //                         tempArr.push(etaMin);
-    //                         v.estimatedArrival = v.estimatedArrival.concat(tempArr);
-    //                     } else {
-    //                         // Sort to array and replace which is more closer to arriving
-    //                         $.each(v.estimatedArrival, function (ind, val) {
-    //                             if (val > etaMin && v.estimatedArrival[ind] != etaMin) {
-    //                                 v.estimatedArrival[ind] = etaMin;
-    //                                 v.vehicleRefNum = vehicleRefNum;
+                                    return false;
+                                }
+                            });
+                        }
 
-    //                                 // Sort time array in descending order
-    //                                 v.estimatedArrival.sort(function (a, b) {
-    //                                     return a - b;
-    //                                 });
+                        isBusPresent = true;
+                    }
+                });
 
-    //                                 return false;
-    //                             }
-    //                         });
-    //                     }
+                if (!isBusPresent) {
+                    busArr.push(obj);
+                }
+            }
+        });
 
-    //                     isBusPresent = true;
-    //                 }
-    //             });
+        // $.each(busArr, function (i, v) {
+        //     // Append Markup
+        //     cardMarkup += cardTemplate(v);
+        // });
 
-    //             if (!isBusPresent) {
-    //                 busObjArr.push(obj);
-    //             }
-    //         }
+        let byServiceNum = busArr.slice(0);
 
-    //         // B: For testing...
-    //         // cardMarkup += cardTemplate(obj);
-    //         // E: For testing...
-    //     });
+        byServiceNum.sort(function (a, b) {
+            return a.serviceNum - b.serviceNum;
+        });
 
-    //     console.log(busObjArr);
-
-    //     // $.each(busObjArr, function (i, v) {
-    //     //     // Append Markup
-    //     //     cardMarkup += cardTemplate(v);
-    //     // });
-
-    //     let byServiceNum = busObjArr.slice(0);
-
-    //     byServiceNum.sort(function (a, b) {
-    //         return a.serviceNum - b.serviceNum;
-    //     });
-
-    //     $.each(byServiceNum, function (i, v) {
-    //         // Append Markup
-    //         cardMarkup += cardTemplate(byServiceNum[i]);
-    //     });
-    // } else {
-    //     cardMarkup += cardEmptyTemplate({});
-    // }
+        $.each(byServiceNum, function (i, v) {
+            // Append Markup
+            cardMarkup += cardTemplate(byServiceNum[i]);
+        });
+    } else {
+        cardMarkup += cardEmptyTemplate({});
+    }
 
     // // Render Markup
-    // $('.cards-wrapper').html(cardMarkup);
+    $('.cards-wrapper').html(cardMarkup);
 
-    // TweenMax.to('.btn-refresh', 0.75, {
-    //     autoAlpha: 1,
-    //     top: 0,
-    //     ease: Expo.easeOut
-    // });
+    TweenMax.to('.btn-refresh', 0.75, {
+        autoAlpha: 1,
+        top: 0,
+        ease: Expo.easeOut
+    });
 
-    // TweenMax.staggerTo('.card', 0.75, {
-    //     opacity: 1,
-    //     top: 0,
-    //     ease: Expo.easeOut,
-    //     delay: 0.1
-    // }, 0.1);
+    TweenMax.staggerTo('.card', 0.75, {
+        opacity: 1,
+        top: 0,
+        ease: Expo.easeOut,
+        delay: 0.1
+    }, 0.1);
 
-    // $('.cards-wrapper').on('click', '.card', cardListener);
+    $('.cards-wrapper').on('click', '.card', cardListener);
 };
 
 function cardListener() {
@@ -328,7 +308,7 @@ function cardListener() {
     } else {
         window.location.href = '/trackmybus/?busStopId=' + $busStopId + '&busId=' + $serviceRefNum + '&vehicleRef=' + $vehicleRefNum;
     }
-}
+};
 
 function getBusStopName() {
     if (getQueryVariable('busStopName')) {
