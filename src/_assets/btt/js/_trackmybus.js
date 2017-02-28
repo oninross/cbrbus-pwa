@@ -52,7 +52,7 @@ export default class TrackMyBus {
         clusterScript.type = 'text/javascript';
         clusterScript.src = clusterScriptStr;
 
-        setInterval(function () {
+        setTimeout(function () {
             document.body.appendChild(script);
         }, 2500);
     }

@@ -82,7 +82,7 @@ export default class NearBy {
         clusterScript.type = 'text/javascript';
         clusterScript.src = clusterScriptStr;
 
-        setInterval(function () {
+        setTimeout(function () {
             document.body.appendChild(script);
         }, 2500);
     }
