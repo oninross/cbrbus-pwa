@@ -126,6 +126,7 @@ function processData(xml) {
         vehicleFeatureArr = [],
         tempArr = [],
         etaMinArr = [],
+        vehicleRefNumArr = [],
         vehicleRefNum = 0,
         serviceNum = 0,
         arr = 0,
@@ -158,10 +159,13 @@ function processData(xml) {
             isBusPresent = false;
 
             // Get vehicle reference number
+            vehicleRefNumArr = [];
             vehicleRefNum = v.MonitoredVehicleJourney.VehicleRef;
             if (vehicleRefNum == undefined) {
                 vehicleRefNum = null;
             }
+
+            vehicleRefNumArr.push(vehicleRefNum);
 
 
             // Check for Arrival time
@@ -204,19 +208,11 @@ function processData(xml) {
             serviceNum = v.MonitoredVehicleJourney.PublishedLineName;
             obj = {
                 busStopId: busStopId,
-                vehicleRefNum: vehicleRefNum,
+                vehicleRefNum: vehicleRefNumArr,
                 serviceNum: serviceNum,
                 feature: vehicleFeatureArr,
                 estimatedArrival: etaMinArr
             }
-
-            // Initial push for busArr
-            // if (i == 0) {
-            //     console.log('Initial Push');
-            //     // busArr.push(obj);
-            // } else {
-            //     console.log('Second Push');
-            //     isBusPresent = false;
 
             $.each(busArr, function (i, v) {
                 if (v.serviceNum == serviceNum) {
@@ -229,16 +225,15 @@ function processData(xml) {
                         tempArr.push(etaMin);
                         v.estimatedArrival = v.estimatedArrival.concat(tempArr);
 
-                        if (v.vehicleRefNum != null && v.vehicleRefNum.length < 2) {
-                            tempArr = v.vehicleRefNum;
-                            tempArr.push(vehicleRefNum);
-                            v.vehicleRefNum = v.vehicleRefNum.concat(tempArr);
-                        }
+                        tempArr = [];
+                        tempArr.push(vehicleRefNum);
+                        v.vehicleRefNum = v.vehicleRefNum.concat(tempArr);
                     } else {
-                        // Sort to array and replace which is more closer to arriving
+                        // Replace timing that has earlier arrival
                         $.each(v.estimatedArrival, function (ind, val) {
                             if (val > etaMin && v.estimatedArrival[ind] != etaMin) {
                                 v.estimatedArrival[ind] = etaMin;
+                                v.vehicleRefNum[ind] = vehicleRefNum;
                                 return false;
                             }
                         });
@@ -249,19 +244,20 @@ function processData(xml) {
             if (!isBusPresent) {
                 busArr.push(obj);
             }
-            // }
-
-            // busArr.push(obj);
         });
-
 
         // Sort bus timings
         $.each(busArr, function (i, v) {
             // Append Markup - FOR TESTING ONLY
             // cardMarkup += cardTemplate(v);
-            v.estimatedArrival.sort(function (a, b) {
-                return a - b;
-            });
+
+            if (v.estimatedArrival[0] > v.estimatedArrival[1]) {
+                v.estimatedArrival.sort();
+                tempArr = v.vehicleRefNum;
+                tempArr.swap(0, 1);
+                v.vehicleRefNum = tempArr;
+
+            }
         });
 
         let byServiceNum = busArr.slice(0);
