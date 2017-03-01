@@ -4,7 +4,7 @@
 // import provider from 'providers';
 // import CartoDB from 'cartodb';
 import { ripple, toaster } from './_material';
-import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariable } from './_helper';
+import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariable, isNotificationGranted } from './_helper';
 
 let $window = $(window),
     isIntervalInit = false,
@@ -16,6 +16,8 @@ export default class TrackMyBus {
     constructor() {
         let that = this;
 
+        busId = getQueryVariable('busStopId');
+
         that.isGeolocationEnabled = true;
 
         window.II.googleMap = this;
@@ -26,6 +28,7 @@ export default class TrackMyBus {
                 'long': position.coords.longitude,
                 'zoom': 12,
                 'marker': '/assets/btt/images/currentMarker.png'
+                // 'marker': 'https://maps.google.com/mapfiles/kml/paddle/blu-blank_maps.png'
             };
 
             that.loadGoogleMap();
@@ -51,7 +54,7 @@ export default class TrackMyBus {
         clusterScript.type = 'text/javascript';
         clusterScript.src = clusterScriptStr;
 
-        setInterval(function () {
+        setTimeout(function () {
             document.body.appendChild(script);
         }, 2500);
     }
@@ -79,11 +82,23 @@ export default class TrackMyBus {
                 lat: that.mapSettings.lat,
                 lng: that.mapSettings.long
             },
+            busStopCenter =  $.map(json, function (n) {
+                if (n.data == getQueryVariable('busStopId')) {
+                    return {
+                        lat: n.lat,
+                        lng: n.long
+                    };
+                }
+            }),
             currentIcon = {
                 url: that.mapSettings.marker,
-                size: new google.maps.Size(24, 24),
                 origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(12, 12)
+                anchor: new google.maps.Point(32, 32)
+            },
+            busStopIcon = {
+                url: 'https://maps.google.com/mapfiles/kml/paddle/blu-blank_maps.png',
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(32, 32)
             },
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: that.mapSettings.zoom,
@@ -101,12 +116,21 @@ export default class TrackMyBus {
             map: map
         });
 
+        that.busStopMarker = new google.maps.Marker({
+            icon: busStopIcon,
+            position: busStopCenter[0],
+            map: map
+        })
+
         $.each(json, function (i, v) {
             stopMarker = new google.maps.Marker({
                 id: v.data,
                 position: {
                     lat: v.lat,
                     lng: v.long
+                },
+                icon: {
+                    url: '/assets/btt/images/busMarker.png'
                 },
                 map: map,
                 zIndex: 1
@@ -115,17 +139,30 @@ export default class TrackMyBus {
             markers.push(stopMarker);
 
             google.maps.event.addListener(stopMarker, 'click', function (e) {
-                let busStopId = $(this)[0].id;
-                that.notifyMe(busStopId);
+                if (isNotificationGranted) {
+                    let busStopId = $(this)[0].id;
+                    that.notifyMe(busStopId);
 
-                toaster('You will be notified when your stop is approaching. ' + busStopId);
+                    toaster('You will be notified when your stop is approaching. ' + busStopId);
+                } else {
+                    toaster('Please enable your notifications to know if your bus is approaching.');
+                }
             });
         });
 
         // Add a marker clusterer to manage the markers.
-        let markerCluster = new MarkerClusterer(map, markers, {
+        let clusterStyles = [
+            {
+                url: '/assets/btt/images/cluster.png',
+                height: 40,
+                width: 40,
+                textColor: '#ffffff'
+            }
+        ],
+        markerCluster = new MarkerClusterer(map, markers, {
+            styles: clusterStyles,
             imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
-            maxZoom: 18,
+            maxZoom: 15,
             averageCenter: true
         });
 
@@ -179,12 +216,11 @@ export default class TrackMyBus {
 
         let $vehicleRefQuery = getQueryVariable('vehicleRef'),
             $vehicleActivity = $xml.find('VehicleActivity'),
-            vehicleLocation,
             $vehicleLocation,
             $vehicleLat,
             $vehicleLng,
-            blockRef,
             vehicleRef,
+            onwardCall,
             stopPointRef,
             directionRef,
             busMarker,
@@ -192,28 +228,24 @@ export default class TrackMyBus {
 
         $.each($vehicleActivity, function (i, v) {
             $v = $(v);
-
-            vehicleLocation = $v.find('VehicleLocation');
-            $vehicleLocation = vehicleLocation;
+            $vehicleLocation = $v.find('VehicleLocation');
             $vehicleLat = $vehicleLocation.find('Latitude');
             $vehicleLng = $vehicleLocation.find('Longitude');
-            blockRef = $v.find('BlockRef'),
             vehicleRef = $v.find('VehicleRef'),
-            stopPointRef = $v.find('StopPointRef');
+            onwardCall = $v.find('OnwardCall');
+            stopPointRef = $(onwardCall).find('StopPointRef');
             directionRef = $v.find('DirectionRef');
 
             if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && vehicleRef[0] != undefined) {
-                console.log(vehicleRef[0].innerHTML)
-                console.log('stopPointRef:: ' + stopPointRef[0].innerHTML)
                 if (vehicleRef[0].innerHTML == $vehicleRefQuery) {
                     busMarker = new google.maps.Marker({
-                        icon: 'https://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '_maps.png',
+                        icon: 'https://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '_maps.png',     // small
+                        // icon: 'https://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '.png',  // large
                         position: {
                             lat: Number($vehicleLat[0].innerHTML),
                             lng: Number($vehicleLng[0].innerHTML)
                         },
-                        map: that.map,
-                        zIndex: 99999999
+                        map: that.map
                     });
 
                     // var pt1 = new google.maps.LatLng($vehicleLat[0].innerHTML, $vehicleLng[0].innerHTML),
@@ -228,6 +260,14 @@ export default class TrackMyBus {
 
                     isVehicleFound = true;
                     return false;
+                }
+
+            }
+
+            if (stopPointRef[0] != undefined && vehicleRef[0] != undefined) {
+                console.log(stopPointRef[0].innerHTML + ' == ' +  busId);
+                if (Number(stopPointRef[0].innerHTML) == Number(busId)) {
+                    clearInterval(refreshInterval);
                 }
             }
         });
