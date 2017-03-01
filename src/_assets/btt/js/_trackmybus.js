@@ -8,7 +8,6 @@ import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariabl
 
 let $window = $(window),
     isIntervalInit = false,
-    isNextStop = false,
     markers = [],
     busId,
     refreshInterval;
@@ -221,6 +220,7 @@ export default class TrackMyBus {
             $vehicleLat,
             $vehicleLng,
             vehicleRef,
+            onwardCall,
             stopPointRef,
             directionRef,
             busMarker,
@@ -232,7 +232,8 @@ export default class TrackMyBus {
             $vehicleLat = $vehicleLocation.find('Latitude');
             $vehicleLng = $vehicleLocation.find('Longitude');
             vehicleRef = $v.find('VehicleRef'),
-            stopPointRef = $v.find('StopPointRef');
+            onwardCall = $v.find('OnwardCall');
+            stopPointRef = $(onwardCall).find('StopPointRef');
             directionRef = $v.find('DirectionRef');
 
             if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && vehicleRef[0] != undefined) {
@@ -261,23 +262,18 @@ export default class TrackMyBus {
                     return false;
                 }
 
-                if (stopPointRef[0] != undefined && vehicleRef[0] != undefined) {
-                    console.log(stopPointRef[0].innerHTML + ' == ' +  busId);
-                    if (Number(stopPointRef[0].innerHTML) == Number(busId)) {
-                        isNextStop = true;
-                        return false;
-                    }
+            }
+
+            if (stopPointRef[0] != undefined && vehicleRef[0] != undefined) {
+                console.log(stopPointRef[0].innerHTML + ' == ' +  busId);
+                if (Number(stopPointRef[0].innerHTML) == Number(busId)) {
+                    clearInterval(refreshInterval);
                 }
             }
         });
 
         if (!isVehicleFound) {
             toaster('Whoops! Sorry the vehicle you are tracking can not be found. Try again later.');
-            clearInterval(refreshInterval);
-        }
-
-        if (isNextStop) {
-            isNextStop = false;
             clearInterval(refreshInterval);
         }
     }
