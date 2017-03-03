@@ -8,6 +8,8 @@
     "orientation": "portrait",
     "background_color" : "#ffffff",
     "theme_color": "#383838",
+    "gcm_sender_id": "135415812168",
+    "gcm_user_visible_only": true,
     "icons": [
         {
             "src": "/assets/btt/images/favicon/android-icon-36x36.png",

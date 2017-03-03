@@ -243,9 +243,9 @@ window.addEventListener('load', function () {
                         // Otherwise, subscribe the user (userVisibleOnly allows to specify that we don't plan to
                         // send browser push notifications that don't have a visible effect for the user).
                         return serviceWorkerRegistration.pushManager.subscribe({
-                                userVisibleOnly: true,
-                                applicationServerKey: convertedVapidKey
-                            });
+                            userVisibleOnly: true,
+                            applicationServerKey: convertedVapidKey
+                        });
                     });
             });
         }).then(function (subscription) { //chaining the subscription promise object
@@ -264,6 +264,18 @@ window.addEventListener('load', function () {
                 key: key,
                 authSecret: authSecret
             };
+            fetch('//' + BASE_URL + '/register', {
+                method: 'post',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    endpoint: endpoint,
+                    key: key,
+                    authSecret: authSecret
+                })
+            });
+
         })
         .catch(function (whut) {
             console.error('uh oh... ');
