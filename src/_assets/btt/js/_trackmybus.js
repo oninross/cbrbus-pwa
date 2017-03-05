@@ -138,16 +138,16 @@ export default class TrackMyBus {
 
             markers.push(stopMarker);
 
-            google.maps.event.addListener(stopMarker, 'click', function (e) {
-                if (isNotificationGranted) {
-                    let busStopId = $(this)[0].id;
-                    that.notifyMe(busStopId);
+            // google.maps.event.addListener(stopMarker, 'click', function (e) {
+            //     if (isNotificationGranted) {
+            //         let busStopId = $(this)[0].id;
+            //         that.notifyMe(busStopId);
 
-                    toaster('You will be notified when your stop is approaching. ' + busStopId);
-                } else {
-                    toaster('Please enable your notifications to know if your bus is approaching.');
-                }
-            });
+            //         toaster('You will be notified when your stop is approaching. ' + busStopId);
+            //     } else {
+            //         toaster('Please enable your notifications to know if your bus is approaching.');
+            //     }
+            // });
         });
 
         // Add a marker clusterer to manage the markers.
@@ -171,6 +171,8 @@ export default class TrackMyBus {
 
     notifyMe(id) {
         var that = this;
+
+        // console.log('endpoint:  ' + window.II.pushData.endpoint)
 
         fetch('//' + BASE_URL + '/sendNotification', {
             method: 'post',
@@ -221,6 +223,7 @@ export default class TrackMyBus {
             $vehicleLng,
             vehicleRef,
             onwardCall,
+            monitoredCall,
             stopPointRef,
             directionRef,
             busMarker,
@@ -231,7 +234,7 @@ export default class TrackMyBus {
             $vehicleLocation = $v.find('VehicleLocation');
             $vehicleLat = $vehicleLocation.find('Latitude');
             $vehicleLng = $vehicleLocation.find('Longitude');
-            vehicleRef = $v.find('VehicleRef'),
+            vehicleRef = $v.find('VehicleRef');
             onwardCall = $v.find('OnwardCall');
             stopPointRef = $(onwardCall).find('StopPointRef');
             directionRef = $v.find('DirectionRef');
@@ -259,17 +262,23 @@ export default class TrackMyBus {
                     markers.push(busMarker);
 
                     isVehicleFound = true;
-                    return false;
-                }
-
-            }
-
-            if (stopPointRef[0] != undefined && vehicleRef[0] != undefined) {
-                console.log(stopPointRef[0].innerHTML + ' == ' +  busId);
-                if (Number(stopPointRef[0].innerHTML) == Number(busId)) {
-                    clearInterval(refreshInterval);
+                    // return false;
                 }
             }
+
+            // if (stopPointRef[0] != undefined && stopPointRef[0] != '' && vehicleRef[0] != undefined) {
+            //     // console.log('onwardcall:: ' + stopPointRef[0].innerHTML + ' == ' +  busId);
+            //     if (Number(stopPointRef[0].innerHTML) == Number(busId)) {
+            //         clearInterval(refreshInterval);
+            //     }
+            // } else {
+            //     monitoredCall = $v.find('MonitoredCall');
+            //     stopPointRef = $(monitoredCall).find('StopPointRef');
+            //     // console.log('no onwardcall:: ' + stopPointRef[0].innerHTML + ' == ' +  busId);
+            //     if (Number(stopPointRef[0].innerHTML) == Number(busId)) {
+            //         clearInterval(refreshInterval);
+            //     }
+            // }
         });
 
         if (!isVehicleFound) {

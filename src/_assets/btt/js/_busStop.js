@@ -116,8 +116,7 @@ function processData(xml) {
         return false;
     }
 
-    let $monitoredStopVisit = serviceDelivery.StopMonitoringDelivery.MonitoredStopVisit,
-        cardHeader = doT.template($('#card-header').html()),
+    let cardHeader = doT.template($('#card-header').html()),
         cardTemplate = doT.template($('#card-template').html()),
         cardEmptyTemplate = doT.template($('#card-empty-template').html()),
         now = new Date(),
@@ -139,7 +138,12 @@ function processData(xml) {
 
     getBusStopName();
 
-    if ($monitoredStopVisit.length) {
+    let $stopMonitoringDelivery = serviceDelivery.StopMonitoringDelivery;
+
+    if ($stopMonitoringDelivery == undefined) {
+        cardMarkup += cardEmptyTemplate({});
+    } else {
+        let $monitoredStopVisit = $stopMonitoringDelivery.MonitoredStopVisit
         // Display Bus Stop Name if Available
         if (busStopName != undefined) {
             obj = {
@@ -270,8 +274,6 @@ function processData(xml) {
             // Append Markup
             cardMarkup += cardTemplate(byServiceNum[i]);
         });
-    } else {
-        cardMarkup += cardEmptyTemplate({});
     }
 
     // // Render Markup
