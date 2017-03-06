@@ -201,23 +201,57 @@ self.addEventListener("activate", function (event) {
     );
 });
 
-/* Push Notifications
-*/
+/*
+ * Push Notifications
+ */
 self.addEventListener("push", function (event) {
     console.log('Push message received', event);
+
+    var arrStr = event.data ? event.data.text() : 'no payload',
+        arr = [];
+
+    if (arrStr != 'no payload') {
+        arr = arrStr.split(',');
+
+        var busId = Number(arr[0]),
+            vehicleRef = Number(arr[1])
+    }
 
     var payload = {
         title: 'CBR Buses',
         body: 'Your bus stop is next',
         icon: 'https://cbrbuses.firebaseapp.com/assets/btt/images/notify-image.png',
-        url: 'https://cbrbuses.firebaseapp.com/'
+        url: 'https://cbrbuses.firebaseapp.com/?busId=' + busId + '&vehicleRef=' + vehicleRef
     };
 
     event.waitUntil(
         self.registration.showNotification(payload.title, {
             body: payload.body,
             icon: payload.icon,
-            tag: payload.url + payload.body + payload.icon + payload.title
+            tag: payload.url + payload.body + payload.icon + payload.title,
+            vibrate: [500, 500, 500]
         })
     );
+});
+
+self.addEventListener('notificationclick', function (event) {
+    console.log('On notification click: ', event.notification.tag);
+    event.notification.close();
+
+    // This looks to see if the current is already open and
+    // focuses if it is
+    event.waitUntil(clients.matchAll({
+        type: "window"
+    }).then(function (clientList) {
+        for (var i = 0; i < clientList.length; i++) {
+            var client = clientList[i];
+            if (client.url == '/' && 'focus' in client) {
+                return client.focus();
+            }
+        }
+
+        if (clients.openWindow) {
+            return clients.openWindow('/');
+        }
+    }));
 });
