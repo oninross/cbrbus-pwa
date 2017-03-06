@@ -282,10 +282,6 @@ window.addEventListener('load', function () {
             console.error('uh oh... ');
             console.error(whut);
         });
-
-    window.addEventListener('beforeinstallprompt', function (e) {
-        outputElement.textContent = 'beforeinstallprompt Event fired';
-    });
 });
 
 window.addEventListener('beforeinstallprompt', function (e) {
