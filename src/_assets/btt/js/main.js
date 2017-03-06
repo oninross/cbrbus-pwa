@@ -264,6 +264,7 @@ window.addEventListener('load', function () {
                 key: key,
                 authSecret: authSecret
             };
+
             fetch('//' + BASE_URL + '/register', {
                 method: 'post',
                 headers: {
