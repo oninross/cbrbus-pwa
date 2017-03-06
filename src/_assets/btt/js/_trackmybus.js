@@ -266,19 +266,19 @@ export default class TrackMyBus {
                 }
             }
 
-            if (stopPointRef[0] != undefined && stopPointRef[0] != '' && vehicleRef[0] != undefined) {
-                // console.log('onwardcall:: ' + stopPointRef[0].innerHTML + ' == ' +  busId);
-                if (Number(stopPointRef[0].innerHTML) == Number(busId)) {
-                    clearInterval(refreshInterval);
-                }
-            } else {
-                monitoredCall = $v.find('MonitoredCall');
-                stopPointRef = $(monitoredCall).find('StopPointRef');
-                // console.log('no onwardcall:: ' + stopPointRef[0].innerHTML + ' == ' +  busId);
-                if (Number(stopPointRef[0].innerHTML) == Number(busId)) {
-                    clearInterval(refreshInterval);
-                }
-            }
+            // if (stopPointRef[0] != undefined && stopPointRef[0] != '' && vehicleRef[0] != undefined) {
+            //     // console.log('onwardcall:: ' + stopPointRef[0].innerHTML + ' == ' +  busId);
+            //     if (Number(stopPointRef[0].innerHTML) == Number(busId)) {
+            //         clearInterval(refreshInterval);
+            //     }
+            // } else {
+            //     monitoredCall = $v.find('MonitoredCall');
+            //     stopPointRef = $(monitoredCall).find('StopPointRef');
+            //     // console.log('no onwardcall:: ' + stopPointRef[0].innerHTML + ' == ' +  busId);
+            //     if (Number(stopPointRef[0].innerHTML) == Number(busId)) {
+            //         clearInterval(refreshInterval);
+            //     }
+            // }
         });
 
         if (!isVehicleFound) {
