@@ -16,6 +16,7 @@ export default class TrackMyBus {
     constructor() {
         let that = this;
 
+        // Just to wake up the server IF its sleeping
         fetch('//' + BASE_URL + '/register', {
             method: 'post'
         });
