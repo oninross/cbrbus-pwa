@@ -156,17 +156,20 @@ self.addEventListener('fetch', function (event) {
     );
 });
 
+var arr = [],
+    busId = 0,
+    vehicleRef = 0;
+
 self.addEventListener('push', function (event) {
     console.log('Push message received', event);
 
-    var arrStr = event.data ? event.data.text() : 'no payload',
-        arr = [];
+    var arrStr = event.data ? event.data.text() : 'no payload';
 
     if (arrStr != 'no payload') {
         arr = arrStr.split(',');
 
-        var busId = Number(arr[0]),
-            vehicleRef = Number(arr[1])
+        busId = Number(arr[0]),
+        vehicleRef = Number(arr[1]);
     }
 
     var payload = {
@@ -185,3 +188,17 @@ self.addEventListener('push', function (event) {
         })
     );
 });
+
+self.addEventListener('notificationclick', function (event) {
+    console.log('On notification click: ', event.notification.tag);
+    event.notification.close();
+
+    // This looks to see if the current is already open and
+    // focuses if it is
+    event.waitUntil(clients.matchAll({
+        type: "window"
+    }).then(function (clientList) {
+        return clients.openWindow('/trackmybus/?busId=' + busId + '&vehicleRef=' + vehicleRef);
+    }));
+});
+
