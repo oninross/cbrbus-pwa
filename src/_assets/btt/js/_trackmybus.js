@@ -16,6 +16,10 @@ export default class TrackMyBus {
     constructor() {
         let that = this;
 
+        fetch('//' + BASE_URL + '/register', {
+            method: 'post'
+        });
+
         busId = getQueryVariable('busStopId');
 
         that.isGeolocationEnabled = true;
