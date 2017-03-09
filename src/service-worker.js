@@ -28,7 +28,8 @@ importScripts('serviceworker-cache-polyfill.js');
 // cache, then increment the CACHE_VERSION value. It will kick off the service worker update
 // flow and the old cache(s) will be purged as part of the activate event handler when the
 // updated service worker is activated.
-var version = '0.9.3',
+var version = '0.10.0',
+    OFFLINE_URL = 'offline/',
     CURRENT_CACHES = {
         prefetch: 'prefetch-cache-v' + version
     };
@@ -37,11 +38,15 @@ self.addEventListener('install', function (event) {
     var now = Date.now();
 
     var urlsToPrefetch = [
+        'assets/btt/images/favicon/android-icon-192x192.png',
+        'assets/btt/images/favicon/favicon-32x32.png',
+        'assets/btt/images/favicon/favicon-96x96.png',
+        'assets/btt/images/favicon/favicon-16x16.png',
+        'assets/btt/js/main.js',
         'assets/btt/css/main.css',
-        'assets/btt/api/services.json',
         'assets/btt/css/fonts/icomoon.woff',
-        'index.html?homescreen=1',
-        '/'
+        OFFLINE_URL,
+        'index.html?homescreen=1'
     ];
 
     // All of these logging statements should be visible via the "Inspect" interface
@@ -145,7 +150,7 @@ self.addEventListener('fetch', function (event) {
                 // It will return a normal response object that has the appropriate error code set.
                 console.error('Fetching failed:', error);
 
-                throw error;
+                return caches.match(OFFLINE_URL);
             });
         })
     );

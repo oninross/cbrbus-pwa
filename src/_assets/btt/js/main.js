@@ -25,24 +25,24 @@ var $window = $(window),
     $header = $('.header'),
     isMobileDevice = isMobile(),
     lastScrollTop = 0,
-    vapidPublicKey;
+    vapidPublicKey = 'BM-ynBumqLV6vo6Gw4-dYVI1eHZEOJ8MQEx1VdoF6sQQ0S16v4MyfnDJ0oGxIXOuaDELVGODw2qCi5cYLroHWks';
 
 window.II = {};
 
-console.log('call the bloody thing');
-$.ajax({
-    url: '//' + BASE_URL + '/getPublicKey',
-    success: function (data) {
-        console.log(data)
-        vapidPublicKey = data.key;
-    },
-    error: function (error) {
-        console.log("Error:: " + error);
-    },
-    statusCode: function (code) {
-        console.log("Status code:: " + code);
-    }
-});
+// console.log('call the bloody thing');
+// $.ajax({
+//     url: '//' + BASE_URL + '/getPublicKey',
+//     success: function (data) {
+//         console.log(data)
+//         vapidPublicKey = data.key;
+//     },
+//     error: function (error) {
+//         console.log("Error:: " + error);
+//     },
+//     statusCode: function (code) {
+//         console.log("Status code:: " + code);
+//     }
+// });
 
 $(() => {
     new PrimaryNav();   // Activate Primary NAv modules logic
@@ -236,8 +236,6 @@ window.addEventListener('load', function () {
                             return subscription;
                         }
 
-                        console.log(vapidPublicKey)
-
                         const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
 
                         // Otherwise, subscribe the user (userVisibleOnly allows to specify that we don't plan to
@@ -264,19 +262,6 @@ window.addEventListener('load', function () {
                 key: key,
                 authSecret: authSecret
             };
-
-            fetch('//' + BASE_URL + '/register', {
-                method: 'post',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    endpoint: endpoint,
-                    key: key,
-                    authSecret: authSecret
-                })
-            });
-
         })
         .catch(function (whut) {
             console.error('uh oh... ');

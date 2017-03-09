@@ -380,5 +380,17 @@ Layout
     // }
 }
 
+.offline {
+    h2 {
+        font-size: 10em;
+        font-weight: $light;
+        text-align: center;
+    }
 
+    svg {
+        display: block;
+        margin: auto;
+        width: 290px;
+    }
+}
 
