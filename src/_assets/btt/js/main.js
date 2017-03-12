@@ -29,21 +29,6 @@ var $window = $(window),
 
 window.II = {};
 
-// console.log('call the bloody thing');
-// $.ajax({
-//     url: '//' + BASE_URL + '/getPublicKey',
-//     success: function (data) {
-//         console.log(data)
-//         vapidPublicKey = data.key;
-//     },
-//     error: function (error) {
-//         console.log("Error:: " + error);
-//     },
-//     statusCode: function (code) {
-//         console.log("Status code:: " + code);
-//     }
-// });
-
 $(() => {
     new PrimaryNav();   // Activate Primary NAv modules logic
 

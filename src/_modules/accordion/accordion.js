@@ -1,6 +1,7 @@
 'use strict';
 
 import { easeOutExpo } from '../../_assets/btt/js/_helper';
+import scrollTo from 'scrollTo';
 
 export default class Accordion {
     constructor() {
@@ -16,10 +17,17 @@ export default class Accordion {
 
             let $this = $(this),
                 $parent = $this.parent(),
-                $next = $parent.next();
+                $next = $parent.next(),
+                $accordion = $this.closest('.accordion');
 
             $this.toggleClass('active');
             $next.slideToggle(easeOutExpo);
+
+            TweenMax.to(window, 1, {
+                scrollTo: $accordion.offset().top - $('.header').outerHeight(),
+                ease: Expo.easeOut,
+                delay: 0.5
+            });
         });
     }
 }

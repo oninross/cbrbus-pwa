@@ -1,17 +1,18 @@
 [
     {
+        "label" : "About",
+        "link" : "/about/"
+    },
+    {
         "label" : "Search",
-        "link" : "/",
-        "lvl2" : null
+        "link" : "/"
     },
     {
         "label" : "Bookmarks",
-        "link" : "/bookmarks/",
-        "lvl2" : null
+        "link" : "/bookmarks/"
     },
     {
         "label" : "Nearby",
-        "link" : "/nearby/",
-        "lvl2" : null
+        "link" : "/nearby/"
     }
 ]
