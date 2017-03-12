@@ -98,12 +98,12 @@ export default class TrackMyBus {
             currentIcon = {
                 url: that.mapSettings.marker,
                 origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(32, 32)
+                anchor: new google.maps.Point(16, 32)
             },
             busStopIcon = {
                 url: 'https://maps.google.com/mapfiles/kml/paddle/blu-blank_maps.png',
                 origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(32, 32)
+                anchor: new google.maps.Point(16, 48)
             },
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: that.mapSettings.zoom,
@@ -126,6 +126,11 @@ export default class TrackMyBus {
             position: busStopCenter[0],
             map: map
         })
+
+        google.maps.event.addListener(that.busStopMarker, 'click', function (e) {
+            map.setZoom(18);
+            map.panTo(that.busStopMarker.position);
+        });
 
         $.each(json, function (i, v) {
             stopMarker = new google.maps.Marker({
