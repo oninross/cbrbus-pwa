@@ -98,12 +98,12 @@ export default class TrackMyBus {
             currentIcon = {
                 url: that.mapSettings.marker,
                 origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(32, 32)
+                anchor: new google.maps.Point(16, 32)
             },
             busStopIcon = {
                 url: 'https://maps.google.com/mapfiles/kml/paddle/blu-blank_maps.png',
                 origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(32, 32)
+                anchor: new google.maps.Point(16, 48)
             },
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: that.mapSettings.zoom,
@@ -126,6 +126,11 @@ export default class TrackMyBus {
             position: busStopCenter[0],
             map: map
         })
+
+        google.maps.event.addListener(that.busStopMarker, 'click', function (e) {
+            map.setZoom(18);
+            map.panTo(that.busStopMarker.position);
+        });
 
         $.each(json, function (i, v) {
             stopMarker = new google.maps.Marker({
@@ -294,8 +299,7 @@ export default class TrackMyBus {
 
     callApi() {
         let that = this,
-            busId = getQueryVariable('busId'),
-            $xml = '';
+            busId = getQueryVariable('busId');
 
         if (busId < 10) {
             busId = '000' + busId.toString();
@@ -305,23 +309,9 @@ export default class TrackMyBus {
             busId = '0' + busId.toString();
         }
 
-        $xml = '<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>';
-        $xml += '<Siri version="2.0" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns="http://www.siri.org.uk/siri" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns3="http://www.ifopt.org.uk/ifopt">';
-
-        $xml += '<ServiceRequest>';
-        $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-        $xml += '<RequestorRef>' + API_KEY + '</RequestorRef>';
-        $xml += '<VehicleMonitoringRequest version="2.0">';
-        $xml += '<RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp>';
-        $xml += '<VehicleMonitoringRef>VM_ACT_' + busId + '</VehicleMonitoringRef>';
-        $xml += '</VehicleMonitoringRequest>';
-        $xml += '</ServiceRequest>';
-
-        $xml += '</Siri>';
-
         $.ajax({
             url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY + '/vm/service.xml',
-            data: $xml,
+            data: '<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?><Siri version="2.0" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns="http://www.siri.org.uk/siri" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns3="http://www.ifopt.org.uk/ifopt"><ServiceRequest><RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp><RequestorRef>' + API_KEY + '</RequestorRef><VehicleMonitoringRequest version="2.0"><RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp><VehicleMonitoringRef>VM_ACT_' + busId + '</VehicleMonitoringRef></VehicleMonitoringRequest></ServiceRequest></Siri>',
             type: 'POST',
             contentType: "text/xml",
             dataType: "text",
