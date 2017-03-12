@@ -260,7 +260,6 @@ function processData(xml) {
                 tempArr = v.vehicleRefNum;
                 tempArr.swap(0, 1);
                 v.vehicleRefNum = tempArr;
-
             }
         });
 
