@@ -25,7 +25,7 @@ var $window = $(window),
     $header = $('.header'),
     isMobileDevice = isMobile(),
     lastScrollTop = 0,
-    vapidPublicKey = 'BM-ynBumqLV6vo6Gw4-dYVI1eHZEOJ8MQEx1VdoF6sQQ0S16v4MyfnDJ0oGxIXOuaDELVGODw2qCi5cYLroHWks';
+    vapidPublicKey = 'BD4qD23xudO3P1vVExYZlblRFdlfwBLnwNkCkDz4Pr038FTCVZIZodsurySHNtfIdC6s18pu7rm2DNUfElI9j6Y';
 
 window.II = {};
 
