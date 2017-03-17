@@ -245,8 +245,8 @@ export default class TrackMyBus {
             $vehicleLat = $vehicleLocation.find('Latitude');
             $vehicleLng = $vehicleLocation.find('Longitude');
             vehicleRef = $v.find('VehicleRef');
-            onwardCall = $v.find('OnwardCall');
-            stopPointRef = $(onwardCall).find('StopPointRef');
+            // onwardCall = $v.find('OnwardCall');
+            // stopPointRef = $(onwardCall).find('StopPointRef');
             directionRef = $v.find('DirectionRef');
 
             if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && vehicleRef[0] != undefined) {
