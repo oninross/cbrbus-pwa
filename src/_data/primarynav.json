@@ -1,5 +1,10 @@
 [
     {
+        "label" : "About",
+        "link" : "/about/",
+        "lvl2" : null
+    },
+    {
         "label" : "Search",
         "link" : "/",
         "lvl2" : null
