@@ -165,10 +165,6 @@ function processData(xml) {
             // Get vehicle reference number
             vehicleRefNumArr = [];
             vehicleRefNum = v.MonitoredVehicleJourney.VehicleRef;
-            if (vehicleRefNum == undefined) {
-                vehicleRefNum = null;
-            }
-
             vehicleRefNumArr.push(vehicleRefNum);
 
 
@@ -313,7 +309,7 @@ function cardListener() {
         toaster('Please enable your notifications to know if your bus is approaching.');
     }
 
-    if ($vehicleRefNum == '') {
+    if ($vehicleRefNum == '' || $vehicleRefNum == null || $vehicleRefNum == undefined) {
         toaster('Sorry, we can\t track this bus service.');
     } else {
         window.location.href = '/trackmybus/?busStopId=' + $busStopId + '&busId=' + $serviceRefNum + '&vehicleRef=' + $vehicleRefNum;

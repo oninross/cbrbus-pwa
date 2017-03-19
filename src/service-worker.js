@@ -29,15 +29,8 @@ importScripts('serviceworker-cache-polyfill.js');
 // flow and the old cache(s) will be purged as part of the activate event handler when the
 // updated service worker is activated.
 var version = '0.12.2',
-    OFFLINE_URL = 'offline/',
-    CURRENT_CACHES = {
-        prefetch: 'prefetch-cache-v' + version
-    };
-
-self.addEventListener('install', function (event) {
-    var now = Date.now();
-
-    var urlsToPrefetch = [
+    now = Date.now(),
+    urlsToPrefetch = [
         '//developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js',
         'assets/btt/images/favicon/android-icon-192x192.png',
         'assets/btt/images/favicon/favicon-32x32.png',
@@ -46,10 +39,14 @@ self.addEventListener('install', function (event) {
         'assets/btt/js/main.js',
         'assets/btt/css/main.css',
         'assets/btt/css/fonts/icomoon.woff',
-        OFFLINE_URL,
+        'offline/',
         'index.html?homescreen=1'
-    ];
+    ],
+    CURRENT_CACHES = {
+        prefetch: 'prefetch-cache-v' + version
+    };
 
+self.addEventListener('install', function (event) {
     // All of these logging statements should be visible via the "Inspect" interface
     // for the relevant SW accessed via chrome://serviceworker-internals
     console.log('Handling install event. Resources to prefetch:', urlsToPrefetch);
