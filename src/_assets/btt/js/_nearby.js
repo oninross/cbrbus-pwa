@@ -149,8 +149,17 @@ export default class NearBy {
 
             markers.push(busMarker);
 
+            var label = '';
             google.maps.event.addListener(busMarker, 'click', function (e) {
-                window.location.href = '/busstop/?busStopId=' + this.label;
+                label = this.label;
+
+                var busStopName = $.map(json, function (n) {
+                        if (n.data == label) {
+                            return n.name;
+                        }
+                    });
+
+                window.location.href = '/busstop/?busStopId=' + label + '&busStopName=' + busStopName;
             });
         });
 
