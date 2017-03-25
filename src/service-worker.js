@@ -28,10 +28,16 @@ importScripts('serviceworker-cache-polyfill.js');
 // cache, then increment the CACHE_VERSION value. It will kick off the service worker update
 // flow and the old cache(s) will be purged as part of the activate event handler when the
 // updated service worker is activated.
-var version = '0.12.2',
+var version = '0.12.3',
     now = Date.now(),
     urlsToPrefetch = [
         '//developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js',
+        '//maps.google.com/mapfiles/kml/paddle/blu-blank_maps.png',
+        '//maps.google.com/mapfiles/kml/paddle/A_maps.png',
+        '//maps.google.com/mapfiles/kml/paddle/B_maps.png',
+        'assets/btt/images/busMarker.png',
+        'assets/btt/images/cluster.png',
+        'assets/btt/images/stopMarker.png',
         'assets/btt/images/favicon/android-icon-192x192.png',
         'assets/btt/images/favicon/favicon-32x32.png',
         'assets/btt/images/favicon/favicon-96x96.png',
@@ -169,6 +175,7 @@ self.addEventListener('push', function (event) {
         busId = Number(arr[0]),
         vehicleRef = Number(arr[1]);
     }
+
 
     var payload = {
         title: 'CBR Buses',

@@ -483,7 +483,7 @@ input[type="checkbox"]{
 
 .toaster {
     @include material-shadow(1);
-    @include scale(0, left bottom);
+    @include scale(0.25, left bottom);
 
     background: #323232;
     border-radius: 4px;

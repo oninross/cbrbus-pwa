@@ -251,7 +251,7 @@ if (!isAlreadyRegistered) {
                         switch (installingWorker.state) {
                             case 'installed':
                                 if (!navigator.serviceWorker.controller) {
-                                    toaster('Caching complete! Future visits will work offline.');
+                                    toaster('Caching complete!');
                                 }
                                 break;
 
