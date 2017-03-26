@@ -84,7 +84,7 @@ export default class NearBy {
 
         setTimeout(function () {
             document.body.appendChild(script);
-        }, 2500);
+        }, 1000);
     }
 
     loadData() {
