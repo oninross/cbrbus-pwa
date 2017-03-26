@@ -1,6 +1,6 @@
 {
   "name": "btt",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "dependencies": {
     "browserify-shim": "^3.8.12",
     "cartodb": "^0.5.1",
