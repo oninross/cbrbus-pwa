@@ -99,6 +99,12 @@ self.addEventListener('install', function (event) {
             return Promise.all(cachePromises).then(function () {
                 console.log('Pre-fetching complete.');
             });
+        }).then(function () {
+            // `skipWaiting()` forces the waiting ServiceWorker to become the
+            // active ServiceWorker, triggering the `onactivate` event.
+            // Together with `Clients.claim()` this allows a worker to take effect
+            // immediately in the client(s).
+            return self.skipWaiting();
         }).catch(function (error) {
             console.error('Pre-fetching failed:', error);
         })
