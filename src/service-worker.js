@@ -28,7 +28,7 @@ importScripts('serviceworker-cache-polyfill.js');
 // cache, then increment the CACHE_VERSION value. It will kick off the service worker update
 // flow and the old cache(s) will be purged as part of the activate event handler when the
 // updated service worker is activated.
-var version = '0.12.4',
+var version = '0.12.5',
     now = Date.now(),
     urlsToPrefetch = [
         '//developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js',
@@ -99,6 +99,12 @@ self.addEventListener('install', function (event) {
             return Promise.all(cachePromises).then(function () {
                 console.log('Pre-fetching complete.');
             });
+        }).then(function () {
+            // `skipWaiting()` forces the waiting ServiceWorker to become the
+            // active ServiceWorker, triggering the `onactivate` event.
+            // Together with `Clients.claim()` this allows a worker to take effect
+            // immediately in the client(s).
+            return self.skipWaiting();
         }).catch(function (error) {
             console.error('Pre-fetching failed:', error);
         })
