@@ -169,7 +169,7 @@ export default class TrackMyBus {
 
             if (isServiceWorkerSupported()) {
                 google.maps.event.addListener(stopMarker, 'click', function (e) {
-                    if (isNotificationGranted) {
+                    if (isNotificationGranted()) {
                         let busStopId = $(this)[0].id;
                         that.notifyMe(busStopId);
 
