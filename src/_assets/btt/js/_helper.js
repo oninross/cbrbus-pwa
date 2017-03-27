@@ -51,6 +51,10 @@ let isNotificationGranted = function () {
     return Notification.permission == 'granted';
 }
 
+let isServiceWorkerSupported = function () {
+    return 'serviceWorker' in navigator;
+}
+
 function getQueryVariable(variable) {
     let query = window.location.search.substring(1),
         vars = query.split("&");
@@ -117,5 +121,6 @@ export {
     BASE_URL,
     API_KEY,
     GMAP_API_KEY,
-    isNotificationGranted
+    isNotificationGranted,
+    isServiceWorkerSupported
 };
