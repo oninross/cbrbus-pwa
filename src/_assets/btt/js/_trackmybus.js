@@ -16,8 +16,6 @@ export default class TrackMyBus {
     constructor() {
         let that = this;
 
-        console.log(isServiceWorkerSupported())
-
         if (isServiceWorkerSupported()) {
             // Just to wake up the server IF its sleeping
             fetch('//' + BASE_URL + '/register', {
@@ -84,8 +82,6 @@ export default class TrackMyBus {
                     ease: Expo.easeOut,
                     onComplete: function () {
                         $('.loader').remove();
-
-                        processData(xml);
                     }
                 });
             },
@@ -97,8 +93,6 @@ export default class TrackMyBus {
                     ease: Expo.easeOut,
                     onComplete: function () {
                         $('.loader').remove();
-
-                        processData(xml);
                     }
                 });
                 toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');

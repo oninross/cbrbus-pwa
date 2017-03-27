@@ -102,8 +102,6 @@ export default class NearBy {
                     ease: Expo.easeOut,
                     onComplete: function () {
                         $('.loader').remove();
-
-                        processData(xml);
                     }
                 });
             },
@@ -115,8 +113,6 @@ export default class NearBy {
                     ease: Expo.easeOut,
                     onComplete: function () {
                         $('.loader').remove();
-
-                        processData(xml);
                     }
                 });
 
