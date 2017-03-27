@@ -4,7 +4,7 @@
 // import provider from 'providers';
 // import CartoDB from 'cartodb';
 import { ripple, toaster } from './_material';
-import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariable, isNotificationGranted } from './_helper';
+import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariable, isNotificationGranted, isServiceWorkerSupported } from './_helper';
 
 let $window = $(window),
     isIntervalInit = false,
@@ -16,10 +16,12 @@ export default class TrackMyBus {
     constructor() {
         let that = this;
 
-        // Just to wake up the server IF its sleeping
-        fetch('//' + BASE_URL + '/register', {
-            method: 'post'
-        });
+        if (isServiceWorkerSupported()) {
+            // Just to wake up the server IF its sleeping
+            fetch('//' + BASE_URL + '/register', {
+                method: 'post'
+            });
+        }
 
         busId = getQueryVariable('busStopId');
 
@@ -73,9 +75,26 @@ export default class TrackMyBus {
             contentType: "application/json; charset=utf-8",
             success: function (data) {
                 that.initMap(data);
+
+                TweenMax.to('.loader', 0.75, {
+                    autoAlpha: 0,
+                    scale: 0,
+                    ease: Expo.easeOut,
+                    onComplete: function () {
+                        $('.loader').remove();
+                    }
+                });
             },
             error: function (error) {
                 console.log(error);
+                TweenMax.to('.loader', 0.75, {
+                    autoAlpha: 0,
+                    scale: 0,
+                    ease: Expo.easeOut,
+                    onComplete: function () {
+                        $('.loader').remove();
+                    }
+                });
                 toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
             }
         });
@@ -148,16 +167,18 @@ export default class TrackMyBus {
 
             markers.push(stopMarker);
 
-            google.maps.event.addListener(stopMarker, 'click', function (e) {
-                if (isNotificationGranted) {
-                    let busStopId = $(this)[0].id;
-                    that.notifyMe(busStopId);
+            if (isServiceWorkerSupported()) {
+                google.maps.event.addListener(stopMarker, 'click', function (e) {
+                    if (isNotificationGranted()) {
+                        let busStopId = $(this)[0].id;
+                        that.notifyMe(busStopId);
 
-                    toaster('You will be notified when your stop is approaching. ' + busStopId);
-                } else {
-                    toaster('Please enable your notifications to know if your bus is approaching.');
-                }
-            });
+                        toaster('You will be notified when your stop is approaching. ' + busStopId);
+                    } else {
+                        toaster('Please enable your notifications to know if your bus is approaching.');
+                    }
+                });
+            }
         });
 
         // Add a marker clusterer to manage the markers.

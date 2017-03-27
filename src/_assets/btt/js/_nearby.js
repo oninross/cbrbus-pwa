@@ -96,9 +96,26 @@ export default class NearBy {
             contentType: "application/json; charset=utf-8",
             success: function (data) {
                 that.initMap(data);
+                TweenMax.to('.loader', 0.75, {
+                    autoAlpha: 0,
+                    scale: 0,
+                    ease: Expo.easeOut,
+                    onComplete: function () {
+                        $('.loader').remove();
+                    }
+                });
             },
             error: function (error) {
                 console.log(error);
+                TweenMax.to('.loader', 0.75, {
+                    autoAlpha: 0,
+                    scale: 0,
+                    ease: Expo.easeOut,
+                    onComplete: function () {
+                        $('.loader').remove();
+                    }
+                });
+
                 toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
             }
         });
