@@ -64,6 +64,10 @@
     //     padding: 0 $gutterTablet;
     // }
 
+    &.narrow {
+        max-width: 640px;
+    }
+
     .wrap {
         @extend %clearfix;
 
