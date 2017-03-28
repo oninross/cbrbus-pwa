@@ -402,3 +402,40 @@ Layout
     }
 }
 
+.stopMarker,
+.busMarker,
+.bluePin,
+.redPin {
+    box-shadow: 0 0 0 0 transparent !important;
+    display: inline-block;
+    margin: 0 !important;
+}
+
+.stopMarker {
+    max-width: 15px;
+}
+
+.busMarker {
+    max-width: 20px;
+}
+
+.bluePin,
+.redPin {
+    max-width: 20px;
+}
+
+.bookmark {
+    @include tablet {
+        text-align: center;
+    }
+
+    img {
+        display: inline-block;
+
+        @include tablet {
+            margin: 0 10px !important;
+            width: 40%;
+        }
+    }
+}
+

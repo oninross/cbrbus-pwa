@@ -7,7 +7,7 @@ block config
 block content
     section.container.narrow
         h2 Find out what the heck this is all about
-        p Why thank you for asking what we are all about. We a just a bunch of geeks playing with some new technology. This is no way connected to government or business. We are just having a play.
+        p We a just a bunch of geeks playing with some new technology. This is no way connected to government or business. We are just having a play.
         p Did you face any issues while using the app?  What do you think of our app?  What would you like to add improve the app?  Or if you want to say g'day, hit us up at#{' '}
             a(href="mailto:cbrbusissues@gmail.com") cbrbusissues@gmail.com.
 
@@ -21,9 +21,9 @@ block content
                 button.accordion__btn.js-toggle-accordion
                     span.sr-only Toggle accordion
             .accordion__body
-                p Type in here the bus stop number here if you are not sure of the name of your bus stop.  You can find the bus number on the yellow sign.
+                p You can search for you bus stop by the number or simply entering the location.
 
-                img(src="http://placehold.it/320x240")
+                img(src="/assets/btt/images/search.jpg")
 
 
         .accordion
@@ -34,8 +34,9 @@ block content
             .accordion__body
                 p You can bookmark your favourite bus stop.  First search for the bus stop in the search page.  Then you can tap on the star to save it on your bookmarks.  You can unbookmark it on the search page or on the bus stop page itself.
 
-                img(src="http://placehold.it/167x297")
-                img(src="http://placehold.it/167x297")
+                .bookmark
+                    img(src="/assets/btt/images/bookmark1.jpg")
+                    img(src="/assets/btt/images/bookmark2.jpg")
 
 
         .accordion
@@ -44,9 +45,10 @@ block content
                 button.accordion__btn.js-toggle-accordion
                     span.sr-only Toggle accordion
             .accordion__body
-                p Provided that you have given permission for your location, you can determine the nearby bus stops on your current location.  Just tap on the bus stop marker on the map and it will take you to the bus stop page.
-
-                img(src="http://placehold.it/167x297")
+                p Provided that you have given permission for your location, you can determine the nearby bus stops on your current location.  Just tap on the#{' '}
+                    strong bus stop marker #{' '}
+                    img.stopMarker(src="/assets/btt/images/stopMarker.png")
+                    |#{' '}on the map and it will take you to the bus stop page.
 
 
         .accordion
@@ -55,11 +57,23 @@ block content
                 button.accordion__btn.js-toggle-accordion
                     span.sr-only Toggle accordion
             .accordion__body
-                p You can view the listing of the bus services passing by the bus stop you have selected, searched or bookmarked.  The buses here are arranged in descending order.  Each “cards” will have the bus service number (1), accessibility features (2), current arriving bus time estimate (3) and the next arriving bus time estimate (4)
-                p The green button is to refresh the bus times so you don’t have to refresh the page.
-                p Tapping on the card will take display the current geolocation of the bus service you have selected (provided that the it can be tracked).
+                p You can view the listing of the bus services passing by the bus stop you have selected, searched or bookmarked.  The buses here are arranged in descending order.  Each “cards” will have the bus service number#{' '}
+                    strong (1)
+                    |, accessibility features#{' '}
+                    strong (2)
+                    |, current arriving bus time estimate#{' '}
+                    strong (3)
+                    |#{' '}and the next arriving bus time estimate#{' '}
+                    strong (4)
+                p The green button (5) is to refresh the bus times so you don’t have to refresh the page.
+                img(src="/assets/btt/images/busStop.jpg")
 
-                img(src="http://placehold.it/167x297")
+                p Tapping on the card will display the current geolocation of the bus service you have selected (provided that the it can be tracked).  It will be represented by a #{' '}
+                    strong red pin #{' '}
+                    img.redPin(src="https://maps.google.com/mapfiles/kml/paddle/red-blank_maps.png")
+                    |#{' '}on the map.
+
+                img(src="/assets/btt/images/busLocation.jpg")
 
 
         .accordion
@@ -69,15 +83,21 @@ block content
                 button.accordion__btn.js-toggle-accordion
                     span.sr-only Toggle accordion
             .accordion__body
-                p This feature can be used in 2 ways:
+                p Unfortunately, this is an#{' '}
+                    strong Android exclusive
+                    |#{' '}feature.  This feature can be used in 2 ways:
 
                 ol
-                    li If you know where your stop is, you can tap on the marker on the map.  You will receive a notification 1 stop before the one you have selected so you can prepare yourself in alighting from the bus.
-                    li You can tap the marker of the current bus stop that you are on (it is beside the blue pin) to receive a notification if the bus is 1 stop away.
+                    li If you know where your stop is, you can tap on the#{' '}
+                        strong marker #{' '}
+                        img.busMarker(src="/assets/btt/images/busMarker.png")
+                        |#{' '}on the map.  You will receive a notification 1 stop before the one you have selected (if it is provided) so you can prepare yourself in alighting from the bus.
+                    li You can tap the marker of the current bus stop that you are on (it is#{' '}
+                        strong blue pin#{' '}
+                        img.bluePin(src="https://maps.google.com/mapfiles/kml/paddle/blu-blank_maps.png")
+                        |#{' '}that it is pointing at) to receive a notification if the bus is 1 stop away (if it is provided).
 
                 p Do take note that all information about the bus arrival is depending on the data we are grabbing from the API.  Sometimes you will be notified when the bus is on the stop itself.  Don't worry, we are working on it.
-
-                img(src="http://placehold.it/167x297")
 
 
 
