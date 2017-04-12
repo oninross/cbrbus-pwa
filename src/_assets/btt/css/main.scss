@@ -55,12 +55,13 @@
 .search {
     @include absolute-center();
     @include transition(all, 1s, $easeInOutExpo);
-    
-    height: 65px;
-    padding-top: 50px;
+
+    height: 115px;
+    padding-top: 0;
 
     &.selected {
         height: 100vh;
+        padding-top: 50px;
 
         input[type="text"] {
             font-size: 1.6em;
@@ -114,6 +115,7 @@
 
         .card__wrapper {
             background-color: $black;
+            border-radius: 2px;
             color: $white;
             height: auto;
             margin: 0 $gutter;
@@ -343,6 +345,7 @@
 
     background-color: $green;
     border: 0;
+    border-radius: 2px;
     color: $white;
     font-size: 3em;
     overflow: hidden;
