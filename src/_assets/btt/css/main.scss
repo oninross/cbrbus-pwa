@@ -52,6 +52,27 @@
     }
 }
 
+.search {
+    @include absolute-center();
+    @include transition(all, 1s, $easeInOutExpo);
+    
+    height: 65px;
+    padding-top: 50px;
+
+    &.selected {
+        height: 100vh;
+
+        input[type="text"] {
+            font-size: 1.6em;
+        }
+    }
+
+
+    input[type="text"] {
+        font-size: 3em;
+    }
+}
+
 .cards-wrapper {
     @extend %clearfix;
 

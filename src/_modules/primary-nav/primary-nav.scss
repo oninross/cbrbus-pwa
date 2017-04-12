@@ -6,22 +6,9 @@
     height: 45px;
     position: absolute;
     right: 0;
-    top: 0;
+    top: 50px;
     width: 100%;
     z-index: 5;
-
-    // @include desktop {
-    //     background: $black;
-    //     height: auto;
-    //     position: static;
-    //     width: 100%;
-
-    //     .sub-nav,
-    //     .lvl2,
-    //     .lvl3 {
-    //         display: none;
-    //     }
-    // }
 
     &.active {
         top: 50px;
@@ -57,14 +44,6 @@
             opacity: 0;
             overflow: hidden;
             position: relative;
-
-            // @include desktop {
-            //     -webkit-transform: none; /* Safari */
-            //         -ms-transform: none; /* IE 9 */
-            //             transform: none;
-
-            //     opacity: 1;
-            // }
         }
 
         a {
@@ -87,10 +66,6 @@
                 position: relative;
                 z-index: 5;
             }
-
-            // @include desktop {
-            //     color: $white;
-            // }
         }
     }
 
@@ -121,12 +96,6 @@
                 opacity: 1;
             }
         }
-
-        // @include desktop {
-        //     height: auto;
-        //     margin: auto;
-        //     max-width: 960px;
-        // }
     }
 
     .container {
@@ -168,13 +137,13 @@
         @include transition(all, 0.5s, $easeOutExpo);
         @include material-shadow(0);
 
-        -webkit-transform: translateX(100%); /* Safari */
-            -ms-transform: translateX(100%); /* IE 9 */
-                transform: translateX(100%);
+        -webkit-transform: translateX(-100%); /* Safari */
+            -ms-transform: translateX(-100%); /* IE 9 */
+                transform: translateX(-100%);
               will-change: transform;
 
         clear: both;
-        float: right;
+        float: left;
         list-style: none;
         margin: 0;
         max-width: 300px;
@@ -184,15 +153,6 @@
         top: 0;
         width: 100%;
         z-index: 10;
-
-        // @include desktop {
-        //     -webkit-transform: none; /* Safari */
-        //         -ms-transform: none; IE 9
-        //             transform: none;
-
-        //     float: none;
-        //     max-width: none;
-        // }
 
         &.active {
             @include material-shadow(2);
@@ -212,11 +172,6 @@
 
         & > li {
             border-bottom: 1px solid $grey;
-
-            // @include desktop {
-            //     border-bottom: 0;
-            //     overflow: visible;
-            // }
         }
 
         a {
@@ -224,23 +179,6 @@
 
             &.active { background: $black; }
         }
-
-        // @include desktop {
-        //     background: none;
-        //     height: auto !important;
-        //     overflow: visible;
-
-        //     &:first-child {
-        //         & > a {
-        //             padding-left: 0;
-        //         }
-        //     }
-
-        //     & > li {
-        //         border-top: 0;
-        //         float: left;
-        //     }
-        // }
     }
 
     .lvl2 {
@@ -254,16 +192,6 @@
             color: $white;
             padding: 12px 20px 12px 30px;
         }
-
-        // @include desktop {
-        //     background: darken( $black, 10%);
-        //     position: absolute;
-        //     width: 200px;
-
-        //     li {
-        //         border-top: 1px solid darken( $black, 20%);
-        //     }
-        // }
     }
 
     .lvl3 {
@@ -281,9 +209,6 @@
 }
 
 .header {
-    @include material-shadow(1);
-
-    background: darken( $black, 10% );
     height: 50px;
     position: fixed;
     top: 0;
@@ -297,16 +222,6 @@
             ul { padding-right: 0; }
         }
     }
-
-    // @include desktop {
-    //     height: auto;
-
-    //     &.hide { top: -92px !important; }
-
-    //     &.compact {
-    //         &.hide { top: -45px !important; }
-    //     }
-    // }
 }
 
 .logo {
@@ -327,15 +242,7 @@
 
     .container {
         padding: 0;
-
-        // @include desktop {
-        //     padding: 0 $gutter;
-        // }
     }
-
-    // @include desktop {
-    //     position: relative;
-    // }
 }
 
 .sub-nav {
@@ -395,10 +302,10 @@
     background-color: transparent;
     border: 0;
     height: 50px;
+    left: 0;
     padding: 8px;
     width: 50px;
     position: absolute;
-    right: 0;
     z-index: 10;
 
     &.active {
@@ -434,7 +341,7 @@
                 transform: none;
         will-change: transform;
 
-        background: $white;
+        background: $black;
         display: block;
         height: 2px;
         margin: 2px auto;
@@ -443,8 +350,4 @@
         top: 0;
         width: 15px;
     }
-
-    // @include desktop {
-    //     display: none;
-    // }
 }

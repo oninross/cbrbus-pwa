@@ -59,6 +59,8 @@ $(() => {
                         busStopId = suggestion.data;
                         busStopName = suggestion.name;
 
+                        $(this).closest('.search').addClass('selected');
+
                         getData(suggestion.data);
                         ga('send', 'event', 'Bus Stop Search', 'click', busStopId);
                     },
