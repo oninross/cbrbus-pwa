@@ -53,21 +53,26 @@
 }
 
 .search {
-    @include absolute-center();
-    @include transition(all, 1s, $easeInOutExpo);
-
-    height: 115px;
-    padding-top: 0;
+    height: 100vh;
+    position: relative;
 
     &.selected {
-        height: 100vh;
-        padding-top: 50px;
+        .wrap {
+            height: 100%;
+        }
 
         input[type="text"] {
             font-size: 1.6em;
         }
     }
 
+    & > .wrap {
+        @include absolute-center();
+        @include transition(all, 1s, $easeInOutExpo);
+
+        height: 115px;
+        top: 30px;
+    }
 
     input[type="text"] {
         font-size: 3em;
@@ -92,7 +97,6 @@
     @include tablet {
         width: 25%;
     }
-
 
     p {
         font-weight: $bold;
@@ -150,12 +154,8 @@
         line-height: 1;
         height: 164px;
         margin: 0 $gutter;
-        padding: 10px 22px 22px;
+        padding: 15px;
         position: relative;
-
-        h2 {
-            margin-top: 12px;
-        }
 
         .wrap {
             margin: 0;
@@ -392,7 +392,7 @@
     width: 28px;
     height: 28px;
     position: absolute;
-    bottom: 90px;
+    bottom: 150px;
     right: 10px;
 }
 

@@ -64,7 +64,7 @@ export default class NearBy {
 
         $window.on('resize', debounce(function () {
             $('#map').css({
-                height: $(document).outerHeight() // - $('.header').outerHeight()
+                height: $(document).outerHeight() - $('.header').outerHeight()
             });
         }, 250)).trigger('resize');
     }

@@ -5,10 +5,16 @@ block config
     //- Setup site's base URL to match the "baseUrl" key within `package.json`
     //- Otherwise default to relative pathing
     - var baseUrl = config.baseUrl || './'
-    - var isBusStop = config.isBusStop || false
+    
     - var isSearch = config.isSearch || false
+    - var isBookmark = config.isBookmark || false
+    - var isNearby = config.isNearby || false
+    - var isAbout = config.isAbout || false
+
+    - var navIndex = config.navIndex = 0
+    
+    - var isBusStop = config.isBusStop || false
     - var trackMyBus = config.trackMyBus || false
-    - var nearBy = config.nearBy || false
     - var pageTitle = config.pageTitle || ''
     - var busStopId = config.busStopId || ''
     - var busStopName = config.busStopName || ''
@@ -45,9 +51,9 @@ head
     meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
 
     if busStopId
-        title CBR Buses | #{busStopId} #{busStopName}
+        title #{busStopId} #{busStopName} | CBR Buses
     else
-        title CBR Buses
+        title #{pageTitle} | CBR Buses 
 
     meta(name='description', content= 'CBR Buses')
     meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
@@ -91,7 +97,7 @@ body
 
     if !isTablePreview
         header.header
-            +primary-nav
+            +primary-nav({ navIndex: navIndex })
 
     if isBusStop || trackMyBus || nearBy
         .loader

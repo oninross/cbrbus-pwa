@@ -8,7 +8,6 @@ import 'lazyload';
 import 'TweenMax';
 import './_modernizr';
 
-import PrimaryNav from '../../../_modules/primary-nav/primary-nav';
 import Accordion from '../../../_modules/accordion/accordion';
 import NearBy from  './_nearby';
 import TrackMyBus from  './_trackmybus';
@@ -30,8 +29,6 @@ var $window = $(window),
 window.II = {};
 
 $(() => {
-    new PrimaryNav();   // Activate Primary NAv modules logic
-
     if ($('.nearby').length) {
         new NearBy();
     }

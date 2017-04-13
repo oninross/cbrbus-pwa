@@ -293,7 +293,8 @@ svg.ripple {
 Layout
 ========================================================================== */
 #main {
-    height: 100vh;
+    height: 100%;
+    margin-bottom: 65px;
     position: relative;
 
     // @include desktop {
