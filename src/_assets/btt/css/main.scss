@@ -79,6 +79,57 @@
     }
 }
 
+.offline {
+    h2 {
+        font-size: 10em;
+        font-weight: $light;
+        text-align: center;
+    }
+
+    svg {
+        display: block;
+        margin: auto;
+        width: 290px;
+    }
+}
+
+.stopMarker,
+.busMarker,
+.bluePin,
+.redPin {
+    box-shadow: 0 0 0 0 transparent !important;
+    display: inline-block;
+    margin: 0 !important;
+}
+
+.stopMarker {
+    max-width: 15px;
+}
+
+.busMarker {
+    max-width: 20px;
+}
+
+.bluePin,
+.redPin {
+    max-width: 20px;
+}
+
+.bookmarks {
+    @include tablet {
+        text-align: center;
+    }
+
+    img {
+        display: inline-block;
+
+        @include tablet {
+            margin: 0 10px !important;
+            width: 40%;
+        }
+    }
+}
+
 .cards-wrapper {
     @extend %clearfix;
 
@@ -392,7 +443,7 @@
     width: 28px;
     height: 28px;
     position: absolute;
-    bottom: 150px;
+    bottom: 90px;
     right: 10px;
 }
 
