@@ -2,7 +2,7 @@
 
 import 'autocomplete';
 import doT from 'doT';
-import { loader } from './_helper';
+import { loader, debounce } from './_helper';
 import { ripple, toaster } from './_material';
 import { lookupBusId } from './_busStop';
 import { setBookmark } from './_bookmark';
@@ -32,6 +32,18 @@ $(() => {
                 return false;
             }
 
+            var $this = $(this);
+
+            TweenMax.to($this.find('.icon'), 1, {
+                rotation: 360,
+                ease: Expo.easeOut,
+                onComplete: function () {
+                    TweenMax.set($this.find('.icon'), {
+                        rotation: 0
+                    });
+                }
+            });
+
             $body.append(loader);
 
             TweenMax.staggerTo('.card', 0.75, {
@@ -42,6 +54,12 @@ $(() => {
                 lookupBusId(busStopId, busStopName);
             });
         });
+
+        $(window).on('resize', debounce(function () {
+            $('#main').css({
+                height: $(document).outerHeight() - $('.header').outerHeight()
+            });
+        }, 250)).trigger('resize');
 
         $.ajax({
             url: '/assets/btt/api/services.json',
@@ -58,6 +76,8 @@ $(() => {
                         $search.blur();
                         busStopId = suggestion.data;
                         busStopName = suggestion.name;
+
+                        $(this).closest('.search').addClass('selected');
 
                         getData(suggestion.data);
                         ga('send', 'event', 'Bus Stop Search', 'click', busStopId);

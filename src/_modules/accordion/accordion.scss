@@ -17,6 +17,13 @@
             padding: 0 0 0 20px;
         }
 
+        li {
+            .btn-begin {
+                font-size: 1em;
+                text-decoration: none;
+            }
+        }
+
         img {
             @include material-shadow(2);
 

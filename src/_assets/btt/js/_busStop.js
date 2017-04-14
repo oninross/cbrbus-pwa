@@ -1,7 +1,7 @@
 'use strict';
 
 import doT from 'doT';
-import { API_KEY, loader, getQueryVariable, isNotificationGranted } from './_helper';
+import { API_KEY, loader, getQueryVariable, isNotificationGranted, debounce } from './_helper';
 import { ripple, toaster } from './_material';
 import { checkBookmark, setBookmark } from './_bookmark';
 
@@ -28,6 +28,16 @@ $(() => {
 
             $('body').append(loader);
 
+            TweenMax.to($this.find('.icon'), 1, {
+                rotation: 360,
+                ease: Expo.easeOut,
+                onComplete: function () {
+                    TweenMax.set($this.find('.icon'), {
+                        rotation: 0
+                    });
+                }
+            });
+
             TweenMax.staggerTo('.card', 0.75, {
                 opacity: 0,
                 top: -50,
@@ -39,6 +49,12 @@ $(() => {
 
             $('.cards-wrapper').off('click', '.card', cardListener);
         });
+
+        $(window).on('resize', debounce(function () {
+            $('#main').css({
+                height: $(document).outerHeight() - $('.header').outerHeight()
+            });
+        }, 250)).trigger('resize');
     }
 });
 

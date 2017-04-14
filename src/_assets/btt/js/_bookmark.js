@@ -22,34 +22,38 @@ $(() => {
             success: function (data) {
                 services = data;
 
-                tmpArr = JSON.parse(localStorage.bookmarks);
+                if (localStorage['bookmarks']) {
+                    tmpArr = JSON.parse(localStorage.bookmarks);
 
-                for (let i = 0, l = tmpArr.length; i < l; i++) {
-                    // iterate over each element in the array
-                    for (let j = 0, m = services.length; j < m; j++) {
-                        // look for the entry with a matching `code` value
-                        if (services[j].data == tmpArr[i]) {
-                            // we found it
-                            // obj[i].name is the matched result
-                            busStopName = services[j].name;
+                    for (let i = 0, l = tmpArr.length; i < l; i++) {
+                        // iterate over each element in the array
+                        for (let j = 0, m = services.length; j < m; j++) {
+                            // look for the entry with a matching `code` value
+                            if (services[j].data == tmpArr[i]) {
+                                // we found it
+                                // obj[i].name is the matched result
+                                busStopName = services[j].name;
+                            }
                         }
+
+                        obj = {
+                            busStopId: tmpArr[i],
+                            busStopName: busStopName
+                        };
+
+                        cardMarkup += cardBookmark(obj);
                     }
 
-                    obj = {
-                        busStopId: tmpArr[i],
-                        busStopName: busStopName
-                    };
+                    $('.cards-wrapper').html(cardMarkup);
 
-                    cardMarkup += cardBookmark(obj);
+                    TweenMax.staggerTo('.card', 0.75, {
+                        opacity: 1,
+                        top: 1,
+                        ease: Expo.easeOut
+                    }, 0.1);
+                } else {
+                    toaster('You have not bookmaked any stops yet.');    
                 }
-
-                $('.cards-wrapper').html(cardMarkup);
-
-                TweenMax.staggerTo('.card', 0.75, {
-                    opacity: 1,
-                    top: 1,
-                    ease: Expo.easeOut
-                }, 0.1);
             },
             error: function (error) {
                 console.log(error);
@@ -64,7 +68,7 @@ $(() => {
 });
 
 let checkBookmark = function (id) {
-    if (localStorage.bookmarks != undefined) {
+    if (localStorage['bookmarks']) {
         tmpArr = JSON.parse(localStorage.bookmarks);
 
         if (tmpArr.indexOf(Number(id)) > -1) {

@@ -1,6 +1,6 @@
 {
   "name": "btt",
-  "version": "0.13.3",
+  "version": "0.14.0",
   "dependencies": {
     "browserify-shim": "^3.8.12",
     "cartodb": "^0.5.1",
@@ -9,6 +9,7 @@
     "gsap": "^1.19.0",
     "jquery": "~2.2.0",
     "jquery-lazyload": "^1.9.7",
+    "jquery.cookie": "^1.4.1",
     "leaflet": "^1.0.3",
     "leaflet-providers": "^1.1.16",
     "malihu-custom-scrollbar-plugin": "^3.1.5",
@@ -87,7 +88,8 @@
     "typeahead": "./node_modules/typeahead.js/dist/typeahead.bundle.js",
     "leaflet": "./node_modules/leaflet/dist/leaflet.js",
     "providers": "./node_modules/leaflet-providers/leaflet-providers.js",
-    "CartoDB": "./node_modules/cartodb/lib/cartodb.js"
+    "CartoDB": "./node_modules/cartodb/lib/cartodb.js",
+    "jquery.cookie": "./node_modules/jquery.cookie/jquery.cookie.js"
   },
   "browserify-shim": {
     "jquery": "jQuery",

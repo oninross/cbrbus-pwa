@@ -37,6 +37,18 @@ $ultra-bold: 900;
 }
 
 
+.icon-search:before {
+  content: "\e907";
+}
+.icon-bookmark:before {
+  content: "\e908";
+}
+.icon-map:before {
+  content: "\e909";
+}
+.icon-about:before {
+  content: "\e90a";
+}
 .icon-star:before {
   content: "\e906";
 }
