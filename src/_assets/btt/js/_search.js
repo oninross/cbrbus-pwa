@@ -2,7 +2,7 @@
 
 import 'autocomplete';
 import doT from 'doT';
-import { loader } from './_helper';
+import { loader, debounce } from './_helper';
 import { ripple, toaster } from './_material';
 import { lookupBusId } from './_busStop';
 import { setBookmark } from './_bookmark';
@@ -54,6 +54,12 @@ $(() => {
                 lookupBusId(busStopId, busStopName);
             });
         });
+
+        $(window).on('resize', debounce(function () {
+            $('#main').css({
+                height: $(document).outerHeight() - $('.header').outerHeight()
+            });
+        }, 250)).trigger('resize');
 
         $.ajax({
             url: '/assets/btt/api/services.json',

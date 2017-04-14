@@ -69,6 +69,10 @@ $(() => {
     if (!hasSeen && !$about.length) {
         $('#primary-nav li:last-child .new').addClass('show');
     }
+
+    if (hasSeen && $about.length) {
+        $('.narrow sup').hide();
+    }
     
 
     console.log("I'm a firestarter!");
