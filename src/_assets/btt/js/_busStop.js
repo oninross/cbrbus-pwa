@@ -28,6 +28,16 @@ $(() => {
 
             $('body').append(loader);
 
+            TweenMax.to($this.find('.icon'), 1, {
+                rotation: 360,
+                ease: Expo.easeOut,
+                onComplete: function () {
+                    TweenMax.set($this.find('.icon'), {
+                        rotation: 0
+                    });
+                }
+            });
+
             TweenMax.staggerTo('.card', 0.75, {
                 opacity: 0,
                 top: -50,

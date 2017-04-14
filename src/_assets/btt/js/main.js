@@ -6,9 +6,9 @@
 import $ from 'jquery';
 import 'lazyload';
 import 'TweenMax';
+import 'jquery.cookie';
 import './_modernizr';
 
-import PrimaryNav from '../../../_modules/primary-nav/primary-nav';
 import Accordion from '../../../_modules/accordion/accordion';
 import NearBy from  './_nearby';
 import TrackMyBus from  './_trackmybus';
@@ -30,8 +30,6 @@ var $window = $(window),
 window.II = {};
 
 $(() => {
-    new PrimaryNav();   // Activate Primary NAv modules logic
-
     if ($('.nearby').length) {
         new NearBy();
     }
@@ -60,75 +58,18 @@ $(() => {
 
 
 
-    ////////////////////////////
-    // Magical Table wrapping //
-    ////////////////////////////
-    (function () {
-        $.fn.isTableWide = function () {
-            return $(this).parent().width() < this.width();
-        };
+    // COOKIES ^_^
+    var $about = $('#primary-nav li:last-child a.active'),
+        hasSeen = $.cookie('hasSeen') == undefined ? false : $.cookie('hasSeen');
 
-        $('table').each(function () {
-            var $this = $(this);
+    if ($about.length) {
+        $.cookie('hasSeen', true, { path: '/' });
+    }
 
-            if ($this.length && !$this.parent().hasClass('table-wrapper') && $this.isTableWide()) {
-                $this
-                    .after('<button class="btn-print-table js-print-table">View Table</button>')
-                    .wrap('<div class="table-wrapper"></div>');
-            }
-        });
-
-        var $tablePreview = $('.table-preview');
-        if ($tablePreview.length) {
-            $('meta[name="viewport"]').attr('content', 'user-scalable=yes');
-            $tablePreview.append(localStorage.tablePreview);
-
-            $(window).bind('beforeunload', function () {
-                localStorage.tablePreview = null;
-            });
-        }
-
-        $('body').on('click', '.js-print-table', function () {
-            var $table = $(this).prev();
-
-            localStorage.tablePreview = $table[0].innerHTML;
-            window.open('/table-preview/', '_blank').focus();
-        });
-    })();
-
-
-
-    /////////////////////
-    // Header Toggling //
-    /////////////////////
-    (function () {
-        $window.on('resize scroll', debounce(toggleHeader, 250));
-
-        function toggleHeader() {
-            var st = $(this).scrollTop(),
-                $headerHeight = $header.height();
-
-            isMobileDevice = isMobile();
-
-            if (!isMobileDevice) {
-                if (st > lastScrollTop) {
-                    // scroll down
-                    if (st > $headerHeight) {
-                        $header.addClass('hide').removeClass('compact');
-                    }
-                } else {
-                    // scroll up
-                    if (st <= $headerHeight) {
-                        $header.removeClass('compact hide');
-                    } else {
-                        $header.addClass('compact');
-                    }
-                }
-            }
-
-            lastScrollTop = st;
-        };
-    })();
+    if (!hasSeen && !$about.length) {
+        $('#primary-nav li:last-child .new').addClass('show');
+    }
+    
 
     console.log("I'm a firestarter!");
 });
@@ -252,7 +193,7 @@ if (isServiceWorkerSupported()) {
         navigator.serviceWorker.controller.onstatechange = function (event) {
             if (event.target.state === 'redundant') {
                 toaster('A new version of this app is available. Please reload the page.'); // duration 0 indications shows the toast indefinitely.
-                window.location.reload();
+                // window.location.reload();
             }
         };
     }

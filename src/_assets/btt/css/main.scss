@@ -52,6 +52,84 @@
     }
 }
 
+.search {
+    height: 100vh;
+    position: relative;
+
+    &.selected {
+        .wrap {
+            height: 100%;
+        }
+
+        input[type="text"] {
+            font-size: 1.6em;
+        }
+    }
+
+    & > .wrap {
+        @include absolute-center();
+        @include transition(all, 1s, $easeInOutExpo);
+
+        height: 115px;
+        top: 30px;
+    }
+
+    input[type="text"] {
+        font-size: 3em;
+    }
+}
+
+.offline {
+    h2 {
+        font-size: 10em;
+        font-weight: $light;
+        text-align: center;
+    }
+
+    svg {
+        display: block;
+        margin: auto;
+        width: 290px;
+    }
+}
+
+.stopMarker,
+.busMarker,
+.bluePin,
+.redPin {
+    box-shadow: 0 0 0 0 transparent !important;
+    display: inline-block;
+    margin: 0 !important;
+}
+
+.stopMarker {
+    max-width: 15px;
+}
+
+.busMarker {
+    max-width: 20px;
+}
+
+.bluePin,
+.redPin {
+    max-width: 20px;
+}
+
+.bookmarks {
+    @include tablet {
+        text-align: center;
+    }
+
+    img {
+        display: inline-block;
+
+        @include tablet {
+            margin: 0 10px !important;
+            width: 40%;
+        }
+    }
+}
+
 .cards-wrapper {
     @extend %clearfix;
 
@@ -70,7 +148,6 @@
     @include tablet {
         width: 25%;
     }
-
 
     p {
         font-weight: $bold;
@@ -93,6 +170,7 @@
 
         .card__wrapper {
             background-color: $black;
+            border-radius: 2px;
             color: $white;
             height: auto;
             margin: 0 $gutter;
@@ -127,12 +205,8 @@
         line-height: 1;
         height: 164px;
         margin: 0 $gutter;
-        padding: 10px 22px 22px;
+        padding: 15px;
         position: relative;
-
-        h2 {
-            margin-top: 12px;
-        }
 
         .wrap {
             margin: 0;
@@ -322,6 +396,7 @@
 
     background-color: $green;
     border: 0;
+    border-radius: 2px;
     color: $white;
     font-size: 3em;
     overflow: hidden;

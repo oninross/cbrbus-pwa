@@ -5,10 +5,16 @@ block config
     //- Setup site's base URL to match the "baseUrl" key within `package.json`
     //- Otherwise default to relative pathing
     - var baseUrl = config.baseUrl || './'
-    - var isBusStop = config.isBusStop || false
+    
     - var isSearch = config.isSearch || false
+    - var isBookmark = config.isBookmark || false
+    - var isNearby = config.isNearby || false
+    - var isAbout = config.isAbout || false
+
+    - var navIndex = config.navIndex = 0
+    
+    - var isBusStop = config.isBusStop || false
     - var trackMyBus = config.trackMyBus || false
-    - var nearBy = config.nearBy || false
     - var pageTitle = config.pageTitle || ''
     - var busStopId = config.busStopId || ''
     - var busStopName = config.busStopName || ''
@@ -23,6 +29,15 @@ doctype html
 <!--<![endif]-->
 
 head
+    //- Google Ads Script
+    script(async='', src='//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js')
+    script.
+        (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-9063011790769465",
+        enable_page_level_ads: true
+        });
+
+    //- Google Optimize Script
     style.
         .async-hide { opacity: 0 !important}
     script.
@@ -30,24 +45,25 @@ head
         h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
         (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
         })(window,document.documentElement,'async-hide','dataLayer',4000,
-        {'GTM-MXHZN9J':true});
+        {'GTM-W37T867':true});
 
+    //- Google Analytics
     script.
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
         ga('create', 'UA-90461175-1', 'auto');
-        ga('require', 'GTM-MXHZN9J');
+        ga('require', 'GTM-W37T867');
         ga('send', 'pageview');
 
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
 
     if busStopId
-        title CBR Buses | #{busStopId} #{busStopName}
+        title #{busStopId} #{busStopName} | CBR Buses
     else
-        title CBR Buses
+        title #{pageTitle} | CBR Buses 
 
     meta(name='description', content= 'CBR Buses')
     meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
@@ -91,11 +107,7 @@ body
 
     if !isTablePreview
         header.header
-            .logo
-                .container
-                    h1
-                        a(href="/") CBR Buses
-            +primary-nav
+            +primary-nav({ navIndex: navIndex })
 
     if isBusStop || trackMyBus || nearBy
         .loader
@@ -176,5 +188,6 @@ body
                     .wrap
                         .col-12.align-center
                             p No departures found
+        
 
 

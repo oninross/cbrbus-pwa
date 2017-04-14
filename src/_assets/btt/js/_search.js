@@ -32,6 +32,18 @@ $(() => {
                 return false;
             }
 
+            var $this = $(this);
+
+            TweenMax.to($this.find('.icon'), 1, {
+                rotation: 360,
+                ease: Expo.easeOut,
+                onComplete: function () {
+                    TweenMax.set($this.find('.icon'), {
+                        rotation: 0
+                    });
+                }
+            });
+
             $body.append(loader);
 
             TweenMax.staggerTo('.card', 0.75, {
@@ -58,6 +70,8 @@ $(() => {
                         $search.blur();
                         busStopId = suggestion.data;
                         busStopName = suggestion.name;
+
+                        $(this).closest('.search').addClass('selected');
 
                         getData(suggestion.data);
                         ga('send', 'event', 'Bus Stop Search', 'click', busStopId);
