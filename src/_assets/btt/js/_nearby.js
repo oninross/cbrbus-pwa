@@ -10,7 +10,7 @@ let $window = $(window),
     markers = [],
     busArr = [],
     busObjArr = [],
-    markerUrl = '/assets/btt/images/currentMarker.png',
+    markerUrl = '/assets/btt/images/currentMarker.svg',
     zoomLevel = 17,
     busId,
     busStopName;
@@ -134,7 +134,7 @@ export default class NearBy {
                 anchor: new google.maps.Point(12, 12)
             },
             stopIcon = {
-                url: '/assets/btt/images/stopMarker.png',
+                url: '/assets/btt/images/stopMarker.svg',
                 size: new google.maps.Size(40, 48),
                 origin: new google.maps.Point(0, -10),
                 anchor: new google.maps.Point(20, 48)
@@ -183,7 +183,7 @@ export default class NearBy {
         // Add a marker clusterer to manage the markers.
         let clusterStyles = [
             {
-                url: '/assets/btt/images/cluster.png',
+                url: '/assets/btt/images/cluster.svg',
                 height: 40,
                 width: 40,
                 textColor: '#ffffff'

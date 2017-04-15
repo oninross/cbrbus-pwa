@@ -31,7 +31,7 @@ export default class NearBy {
                     'lat': position.coords.latitude,
                     'long': position.coords.longitude,
                     'zoom': 17,
-                    'marker': '/assets/btt/images/currentMarker.png'
+                    'marker': '/assets/btt/images/currentMarker.svg'
                 };
 
                 that.initMap();
@@ -43,7 +43,7 @@ export default class NearBy {
                         'lat': position.coords.latitude,
                         'long': position.coords.longitude,
                         'zoom': 17,
-                        'marker': '/assets/btt/images/currentMarker.png'
+                        'marker': '/assets/btt/images/currentMarker.svg'
                     };
                 });
 
@@ -58,7 +58,7 @@ export default class NearBy {
                 'lat': -35.2823083,
                 'long': 149.1285561,
                 'zoom': 15,
-                'marker': '/assets/btt/images/currentMarker.png'
+                'marker': '/assets/btt/images/currentMarker.svg'
             };
 
             that.initMap();
