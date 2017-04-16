@@ -5,6 +5,7 @@
 
     background: $white;
     bottom: 40px;
+    display: none;
     left: 0;
     margin: auto;
     max-width: 320px;
@@ -22,6 +23,8 @@
     }
 
     .iOS & {
+        display: block;
+        
         @include tablet {
             bottom: auto;
             left: auto;

@@ -4,10 +4,12 @@ import 'jquery.cookie';
 
 export default class AppBanner {
     constructor() {
-        let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream,
+        let ua = window.navigator.userAgent,
+            iOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream,
+            safari = iOS && !ua.match(/CriOS/i),
             addToHomeScreeen = $.cookie('addToHomeScreeen') == undefined ? false : $.cookie('addToHomeScreeen');
 
-        if (iOS && !addToHomeScreeen) {
+        if (iOS && safari && !addToHomeScreeen) {
             $('#app-banner').addClass('show');
             $('html').addClass('iOS');
             

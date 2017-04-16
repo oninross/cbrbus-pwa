@@ -57,7 +57,7 @@ $(() => {
 
         $(window).on('resize', debounce(function () {
             $('#main').css({
-                height: $(document).outerHeight() - $('.header').outerHeight()
+                height: $(window).outerHeight() - $('.header').outerHeight()
             });
         }, 250)).trigger('resize');
 
