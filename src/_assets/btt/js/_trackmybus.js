@@ -34,7 +34,7 @@ export default class TrackMyBus {
                 'lat': position.coords.latitude,
                 'long': position.coords.longitude,
                 'zoom': 12,
-                'marker': '/assets/btt/images/currentMarker.png'
+                'marker': '/assets/btt/images/currentMarker.svg'
                 // 'marker': 'https://maps.google.com/mapfiles/kml/paddle/blu-blank_maps.png'
             };
 
@@ -159,7 +159,7 @@ export default class TrackMyBus {
                     lng: v.long
                 },
                 icon: {
-                    url: '/assets/btt/images/busMarker.png'
+                    url: '/assets/btt/images/busMarker.svg'
                 },
                 map: map,
                 zIndex: 1
@@ -184,7 +184,7 @@ export default class TrackMyBus {
         // Add a marker clusterer to manage the markers.
         let clusterStyles = [
             {
-                url: '/assets/btt/images/cluster.png',
+                url: '/assets/btt/images/cluster.svg',
                 height: 40,
                 width: 40,
                 textColor: '#ffffff'

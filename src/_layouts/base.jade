@@ -1,4 +1,5 @@
 include ../_modules/primary-nav/primary-nav
+include ../_modules/app-banner/app-banner
 
 //- Custom Configuration
 block config
@@ -115,12 +116,14 @@ body
                 circle.path(cx='50', cy='50', r='18', fill='none', stroke-width='3', stroke-miterlimit='10')
 
     main#main
-        block content
+        block content        
+
+    +app-banner()
 
     block scripts
         script(src= baseUrl + 'assets/btt/js/main.js')
 
-        script(id='toaster-template', type='text/template')
+        script#toaster-template(type='text/template')
             .toaster(class='toaster{{= it.ind }}')
                 p {{! it.message}}
                 button.js-dismiss
