@@ -62,7 +62,7 @@ sup {
 
 .search {
     height: 100vh;
-    margin-bottom: 0;
+    margin-bottom: 50px;
     padding-top: 0;
     position: relative;
 
@@ -87,6 +87,10 @@ sup {
     input[type="text"] {
         font-size: 3em;
     }
+}
+
+.timetable {
+    margin-bottom: 100px;
 }
 
 .offline {
