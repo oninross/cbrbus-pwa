@@ -10,6 +10,7 @@ import 'jquery.cookie';
 import './_modernizr';
 
 import Accordion from '../../../_modules/accordion/accordion';
+import AppBanner from '../../../_modules/app-banner/app-banner';
 import NearBy from  './_nearby';
 import TrackMyBus from  './_trackmybus';
 
@@ -30,6 +31,8 @@ var $window = $(window),
 window.II = {};
 
 $(() => {
+    new AppBanner();
+    
     if ($('.nearby').length) {
         new NearBy();
     }
@@ -42,16 +45,12 @@ $(() => {
         new Accordion();
     }
 
-    ////////////////////////////
-    // Set framerate to 60fps //
-    ////////////////////////////
+    // Set framerate to 60fps
     TweenMax.ticker.fps(60);
 
 
 
-    ///////////////////////
-    // Init Lazy Loading //
-    ///////////////////////
+    // Init Lazy Loading
     $('.lazy').lazyload({
         effect : 'fadeIn'
     });
