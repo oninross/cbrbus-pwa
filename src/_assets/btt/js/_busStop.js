@@ -28,11 +28,14 @@ $(() => {
 
             $('body').append(loader);
 
-            TweenMax.to($this.find('.icon'), 1, {
+            var $this = $(this),
+                $icon = $this.find('.icon');
+            
+            TweenMax.to($icon, 1, {
                 rotation: 360,
                 ease: Expo.easeOut,
                 onComplete: function () {
-                    TweenMax.set($this.find('.icon'), {
+                    TweenMax.set($icon, {
                         rotation: 0
                     });
                 }
@@ -133,7 +136,7 @@ function processData(xml) {
     }
 
     let cardHeader = doT.template($('#card-header').html()),
-        cardTemplate = doT.template($('#card-template').html()),
+        gulp  = doT.template($('#card-template').html()),
         cardEmptyTemplate = doT.template($('#card-empty-template').html()),
         now = new Date(),
         obj = {},
@@ -265,7 +268,7 @@ function processData(xml) {
         // Sort bus timings
         $.each(busArr, function (i, v) {
             // Append Markup - FOR TESTING ONLY
-            // cardMarkup += cardTemplate(v);
+            // cardMarkup += gulp (v);
 
             if (v.estimatedArrival[0] > v.estimatedArrival[1]) {
                 v.estimatedArrival.sort();
@@ -283,11 +286,11 @@ function processData(xml) {
 
         $.each(byServiceNum, function (i, v) {
             // Append Markup
-            cardMarkup += cardTemplate(byServiceNum[i]);
+            cardMarkup += gulp (byServiceNum[i]);
         });
     }
 
-    // // Render Markup
+    // Render Markup
     $('.cards-wrapper').html(cardMarkup);
 
     TweenMax.to('.btn-refresh', 0.75, {
