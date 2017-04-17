@@ -195,8 +195,8 @@ if (isServiceWorkerSupported()) {
         console.log("navigator.serviceWorker.controller.onstatechange:: " + navigator.serviceWorker.controller.onstatechange)
         navigator.serviceWorker.controller.onstatechange = function (event) {
             if (event.target.state === 'redundant') {
-                toaster('A new version of this app is available. Please reload the page.'); // duration 0 indications shows the toast indefinitely.
-                // window.location.reload();
+                // toaster('A new version of this app is available. Please reload the page.'); // duration 0 indications shows the toast indefinitely.
+                window.location.reload();
             }
         };
     }

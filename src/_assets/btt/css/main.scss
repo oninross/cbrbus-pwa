@@ -62,11 +62,13 @@ sup {
 
 .search {
     height: 100vh;
-    margin-bottom: 50px;
+    margin-bottom: 0;
     padding-top: 0;
     position: relative;
 
     &.selected {
+        margin-bottom: 0;
+
         .wrap {
             height: 100%;
         }
@@ -81,7 +83,7 @@ sup {
         @include transition(all, 1s, $easeInOutExpo);
 
         height: 115px;
-        top: 30px;
+        padding-top: 20px;
     }
 
     input[type="text"] {
@@ -158,6 +160,10 @@ sup {
     margin-bottom: 30px;
     width: 50%;
     z-index: 5;
+
+    &:last-child {
+        margin-bottom: 90px;
+    }
 
     @include tablet {
         width: 25%;
