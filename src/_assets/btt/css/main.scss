@@ -67,6 +67,8 @@ sup {
     position: relative;
 
     &.selected {
+        margin-bottom: 0;
+
         .wrap {
             height: 100%;
         }
@@ -81,12 +83,16 @@ sup {
         @include transition(all, 1s, $easeInOutExpo);
 
         height: 115px;
-        top: 30px;
+        padding-top: 20px;
     }
 
     input[type="text"] {
         font-size: 3em;
     }
+}
+
+.timetable {
+    margin-bottom: 100px;
 }
 
 .offline {
@@ -155,6 +161,10 @@ sup {
     width: 50%;
     z-index: 5;
 
+    &:last-child {
+        margin-bottom: 90px;
+    }
+
     @include tablet {
         width: 25%;
     }
@@ -215,7 +225,7 @@ sup {
         line-height: 1;
         height: 164px;
         margin: 0 $gutter;
-        padding: 25px;
+        padding: 20px;
         position: relative;
 
         .wrap {
