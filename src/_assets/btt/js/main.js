@@ -70,7 +70,7 @@ $(() => {
     }
 
     if (hasSeen && $about.length) {
-        $('.narrow sup').hide();
+        $('.narrow .new').hide();
     }
 
 
