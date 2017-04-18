@@ -32,7 +32,7 @@ window.II = {};
 
 $(() => {
     new AppBanner();
-    
+
     if ($('.nearby').length) {
         new NearBy();
     }
@@ -62,7 +62,7 @@ $(() => {
         hasSeen = $.cookie('hasSeen') == undefined ? false : $.cookie('hasSeen');
 
     if ($about.length) {
-        $.cookie('hasSeen', true, { path: '/' });
+        $.cookie('hasSeen', true, { expires: 30, path: '/' });
     }
 
     if (!hasSeen && !$about.length) {
@@ -72,7 +72,7 @@ $(() => {
     if (hasSeen && $about.length) {
         $('.narrow sup').hide();
     }
-    
+
 
     console.log("I'm a firestarter!");
 });
