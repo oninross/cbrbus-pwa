@@ -253,9 +253,6 @@ export default class TrackMyBus {
             $vehicleLat,
             $vehicleLng,
             vehicleRef,
-            onwardCall,
-            monitoredCall,
-            stopPointRef,
             directionRef,
             busMarker,
             $v;
@@ -266,15 +263,12 @@ export default class TrackMyBus {
             $vehicleLat = $vehicleLocation.find('Latitude');
             $vehicleLng = $vehicleLocation.find('Longitude');
             vehicleRef = $v.find('VehicleRef');
-            // onwardCall = $v.find('OnwardCall');
-            // stopPointRef = $(onwardCall).find('StopPointRef');
             directionRef = $v.find('DirectionRef');
 
             if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && vehicleRef[0] != undefined) {
                 if (vehicleRef[0].innerHTML == $vehicleRefQuery) {
                     busMarker = new google.maps.Marker({
-                        icon: 'https://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '_maps.png',     // small
-                        // icon: 'https://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '.png',  // large
+                        icon: 'https://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '_maps.png',
                         position: {
                             lat: Number($vehicleLat[0].innerHTML),
                             lng: Number($vehicleLng[0].innerHTML)
@@ -282,34 +276,11 @@ export default class TrackMyBus {
                         map: that.map
                     });
 
-                    // var pt1 = new google.maps.LatLng($vehicleLat[0].innerHTML, $vehicleLng[0].innerHTML),
-                    //     pt2 = new google.maps.LatLng(that.mapSettings.lat, that.mapSettings.long),
-                    //     bounds = new google.maps.LatLngBounds();
-
-                    // bounds.extend(pt1);
-                    // bounds.extend(pt2);
-                    // that.map.fitBounds(bounds);
-
                     markers.push(busMarker);
 
                     isVehicleFound = true;
-                    // return false;
                 }
             }
-
-            // if (stopPointRef[0] != undefined && stopPointRef[0] != '' && vehicleRef[0] != undefined) {
-            //     // console.log('onwardcall:: ' + stopPointRef[0].innerHTML + ' == ' +  busId);
-            //     if (Number(stopPointRef[0].innerHTML) == Number(busId)) {
-            //         clearInterval(refreshInterval);
-            //     }
-            // } else {
-            //     monitoredCall = $v.find('MonitoredCall');
-            //     stopPointRef = $(monitoredCall).find('StopPointRef');
-            //     // console.log('no onwardcall:: ' + stopPointRef[0].innerHTML + ' == ' +  busId);
-            //     if (Number(stopPointRef[0].innerHTML) == Number(busId)) {
-            //         clearInterval(refreshInterval);
-            //     }
-            // }
         });
 
         if (!isVehicleFound) {
