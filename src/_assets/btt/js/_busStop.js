@@ -30,7 +30,7 @@ $(() => {
 
             var $this = $(this),
                 $icon = $this.find('.icon');
-            
+
             TweenMax.to($icon, 1, {
                 rotation: 360,
                 ease: Expo.easeOut,
@@ -299,11 +299,18 @@ function processData(xml) {
         ease: Expo.easeOut
     });
 
+    TweenMax.to('.sort-toggle', 0.75, {
+        autoAlpha: 1,
+        top: 0,
+        ease: Expo.easeOut,
+        delay: 0.1
+    });
+
     TweenMax.staggerTo('.card', 0.75, {
         opacity: 1,
         top: 0,
         ease: Expo.easeOut,
-        delay: 0.1
+        delay: 0.2
     }, 0.1);
 
     $('.cards-wrapper').on('click', '.card', cardListener);
