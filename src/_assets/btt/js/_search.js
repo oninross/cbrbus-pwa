@@ -2,7 +2,7 @@
 
 import 'autocomplete';
 import doT from 'doT';
-import { loader, debounce } from './_helper';
+import { loader, debounce, getSortByTime, setSortByTime } from './_helper';
 import { ripple, toaster } from './_material';
 import { lookupBusId } from './_busStop';
 import { setBookmark } from './_bookmark';
@@ -10,7 +10,8 @@ import { setBookmark } from './_bookmark';
 let isLoading = false,
     busStopId = null,
     busStopName = null,
-    $body = $('body');
+    $body = $('body'),
+    isSortByTime = getSortByTime();
 
 $(() => {
     if ($('.search').length) {
@@ -25,6 +26,22 @@ $(() => {
             e.preventDefault();
 
             setBookmark($(this).data('id'));
+        });
+
+        if (isSortByTime) {
+            $('#sort-toggle').attr('checked', true);
+        };
+
+        $('.js-toggle-sort').on('click', function () {
+            if ($('#sort-toggle:checked').length) {
+                isSortByTime = true;
+            } else {
+                isSortByTime = false;
+            }
+
+            setSortByTime(isSortByTime);
+
+            $('.js-refresh').trigger('click');
         });
 
         $('.js-refresh').on('click', function () {

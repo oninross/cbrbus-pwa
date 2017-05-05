@@ -27,9 +27,15 @@ $(() => {
         };
 
         $('.js-toggle-sort').on('click', function () {
-            setSortByTime($("#sort-toggle:checked").length);
+            if ($('#sort-toggle:checked').length) {
+                isSortByTime = true;
+            } else {
+                isSortByTime = false;
+            }
 
-            $('.js-toggle-sort').trigger('click');
+            setSortByTime(isSortByTime);
+
+            $('.js-refresh').trigger('click');
         });
 
         $('.js-refresh').on('click', function () {
@@ -289,20 +295,22 @@ function processData(xml) {
             }
         });
 
+        let busArrSplice = busArr.slice(0);
+
         if (isSortByTime) {
-
+            busArrSplice.sort(function (a, b) {
+                return a.estimatedArrival[0] - b.estimatedArrival[0];
+            });
         } else {
-            let byServiceNum = busArr.slice(0);
-
-            byServiceNum.sort(function (a, b) {
+            busArrSplice.sort(function (a, b) {
                 return a.serviceNum - b.serviceNum;
             });
-
-            $.each(byServiceNum, function (i, v) {
-                // Append Markup
-                cardMarkup += cardTemplate(byServiceNum[i]);
-            });
         }
+
+        $.each(busArrSplice, function (i, v) {
+            // Append Markup
+            cardMarkup += cardTemplate(busArrSplice[i]);
+        });
     }
 
     // Render Markup
