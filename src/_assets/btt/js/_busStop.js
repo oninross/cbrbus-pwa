@@ -7,7 +7,8 @@ import { checkBookmark, setBookmark } from './_bookmark';
 
 let isLoading = true,
     busStopId = 0,
-    busStopName = '';
+    busStopName = '',
+    isSortByTime = getSortByTime();
 
 $(() => {
     if ($('.timetable').length) {
@@ -21,12 +22,14 @@ $(() => {
 
         lookupBusId(busStopId, busStopName);
 
-        if (getSortByTime()) {
+        if (isSortByTime) {
             $('#sort-toggle').attr('checked', true);
         };
 
         $('.js-toggle-sort').on('click', function () {
             setSortByTime($("#sort-toggle:checked").length);
+
+            $('.js-toggle-sort').trigger('click');
         });
 
         $('.js-refresh').on('click', function () {
@@ -144,7 +147,7 @@ function processData(xml) {
     }
 
     let cardHeader = doT.template($('#card-header').html()),
-        gulp  = doT.template($('#card-template').html()),
+        cardTemplate = doT.template($('#card-template').html()),
         cardEmptyTemplate = doT.template($('#card-empty-template').html()),
         now = new Date(),
         obj = {},
@@ -286,16 +289,20 @@ function processData(xml) {
             }
         });
 
-        let byServiceNum = busArr.slice(0);
+        if (isSortByTime) {
 
-        byServiceNum.sort(function (a, b) {
-            return a.serviceNum - b.serviceNum;
-        });
+        } else {
+            let byServiceNum = busArr.slice(0);
 
-        $.each(byServiceNum, function (i, v) {
-            // Append Markup
-            cardMarkup += gulp (byServiceNum[i]);
-        });
+            byServiceNum.sort(function (a, b) {
+                return a.serviceNum - b.serviceNum;
+            });
+
+            $.each(byServiceNum, function (i, v) {
+                // Append Markup
+                cardMarkup += cardTemplate(byServiceNum[i]);
+            });
+        }
     }
 
     // Render Markup
