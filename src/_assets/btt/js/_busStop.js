@@ -1,7 +1,7 @@
 'use strict';
 
 import doT from 'doT';
-import { API_KEY, loader, getQueryVariable, isNotificationGranted, debounce } from './_helper';
+import { API_KEY, loader, getQueryVariable, isNotificationGranted, debounce, getSortByTime, setSortByTime } from './_helper';
 import { ripple, toaster } from './_material';
 import { checkBookmark, setBookmark } from './_bookmark';
 
@@ -20,6 +20,16 @@ $(() => {
         getBusStopName();
 
         lookupBusId(busStopId, busStopName);
+
+        console.log(getSortByTime())
+
+        if (getSortByTime()) {
+            $('#sort-toggle').attr('checked', true);
+        };
+
+        $('.js-toggle-sort').on('click', function () {
+            setSortByTime($("#sort-toggle:checked").length);
+        });
 
         $('.js-refresh').on('click', function () {
             if (isLoading) {

@@ -55,6 +55,28 @@ let isServiceWorkerSupported = function () {
     return 'serviceWorker' in navigator;
 }
 
+let getSortByTime = function () {
+    if (localStorage.busSettings == undefined) {
+        localStorage.isSortByTime = JSON.stringify(false);
+    }
+
+    return JSON.parse(localStorage.isSortByTime);
+}
+
+let setSortByTime = function (boolean) {
+    var bool = boolean;
+    switch (boolean) {
+        case 0:
+            bool = false;
+            break;
+        case 1:
+            bool = true;
+            break;
+    }
+    console.log(bool)
+    localStorage.isSortByTime = JSON.stringify(bool);
+}
+
 function getQueryVariable(variable) {
     let query = window.location.search.substring(1),
         vars = query.split("&");
@@ -122,5 +144,7 @@ export {
     API_KEY,
     GMAP_API_KEY,
     isNotificationGranted,
-    isServiceWorkerSupported
+    isServiceWorkerSupported,
+    getSortByTime,
+    setSortByTime
 };
