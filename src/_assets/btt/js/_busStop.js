@@ -21,8 +21,6 @@ $(() => {
 
         lookupBusId(busStopId, busStopName);
 
-        console.log(getSortByTime())
-
         if (getSortByTime()) {
             $('#sort-toggle').attr('checked', true);
         };

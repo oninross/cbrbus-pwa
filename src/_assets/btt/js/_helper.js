@@ -56,7 +56,7 @@ let isServiceWorkerSupported = function () {
 }
 
 let getSortByTime = function () {
-    if (localStorage.busSettings == undefined) {
+    if (localStorage.isSortByTime == undefined) {
         localStorage.isSortByTime = JSON.stringify(false);
     }
 
