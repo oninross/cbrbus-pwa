@@ -11,6 +11,7 @@ let $body = $('body'),
     $window = $(window),
     isMobileDevice = isMobile();
 
+
 /////////////////////////////
 // Select Box Materializer //
 /////////////////////////////

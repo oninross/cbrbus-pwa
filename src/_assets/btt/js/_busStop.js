@@ -1,13 +1,14 @@
 'use strict';
 
 import doT from 'doT';
-import { API_KEY, loader, getQueryVariable, isNotificationGranted, debounce } from './_helper';
+import { API_KEY, loader, getQueryVariable, isNotificationGranted, debounce, getSortByTime, setSortByTime } from './_helper';
 import { ripple, toaster } from './_material';
 import { checkBookmark, setBookmark } from './_bookmark';
 
 let isLoading = true,
     busStopId = 0,
-    busStopName = '';
+    busStopName = '',
+    isSortByTime = getSortByTime();
 
 $(() => {
     if ($('.timetable').length) {
@@ -21,6 +22,22 @@ $(() => {
 
         lookupBusId(busStopId, busStopName);
 
+        if (isSortByTime) {
+            $('#sort-toggle').attr('checked', true);
+        };
+
+        $('.js-toggle-sort').on('click', function () {
+            if ($('#sort-toggle:checked').length) {
+                isSortByTime = true;
+            } else {
+                isSortByTime = false;
+            }
+
+            setSortByTime(isSortByTime);
+
+            $('.js-refresh').trigger('click');
+        });
+
         $('.js-refresh').on('click', function () {
             if (isLoading) {
                 return false;
@@ -30,7 +47,7 @@ $(() => {
 
             var $this = $(this),
                 $icon = $this.find('.icon');
-            
+
             TweenMax.to($icon, 1, {
                 rotation: 360,
                 ease: Expo.easeOut,
@@ -136,7 +153,7 @@ function processData(xml) {
     }
 
     let cardHeader = doT.template($('#card-header').html()),
-        gulp  = doT.template($('#card-template').html()),
+        cardTemplate = doT.template($('#card-template').html()),
         cardEmptyTemplate = doT.template($('#card-empty-template').html()),
         now = new Date(),
         obj = {},
@@ -278,15 +295,21 @@ function processData(xml) {
             }
         });
 
-        let byServiceNum = busArr.slice(0);
+        let busArrSplice = busArr.slice(0);
 
-        byServiceNum.sort(function (a, b) {
-            return a.serviceNum - b.serviceNum;
-        });
+        if (isSortByTime) {
+            busArrSplice.sort(function (a, b) {
+                return a.estimatedArrival[0] - b.estimatedArrival[0];
+            });
+        } else {
+            busArrSplice.sort(function (a, b) {
+                return a.serviceNum - b.serviceNum;
+            });
+        }
 
-        $.each(byServiceNum, function (i, v) {
+        $.each(busArrSplice, function (i, v) {
             // Append Markup
-            cardMarkup += gulp (byServiceNum[i]);
+            cardMarkup += cardTemplate(busArrSplice[i]);
         });
     }
 
@@ -299,11 +322,18 @@ function processData(xml) {
         ease: Expo.easeOut
     });
 
+    TweenMax.to('.sort-toggle', 0.75, {
+        autoAlpha: 1,
+        top: 0,
+        ease: Expo.easeOut,
+        delay: 0.1
+    });
+
     TweenMax.staggerTo('.card', 0.75, {
         opacity: 1,
         top: 0,
         ease: Expo.easeOut,
-        delay: 0.1
+        delay: 0.2
     }, 0.1);
 
     $('.cards-wrapper').on('click', '.card', cardListener);
