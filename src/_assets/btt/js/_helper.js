@@ -72,8 +72,10 @@ let setSortByTime = function (boolean) {
         case 1:
             bool = true;
             break;
-    }
-    console.log(bool)
+    };
+
+    ga('send', 'event', 'Set Sort By Time', 'click', bool);
+
     localStorage.isSortByTime = JSON.stringify(bool);
 }
 

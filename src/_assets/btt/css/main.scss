@@ -89,10 +89,20 @@
     input[type="text"] {
         font-size: 3em;
     }
+
+    .col-6 {
+        float: left;
+        width: 50%;
+    }
 }
 
 .timetable {
     margin-bottom: 100px;
+
+    .col-6 {
+        float: left;
+        width: 50%;
+    }
 }
 
 .offline {
@@ -573,7 +583,7 @@
 }
 
 .sort-toggle {
-    margin-top: 20px;
+    margin-top: 13px;
     opacity: 0;
     position: relative;
     text-align: right;

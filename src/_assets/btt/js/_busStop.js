@@ -193,19 +193,103 @@ function processData(xml) {
             cardMarkup += cardHeader(obj);
         }
 
-
         // Create obj cards
-        $.each($monitoredStopVisit, function (i, v) {
+        if ($monitoredStopVisit.length) {
+            $.each($monitoredStopVisit, function (i, v) {
+                isBusPresent = false;
+
+                // Get vehicle reference number
+                vehicleRefNumArr = [];
+                vehicleRefNum = v.MonitoredVehicleJourney.VehicleRef;
+                vehicleRefNumArr.push(vehicleRefNum);
+
+                // Check for Arrival time
+                let $monitoredCall = v.MonitoredVehicleJourney.MonitoredCall;
+
+                if ($monitoredCall.ExpectedArrivalTime == undefined) {
+                    if ($monitoredCall.AimedArrivalTime == undefined) {
+                        arr = new Date($monitoredCall.AimedDepartureTime);
+                    } else {
+                        arr = new Date($monitoredCall.AimedArrivalTime);
+                    }
+                } else {
+                    arr = new Date($monitoredCall.ExpectedArrivalTime);
+                }
+
+                // Calculate ETA
+                eta = arr.getTime() - now.getTime();
+                etaMin = Math.round(eta / 60000);
+                etaMinArr = [];
+                etaMinArr.push(etaMin);
+
+
+                // Check for Vehicle Features (Wheelchair or Bike Rack)
+                vehicleFeatureArr = [];
+                vehicleFeatureRef = v.MonitoredVehicleJourney.VehicleFeatureRef;
+                if (Array.isArray(vehicleFeatureRef)) {
+                    for (let j = 0, m = vehicleFeatureRef.length; j < m; j++) {
+                        icon = vehicleFeatureRef[j];
+                        icon = icon.replace(' ', '-').toLowerCase();
+                        vehicleFeatureArr.push(icon);
+                    }
+                } else {
+                    if (vehicleFeatureRef !== undefined) {
+                        icon = vehicleFeatureRef;
+                        icon = icon.replace(' ', '-').toLowerCase();
+                        vehicleFeatureArr.push(icon);
+                    }
+                }
+
+                serviceNum = v.MonitoredVehicleJourney.PublishedLineName;
+                obj = {
+                    busStopId: busStopId,
+                    vehicleRefNum: vehicleRefNumArr,
+                    serviceNum: serviceNum,
+                    feature: vehicleFeatureArr,
+                    estimatedArrival: etaMinArr
+                }
+
+                $.each(busArr, function (i, v) {
+                    if (v.serviceNum == serviceNum) {
+                        isBusPresent = true;
+
+                        // Bus Service is present
+                        if (v.estimatedArrival.length < 2) {
+                            // Estimated Arrival per service is less than 3
+                            tempArr = [];
+                            tempArr.push(etaMin);
+                            v.estimatedArrival = v.estimatedArrival.concat(tempArr);
+
+                            tempArr = [];
+                            tempArr.push(vehicleRefNum);
+                            v.vehicleRefNum = v.vehicleRefNum.concat(tempArr);
+                        } else {
+                            // Replace timing that has earlier arrival
+                            $.each(v.estimatedArrival, function (ind, val) {
+                                if (val > etaMin && v.estimatedArrival[ind] != etaMin) {
+                                    v.estimatedArrival[ind] = etaMin;
+                                    v.vehicleRefNum[ind] = vehicleRefNum;
+                                    return false;
+                                }
+                            });
+                        }
+                    }
+                });
+
+                if (!isBusPresent) {
+                    busArr.push(obj);
+                }
+            });
+        } else {
             isBusPresent = false;
 
             // Get vehicle reference number
             vehicleRefNumArr = [];
-            vehicleRefNum = v.MonitoredVehicleJourney.VehicleRef;
+            vehicleRefNum = $monitoredStopVisit.MonitoredVehicleJourney.VehicleRef;
             vehicleRefNumArr.push(vehicleRefNum);
 
-
             // Check for Arrival time
-            let $monitoredCall = v.MonitoredVehicleJourney.MonitoredCall;
+            let $monitoredCall = $monitoredStopVisit.MonitoredVehicleJourney.MonitoredCall;
 
             if ($monitoredCall.ExpectedArrivalTime == undefined) {
                 if ($monitoredCall.AimedArrivalTime == undefined) {
@@ -226,7 +310,7 @@ function processData(xml) {
 
             // Check for Vehicle Features (Wheelchair or Bike Rack)
             vehicleFeatureArr = [];
-            vehicleFeatureRef = v.MonitoredVehicleJourney.VehicleFeatureRef;
+            vehicleFeatureRef = $monitoredStopVisit.MonitoredVehicleJourney.VehicleFeatureRef;
             if (Array.isArray(vehicleFeatureRef)) {
                 for (let j = 0, m = vehicleFeatureRef.length; j < m; j++) {
                     icon = vehicleFeatureRef[j];
@@ -241,7 +325,7 @@ function processData(xml) {
                 }
             }
 
-            serviceNum = v.MonitoredVehicleJourney.PublishedLineName;
+            serviceNum = $monitoredStopVisit.MonitoredVehicleJourney.PublishedLineName;
             obj = {
                 busStopId: busStopId,
                 vehicleRefNum: vehicleRefNumArr,
@@ -280,7 +364,7 @@ function processData(xml) {
             if (!isBusPresent) {
                 busArr.push(obj);
             }
-        });
+        }
 
         // Sort bus timings
         $.each(busArr, function (i, v) {

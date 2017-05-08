@@ -30,6 +30,7 @@ importScripts('serviceworker-cache-polyfill.js');
 // updated service worker is activated.
 var version = '0.15.0',
     now = Date.now(),
+    OFFLINE_URL = 'offline/',
     urlsToPrefetch = [
         '//developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js',
         '//maps.google.com/mapfiles/kml/paddle/blu-blank_maps.png',
@@ -46,7 +47,7 @@ var version = '0.15.0',
         'assets/btt/js/main.js',
         'assets/btt/css/main.css',
         'assets/btt/css/fonts/icomoon.woff',
-        'offline/',
+        OFFLINE_URL,
         'index.html?homescreen=1'
     ],
     CURRENT_CACHES = {
@@ -186,7 +187,7 @@ self.addEventListener('push', function (event) {
 
     var payload = {
         title: 'CBR Buses',
-        body: 'Your bus stop is next',
+        body: 'Your bus has arrived.',
         icon: 'https://cbrbuses.firebaseapp.com/assets/btt/images/notify-image.png',
         url: 'https://cbrbuses.firebaseapp.com/?busId=' + busId + '&vehicleRef=' + vehicleRef
     };
