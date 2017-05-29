@@ -6,14 +6,14 @@ block config
     //- Setup site's base URL to match the "baseUrl" key within `package.json`
     //- Otherwise default to relative pathing
     - var baseUrl = config.baseUrl || './'
-    
+
     - var isSearch = config.isSearch || false
     - var isBookmark = config.isBookmark || false
     - var isNearby = config.isNearby || false
     - var isAbout = config.isAbout || false
 
     - var navIndex = config.navIndex = 0
-    
+
     - var isBusStop = config.isBusStop || false
     - var trackMyBus = config.trackMyBus || false
     - var pageTitle = config.pageTitle || ''
@@ -54,7 +54,7 @@ head
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-        ga('create', 'UA-90461175-1', 'auto');
+        ga('create', 'UA-90461175-2', 'auto');
         ga('require', 'GTM-W37T867');
         ga('send', 'pageview');
 
@@ -64,7 +64,7 @@ head
     if busStopId
         title #{busStopId} #{busStopName} | CBR Buses
     else
-        title #{pageTitle} | CBR Buses 
+        title #{pageTitle} | CBR Buses
 
     meta(name='description', content= 'CBR Buses')
     meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
@@ -111,7 +111,7 @@ body
                 circle.path(cx='50', cy='50', r='18', fill='none', stroke-width='3', stroke-miterlimit='10')
 
     main#main
-        block content        
+        block content
 
     +app-banner()
 
@@ -186,6 +186,6 @@ body
                     .wrap
                         .col-12.align-center
                             p No departures found
-        
+
 
 
