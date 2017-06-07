@@ -183,22 +183,34 @@ export default class TrackMyBus {
         });
 
         // Add a marker clusterer to manage the markers.
-        let clusterStyles = [
-            {
-                url: '/assets/btt/images/cluster.svg',
-                height: 40,
-                width: 40,
-                textColor: '#ffffff'
-            }
-        ],
-        markerCluster = new MarkerClusterer(map, markers, {
-            styles: clusterStyles,
-            imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
-            maxZoom: 15,
-            averageCenter: true
-        });
+        that.initClusterMarker();
 
         that.callApi();
+    }
+
+    initClusterMarker() {
+        var that = this;
+
+        if (typeof MarkerClusterer == "undefined") {
+            setTimeout(function() {
+                that.initClusterMarker();
+            }, 500);
+        } else {
+            let clusterStyles = [
+                {
+                    url: '/assets/btt/images/cluster.svg',
+                    height: 40,
+                    width: 40,
+                    textColor: '#ffffff'
+                }
+            ],
+            markerCluster = new MarkerClusterer(that.map, markers, {
+                styles: clusterStyles,
+                imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+                maxZoom: 15,
+                averageCenter: true
+            });
+        }
     }
 
     notifyMe(id) {

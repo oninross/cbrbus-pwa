@@ -3,7 +3,7 @@
     ul {
         @include normalise-list;
         @include clearfix;
-        
+
         font-size: 1.1em;
     }
 
@@ -36,15 +36,16 @@
         color: $white;
         display: block;
         font-size: 0.7em;
-        height: 15px;
+        height: 18px;
         left: 15px;
         margin: auto;
         opacity: 0;
+        padding: 2px;
         position: absolute;
         transform: scale(0.25);
         right: 0;
         top: -5px;
-        width: 15px;
+        width: 18px;
         transition-delay: 0.5s;
 
         &.show {

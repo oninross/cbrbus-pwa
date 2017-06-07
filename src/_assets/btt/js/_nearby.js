@@ -13,7 +13,8 @@ let $window = $(window),
     markerUrl = '/assets/btt/images/currentMarker.svg',
     zoomLevel = 17,
     busId,
-    busStopName;
+    busStopName,
+    map;
 
 export default class NearBy {
     constructor() {
@@ -75,16 +76,17 @@ export default class NearBy {
             clusterScript = document.createElement('script'),
             clusterScriptStr = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js';
 
-        script.type = 'text/javascript';
-        script.src = scriptStr;
-        document.body.appendChild(clusterScript);
-
         clusterScript.type = 'text/javascript';
         clusterScript.src = clusterScriptStr;
+        clusterScript.async = 'async';
+        clusterScript.defer = 'defer';
+        document.body.appendChild(clusterScript);
 
-        setTimeout(function () {
-            document.body.appendChild(script);
-        }, 1000);
+        script.type = 'text/javascript';
+        script.src = scriptStr;
+        script.async = 'async';
+        script.defer = 'defer';
+        document.body.appendChild(script);
     }
 
     loadData() {
@@ -133,19 +135,21 @@ export default class NearBy {
                 origin: new google.maps.Point(0, 0),
                 anchor: new google.maps.Point(12, 12)
             },
-            stopIcon = {
-                url: '/assets/btt/images/stopMarker.svg',
-                size: new google.maps.Size(40, 48),
-                origin: new google.maps.Point(0, -10),
-                anchor: new google.maps.Point(20, 48)
-            },
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: that.mapSettings.zoom,
                 center: center,
                 streetViewControl: false,
                 mapTypeControl: false
             }),
+            stopIcon = {
+                url: '/assets/btt/images/stopMarker.svg',
+                size: new google.maps.Size(40, 48),
+                origin: new google.maps.Point(0, -10),
+                anchor: new google.maps.Point(20, 48)
+            },
             busMarker;
+
+        that.map = map;
 
         that.currentMarker = new google.maps.Marker({
             icon: currentIcon,
@@ -181,20 +185,7 @@ export default class NearBy {
         });
 
         // Add a marker clusterer to manage the markers.
-        let clusterStyles = [
-            {
-                url: '/assets/btt/images/cluster.svg',
-                height: 40,
-                width: 40,
-                textColor: '#ffffff'
-            }
-        ],
-        markerCluster = new MarkerClusterer(map, markers, {
-            styles: clusterStyles,
-            imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
-            maxZoom: 15,
-            averageCenter: true
-        });
+        that.initClusterMarker();
 
         if (that.isGeolocationEnabled) {
             $('.widget-mylocation-button')
@@ -211,12 +202,36 @@ export default class NearBy {
     }
 
     updateMarker() {
-        console.log(this);
-
         var that = this;
+
         that.currentMarker.setPosition({
             lat: this.mapSettings.lat,
             lng: this.mapSettings.long
         });
+    }
+
+    initClusterMarker() {
+        var that = this;
+
+        if (typeof MarkerClusterer == "undefined") {
+            setTimeout(function() {
+                that.initClusterMarker();
+            }, 500);
+        } else {
+            let clusterStyles = [
+                {
+                    url: '/assets/btt/images/cluster.svg',
+                    height: 40,
+                    width: 40,
+                    textColor: '#ffffff'
+                }
+            ],
+            markerCluster = new MarkerClusterer(that.map, markers, {
+                styles: clusterStyles,
+                imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+                maxZoom: 15,
+                averageCenter: true
+            });
+        }
     }
 }

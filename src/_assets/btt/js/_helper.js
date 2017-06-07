@@ -6,8 +6,8 @@ const loader = '<div class="loader"><svg class="circular" viewBox="25 25 50 50">
 // const BASE_URL = '10.16.0.107:8888'; // local
 const BASE_URL = 'cbrserver.herokuapp.com'; // Production
 
-// const API_KEY = 'A6F762'; // Development
-const API_KEY = 'AE9887'; // Production/
+const API_KEY = 'A6F762'; // Development
+// const API_KEY = 'AE9887'; // Production/
 
 const GMAP_API_KEY = 'AIzaSyCzm0EJG9cmuQzaGvictLx6M5rXcD5L2LA'; // Development
 // const GMAP_API_KEY = 'AIzaSyDpsNC8Bae_vZwZQTWoh9PGAb4yBlI9JIQ'; // Production
