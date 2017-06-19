@@ -449,6 +449,24 @@
     width: 100%;
 }
 
+.btn-share {
+    @extend .btn;
+    @include material-shadow(1);
+
+    display: block;
+    font-weight: $bold;
+    text-align: center;
+    width: 100%;
+
+    &.-facebook {
+        background-color: #3b5998;
+    }
+
+    &.-twitter {
+        background-color: #4099FF;
+    }
+}
+
 /* required styles */
 
 // for goglemap
