@@ -58,7 +58,7 @@ $(() => {
 
 
     // COOKIES ^_^
-    var $about = $('#primary-nav li:last-child a.active'),
+    var $about = $('#primary-nav li:nth-child(4) a.active'),
         hasSeen = $.cookie('hasSeen') == undefined ? false : $.cookie('hasSeen');
 
     if ($about.length) {
@@ -66,7 +66,7 @@ $(() => {
     }
 
     if (!hasSeen && !$about.length) {
-        $('#primary-nav li:last-child .new').addClass('show');
+        $('#primary-nav li:nth-child(4) .new').addClass('show');
     }
 
     if (hasSeen && $about.length) {
