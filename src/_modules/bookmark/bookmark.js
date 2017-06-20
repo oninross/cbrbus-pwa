@@ -3,20 +3,20 @@
 import doT from 'doT';
 import { ripple, toaster } from '../../_assets/btt/js/_material';
 
-let obj = {},
-    services = {},
-    tmpArr = [],
-    tmpArrInd = 0,
-    busStopName = '',
-    strArr = '';
-
 export default class Bookmark {
     constructor() {
-        const that = this;
+        const self = this;
+
+        self.obj = {};
+        self.services = {};
+        self.tmpArr = [];
+        self.tmpArrInd = 0;
+        self.busStopName = '';
+        self.strArr = '';
     }
 
     init() {
-        const that = this;
+        const self = this;
 
         let cardBookmark = doT.template($('#card-bookmark').html()),
             cardMarkup = '';
@@ -24,28 +24,28 @@ export default class Bookmark {
         $.ajax({
             url: '/assets/btt/api/services.json',
             success: function (data) {
-                services = data;
+                self.services = data;
 
                 if (localStorage.bookmarks) {
-                    tmpArr = JSON.parse(localStorage.bookmarks);
+                    self.tmpArr = JSON.parse(localStorage.bookmarks);
 
-                    for (let i = 0, l = tmpArr.length; i < l; i++) {
+                    for (let i = 0, l = self.tmpArr.length; i < l; i++) {
                         // iterate over each element in the array
-                        for (let j = 0, m = services.length; j < m; j++) {
+                        for (let j = 0, m = self.services.length; j < m; j++) {
                             // look for the entry with a matching `code` value
-                            if (services[j].data == tmpArr[i]) {
+                            if (self.services[j].data == self.tmpArr[i]) {
                                 // we found it
                                 // obj[i].name is the matched result
-                                busStopName = services[j].name;
+                                self.busStopName = self.services[j].name;
                             }
                         }
 
-                        obj = {
-                            busStopId: tmpArr[i],
-                            busStopName: busStopName
+                        self.obj = {
+                            busStopId: self.tmpArr[i],
+                            busStopName: self.busStopName
                         };
 
-                        cardMarkup += cardBookmark(obj);
+                        cardMarkup += cardBookmark(self.obj);
                     }
 
                     $('.cards-wrapper').html(cardMarkup);
@@ -71,12 +71,12 @@ export default class Bookmark {
     }
 
     checkBookmark(id) {
-        const that = this;
+        const self = this;
 
         if (localStorage.bookmarks) {
-            tmpArr = JSON.parse(localStorage.bookmarks);
+            self.tmpArr = JSON.parse(localStorage.bookmarks);
 
-            if (tmpArr.indexOf(Number(id)) > -1) {
+            if (self.tmpArr.indexOf(Number(id)) > -1) {
                 $('.card__header .icon').addClass('active');
                 return true;
             } else {
@@ -86,30 +86,29 @@ export default class Bookmark {
     }
 
     setBookmark(id) {
-        console.log('settting')
-        const that = this;
+        const self = this;
 
         if (localStorage.bookmarks == undefined) {
-            tmpArr.push(id);
-            strArr = JSON.stringify(tmpArr);
+            self.tmpArr.push(id);
+            self.strArr = JSON.stringify(self.tmpArr);
 
-            localStorage.bookmarks = strArr;
+            localStorage.bookmarks = self.strArr;
 
             $('.card__header .icon').addClass('active');
         } else {
-            tmpArr = JSON.parse(localStorage.bookmarks);
+            self.tmpArr = JSON.parse(localStorage.bookmarks);
 
-            if (tmpArr.indexOf(id) > -1) {
-                tmpArrInd = tmpArr.indexOf('id');
-                tmpArr.splice(tmpArrInd, 1);
-                strArr = JSON.stringify(tmpArr);
-                localStorage.bookmarks = strArr;
+            if (self.tmpArr.indexOf(id) > -1) {
+                self.tmpArrInd = self.tmpArr.indexOf('id');
+                self.tmpArr.splice(self.tmpArrInd, 1);
+                self.strArr = JSON.stringify(self.tmpArr);
+                localStorage.bookmarks = self.strArr;
 
                 $('.card__header .icon').removeClass('active');
             } else {
                 tmpArr.push(id);
-                strArr = JSON.stringify(tmpArr);
-                localStorage.bookmarks = strArr;
+                self.strArr = JSON.stringify(tmpArr);
+                localStorage.bookmarks = self.strArr;
 
                 $('.card__header .icon').addClass('active');
             }

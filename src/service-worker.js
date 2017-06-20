@@ -136,7 +136,7 @@ self.addEventListener('fetch', function (event) {
 
     event.respondWith(
         // caches.match() will look for a cache entry in all of the caches available to the service worker.
-        // It's an alternative to first opening a specific named cache and then matching on that.
+        // It's an alternative to first opening a specific named cache and then matching on self.
         caches.match(event.request).then(function (response) {
             if (response) {
                 console.log('Found response in cache:', response);

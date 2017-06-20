@@ -6,47 +6,44 @@ import { ripple, toaster } from '../../_assets/btt/js/_material';
 
 import Bookmark from '../bookmark/bookmark';
 
-let isLoading = true,
-    busStopId = 0,
-    busStopName = '',
-    isSortByTime = getSortByTime();
-
 export default class BusStop {
     constructor() {
-        const that = this;
-        that.bookmark = new Bookmark();
+        const self = this;
+
+        self.isLoading = true;
+        self.busStopId = 0;
+        self.busStopName = '';
+        self.isSortByTime = getSortByTime();
+
+        self.bookmark = new Bookmark();
 
         if ($('.timetable').length) {
-            const that = this;
-
             if (getQueryVariable('busStopId')) {
-                busStopId = getQueryVariable('busStopId');
+                self.busStopId = getQueryVariable('busStopId');
             } else {
-                busStopId = _busStopId;
+                self.busStopId = _busStopId;
             }
 
-            that.getBusStopName();
+            self.lookupBusId(self.busStopId, self.getBusStopName());
 
-            that.lookupBusId(busStopId, busStopName);
-
-            if (isSortByTime) {
+            if (self.isSortByTime) {
                 $('#sort-toggle').attr('checked', true);
             };
 
             $('.js-toggle-sort').on('click', function () {
                 if ($('#sort-toggle:checked').length) {
-                    isSortByTime = true;
+                    self.isSortByTime = true;
                 } else {
-                    isSortByTime = false;
+                    self.isSortByTime = false;
                 }
 
-                setSortByTime(isSortByTime);
+                setSortByTime(self.isSortByTime);
 
                 $('.js-refresh').trigger('click');
             });
 
             $('.js-refresh').on('click', function () {
-                if (isLoading) {
+                if (self.isLoading) {
                     return false;
                 }
 
@@ -71,10 +68,10 @@ export default class BusStop {
                     ease: Expo.easeOut
                 }, 0.1, function () {
                     $('.cards-wrapper').empty();
-                    that.lookupBusId(busStopId, null);
+                    self.lookupBusId(self.busStopId, null);
                 });
 
-                $('.cards-wrapper').off('click', '.card', cardListener);
+                $('.cards-wrapper').off('click', '.card', self.cardListener);
             });
 
             $(window).on('resize', debounce(function () {
@@ -86,13 +83,13 @@ export default class BusStop {
     }
 
     lookupBusId(id, name) {
-        const that = this;
+        const self = this;
 
         let $xml = '';
 
-        busStopId = id;
-        busStopName = name;
-        isLoading = false;
+        self.busStopId = id;
+        self.busStopName = name;
+        self.isLoading = false;
 
         $xml = '<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>';
         $xml += '<Siri version="2.0" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns="http://www.siri.org.uk/siri" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns3="http://www.ifopt.org.uk/ifopt">';
@@ -136,7 +133,7 @@ export default class BusStop {
                     onComplete: function () {
                         $('.loader').remove();
 
-                        that.processData(xml);
+                        self.processData(xml);
                     }
                 });
             },
@@ -149,7 +146,7 @@ export default class BusStop {
     }
 
     processData(xml) {
-        const that = this;
+        const self = this;
 
         var xotree = new XML.ObjTree(),
             json = xotree.parseXML(xml),
@@ -183,8 +180,6 @@ export default class BusStop {
             vehicleFeatureRef = '',
             isBusPresent = false;
 
-        that.getBusStopName();
-
         let $stopMonitoringDelivery = serviceDelivery.StopMonitoringDelivery;
 
         if ($stopMonitoringDelivery == undefined) {
@@ -192,11 +187,11 @@ export default class BusStop {
         } else {
             let $monitoredStopVisit = $stopMonitoringDelivery.MonitoredStopVisit
             // Display Bus Stop Name if Available
-            if (busStopName != undefined) {
+            if (self.busStopName != undefined) {
                 obj = {
-                    busStopName: busStopName,
-                    busStopId: busStopId,
-                    isBookmarked: that.bookmark.checkBookmark(busStopId) == true ? 'active' : ''
+                    busStopName: self.busStopName,
+                    busStopId: self.busStopId,
+                    isBookmarked: self.bookmark.checkBookmark(self.busStopId) == true ? 'active' : ''
                 };
 
                 // console.log(obj)
@@ -253,7 +248,7 @@ export default class BusStop {
 
                     serviceNum = v.MonitoredVehicleJourney.PublishedLineName;
                     obj = {
-                        busStopId: busStopId,
+                        busStopId: self.busStopId,
                         vehicleRefNum: vehicleRefNumArr,
                         serviceNum: serviceNum,
                         feature: vehicleFeatureArr,
@@ -338,7 +333,7 @@ export default class BusStop {
 
                 serviceNum = $monitoredStopVisit.MonitoredVehicleJourney.PublishedLineName;
                 obj = {
-                    busStopId: busStopId,
+                    busStopId: self.busStopId,
                     vehicleRefNum: vehicleRefNumArr,
                     serviceNum: serviceNum,
                     feature: vehicleFeatureArr,
@@ -392,7 +387,7 @@ export default class BusStop {
 
             let busArrSplice = busArr.slice(0);
 
-            if (isSortByTime) {
+            if (self.isSortByTime) {
                 busArrSplice.sort(function (a, b) {
                     return a.estimatedArrival[0] - b.estimatedArrival[0];
                 });
@@ -431,11 +426,11 @@ export default class BusStop {
             delay: 0.2
         }, 0.1);
 
-        $('.cards-wrapper').on('click', '.card', that.cardListener);
+        $('.cards-wrapper').on('click', '.card', self.cardListener);
     }
 
     cardListener() {
-        const that = this;
+        const bookmark = new Bookmark();
 
         let $this = $(this),
             $busStopId = $this.data('busstopid'),
@@ -446,9 +441,7 @@ export default class BusStop {
             let $this = $(this),
                 $id = $this.data('id');
 
-            console.log(that.bookmark)
-
-            that.bookmark.setBookmark($id);
+            bookmark.setBookmark($id);
 
             return false;
         }
@@ -466,9 +459,9 @@ export default class BusStop {
 
     getBusStopName() {
         if (getQueryVariable('busStopName')) {
-            busStopName = decodeURI(getQueryVariable('busStopName'));
-        } else if (busStopName == '') {
-            busStopName = _busStopName;
+            return decodeURI(getQueryVariable('busStopName'));
+        } else if (self.busStopName == '') {
+            return _busStopName;
         }
     }
 }

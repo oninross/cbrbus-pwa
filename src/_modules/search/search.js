@@ -8,18 +8,17 @@ import { ripple, toaster } from '../../_assets/btt/js/_material';
 import Bookmark from '../bookmark/bookmark';
 import BusStop from '../busstop/busstop';
 
-let isLoading = false,
-    busStopId = null,
-    busStopName = null,
-    $body = $('body'),
-    isSortByTime = getSortByTime();
-
 export default class Search {
     constructor() {
-        const that = this,
+        const self = this,
             bookmark = new Bookmark();
 
-        that.busStop = new BusStop();
+        self.isLoading = false;
+        self.busStopId = 0;
+        self.busStopName = '';
+        self.$body = $('body');
+        self.isSortByTime = getSortByTime();
+        self.busStop = new BusStop();
 
         if ($('.search').length) {
             let $search = $('.search input[type="text"]');
@@ -29,30 +28,30 @@ export default class Search {
                 $search.val('').focus();
             });
 
-            $body.on('click', '.js-bookmark', function (e) {
+            self.$body.on('click', '.js-bookmark', function (e) {
                 e.preventDefault();
 
                 bookmark.setBookmark($(this).data('id'));
             });
 
-            if (isSortByTime) {
+            if (self.isSortByTime) {
                 $('#sort-toggle').attr('checked', true);
             };
 
             $('.js-toggle-sort').on('click', function () {
                 if ($('#sort-toggle:checked').length) {
-                    isSortByTime = true;
+                    self.isSortByTime = true;
                 } else {
-                    isSortByTime = false;
+                    self.isSortByTime = false;
                 }
 
-                setSortByTime(isSortByTime);
+                setSortByTime(self.isSortByTime);
 
                 $('.js-refresh').trigger('click');
             });
 
             $('.js-refresh').on('click', function () {
-                if (isLoading) {
+                if (self.isLoading) {
                     return false;
                 }
 
@@ -68,14 +67,14 @@ export default class Search {
                     }
                 });
 
-                $body.append(loader);
+                self.$body.append(loader);
 
                 TweenMax.staggerTo('.card', 0.75, {
                     opacity: 0,
                     top: -50,
                     ease: Expo.easeOut
                 }, 0.1, function () {
-                    that.busStop.lookupBusId(busStopId, busStopName);
+                    self.busStop.lookupBusId(self.busStopId, self.busStopName);
                 });
             });
 
@@ -98,13 +97,13 @@ export default class Search {
                         autoSelectFirst: true,
                         onSelect: function (suggestion) {
                             $search.blur();
-                            busStopId = suggestion.data;
-                            busStopName = suggestion.name;
+                            self.busStopId = suggestion.data;
+                            self.busStopName = suggestion.name;
 
                             $(this).closest('.search').addClass('selected');
 
-                            that.getData(suggestion.data);
-                            ga('send', 'event', 'Bus Stop Search', 'click', busStopId);
+                            self.getData(suggestion.data);
+                            ga('send', 'event', 'Bus Stop Search', 'click', self.busStopId);
                         },
                         onSearchStart: function (query) {
                             TweenMax.to('.search .btn', 0.75, {
@@ -133,10 +132,10 @@ export default class Search {
     }
 
     getData(busStopId) {
-        const that = this;
+        const self = this;
 
         $('#main').before(loader);
 
-        that.busStop.lookupBusId(busStopId, busStopName);
+        self.busStop.lookupBusId(busStopId, self.busStopName);
     }
 }

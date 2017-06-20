@@ -23,12 +23,12 @@ export default class Trackmybus {
 
             busId = getQueryVariable('busStopId');
 
-            that.isGeolocationEnabled = true;
+            self.isGeolocationEnabled = true;
 
             window.II.googleMap = this;
 
             navigator.geolocation.getCurrentPosition(function (position) {
-                that.mapSettings = {
+                self.mapSettings = {
                     'lat': position.coords.latitude,
                     'long': position.coords.longitude,
                     'zoom': 12,
@@ -36,7 +36,7 @@ export default class Trackmybus {
                     // 'marker': 'https://maps.google.com/mapfiles/kml/paddle/blu-blank_maps.png'
                 };
 
-                that.loadGoogleMap();
+                self.loadGoogleMap();
             });
 
             $window.on('resize', debounce(function () {
@@ -73,7 +73,7 @@ export default class Trackmybus {
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             success: function (data) {
-                that.initMap(data);
+                self.initMap(data);
 
                 TweenMax.to('.loader', 0.75, {
                     autoAlpha: 0,
@@ -102,8 +102,8 @@ export default class Trackmybus {
     initMap(json) {
         let that = this,
             center = {
-                lat: that.mapSettings.lat,
-                lng: that.mapSettings.long
+                lat: self.mapSettings.lat,
+                lng: self.mapSettings.long
             },
             busStopCenter =  $.map(json, function (n) {
                 if (n.data == getQueryVariable('busStopId')) {
@@ -114,7 +114,7 @@ export default class Trackmybus {
                 }
             }),
             currentIcon = {
-                url: that.mapSettings.marker,
+                url: self.mapSettings.marker,
                 origin: new google.maps.Point(0, 0),
                 anchor: new google.maps.Point(16, 32)
             },
@@ -124,30 +124,30 @@ export default class Trackmybus {
                 anchor: new google.maps.Point(16, 48)
             },
             map = new google.maps.Map(document.getElementById('map'), {
-                zoom: that.mapSettings.zoom,
+                zoom: self.mapSettings.zoom,
                 center: center,
                 streetViewControl: false,
                 mapTypeControl: false
             }),
             stopMarker;
 
-        that.map = map;
+        self.map = map;
 
-        that.currentMarker = new google.maps.Marker({
+        self.currentMarker = new google.maps.Marker({
             icon: currentIcon,
             position: center,
             map: map
         });
 
-        that.busStopMarker = new google.maps.Marker({
+        self.busStopMarker = new google.maps.Marker({
             icon: busStopIcon,
             position: busStopCenter[0],
             map: map
         })
 
-        google.maps.event.addListener(that.busStopMarker, 'click', function (e) {
+        google.maps.event.addListener(self.busStopMarker, 'click', function (e) {
             map.setZoom(18);
-            map.panTo(that.busStopMarker.position);
+            map.panTo(self.busStopMarker.position);
         });
 
         $.each(json, function (i, v) {
@@ -170,7 +170,7 @@ export default class Trackmybus {
                 google.maps.event.addListener(stopMarker, 'click', function (e) {
                     if (isNotificationGranted()) {
                         let busStopId = $(this)[0].id;
-                        that.notifyMe(busStopId);
+                        self.notifyMe(busStopId);
 
                         ga('send', 'event', 'Notify', 'click');
                         toaster('You will be notified when your stop is approaching. ' + busStopId);
@@ -182,9 +182,9 @@ export default class Trackmybus {
         });
 
         // Add a marker clusterer to manage the markers.
-        that.initClusterMarker();
+        self.initClusterMarker();
 
-        that.callApi();
+        self.callApi();
     }
 
     initClusterMarker() {
@@ -192,7 +192,7 @@ export default class Trackmybus {
 
         if (typeof MarkerClusterer == "undefined") {
             setTimeout(function () {
-                that.initClusterMarker();
+                self.initClusterMarker();
             }, 500);
         } else {
             let clusterStyles = [
@@ -203,7 +203,7 @@ export default class Trackmybus {
                     textColor: '#ffffff'
                 }
             ],
-            markerCluster = new MarkerClusterer(that.map, markers, {
+            markerCluster = new MarkerClusterer(self.map, markers, {
                 styles: clusterStyles,
                 imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
                 maxZoom: 15,
@@ -255,7 +255,7 @@ export default class Trackmybus {
         } else {
             isIntervalInit = true;
             refreshInterval = setInterval(function () {
-                that.callApi();
+                self.callApi();
             }, 10000);
         }
 
@@ -285,7 +285,7 @@ export default class Trackmybus {
                             lat: Number($vehicleLat[0].innerHTML),
                             lng: Number($vehicleLng[0].innerHTML)
                         },
-                        map: that.map
+                        map: self.map
                     });
 
                     markers.push(busMarker);
@@ -320,7 +320,7 @@ export default class Trackmybus {
             contentType: "text/xml",
             dataType: "text",
             success: function (xml) {
-                that.processData(xml);
+                self.processData(xml);
             },
             error: function (error) {
                 console.log(error);

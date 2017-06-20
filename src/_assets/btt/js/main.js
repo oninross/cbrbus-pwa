@@ -44,6 +44,22 @@ $(() => {
     // Set framerate to 60fps
     TweenMax.ticker.fps(60);
 
+    // ga('send', 'event', 'category', 'action', 'label', 'value');
+    // ex: ga('send', 'event', 'image', 'click', 'image click', 'filename.jpg');
+
+    $('.js-share').on('click', function () {
+        let $this = this,
+            media = '';
+
+        if ($this.hasClass('-facebook')) {
+            media = 'Facebook';
+        } else if ($this.hasClass('-twitter')) {
+            media = 'Twitter';
+        }
+
+        ga('send', 'event', 'Social Share', 'click', media);
+    });
+
 
     // COOKIES ^_^
     var $about = $('#primary-nav li:nth-child(4) a.active'),
