@@ -1,9 +1,7 @@
 'use strict';
 
 import doT from 'doT';
-import { ripple, toaster } from './_material';
-import { lookupBusId } from './_busStop';
-import { loader } from './_helper';
+import { ripple, toaster } from '../../_assets/btt/js/_material';
 
 let obj = {},
     services = {},
@@ -12,17 +10,23 @@ let obj = {},
     busStopName = '',
     strArr = '';
 
-$(() => {
-    let cardBookmark = doT.template($('#card-bookmark').html()),
-        cardMarkup = '';
+export default class Bookmark {
+    constructor() {
+        const that = this;
+    }
 
-    if ($('.bookmark').length) {
+    init() {
+        const that = this;
+
+        let cardBookmark = doT.template($('#card-bookmark').html()),
+            cardMarkup = '';
+
         $.ajax({
             url: '/assets/btt/api/services.json',
             success: function (data) {
                 services = data;
 
-                if (localStorage['bookmarks']) {
+                if (localStorage.bookmarks) {
                     tmpArr = JSON.parse(localStorage.bookmarks);
 
                     for (let i = 0, l = tmpArr.length; i < l; i++) {
@@ -52,7 +56,7 @@ $(() => {
                         ease: Expo.easeOut
                     }, 0.1);
                 } else {
-                    toaster('You have not bookmaked any stops yet.');    
+                    toaster('You have not bookmaked any stops yet.');
                 }
             },
             error: function (error) {
@@ -65,47 +69,50 @@ $(() => {
             }
         });
     }
-});
 
-let checkBookmark = function (id) {
-    if (localStorage['bookmarks']) {
-        tmpArr = JSON.parse(localStorage.bookmarks);
+    checkBookmark(id) {
+        const that = this;
 
-        if (tmpArr.indexOf(Number(id)) > -1) {
-            $('.card__header .icon').addClass('active');
-            return true;
-        } else {
-            return false;
+        if (localStorage.bookmarks) {
+            tmpArr = JSON.parse(localStorage.bookmarks);
+
+            if (tmpArr.indexOf(Number(id)) > -1) {
+                $('.card__header .icon').addClass('active');
+                return true;
+            } else {
+                return false;
+            }
         }
     }
-};
 
-let setBookmark = function (id) {
-    if (localStorage.bookmarks == undefined) {
-        tmpArr.push(id);
-        strArr = JSON.stringify(tmpArr);
+    setBookmark(id) {
+        console.log('settting')
+        const that = this;
 
-        localStorage.bookmarks = strArr;
-
-        $('.card__header .icon').addClass('active');
-    } else {
-        tmpArr = JSON.parse(localStorage.bookmarks);
-
-        if (tmpArr.indexOf(id) > -1) {
-            tmpArrInd = tmpArr.indexOf('id');
-            tmpArr.splice(tmpArrInd, 1);
-            strArr = JSON.stringify(tmpArr);
-            localStorage.bookmarks = strArr;
-
-            $('.card__header .icon').removeClass('active');
-        } else {
+        if (localStorage.bookmarks == undefined) {
             tmpArr.push(id);
             strArr = JSON.stringify(tmpArr);
+
             localStorage.bookmarks = strArr;
 
             $('.card__header .icon').addClass('active');
+        } else {
+            tmpArr = JSON.parse(localStorage.bookmarks);
+
+            if (tmpArr.indexOf(id) > -1) {
+                tmpArrInd = tmpArr.indexOf('id');
+                tmpArr.splice(tmpArrInd, 1);
+                strArr = JSON.stringify(tmpArr);
+                localStorage.bookmarks = strArr;
+
+                $('.card__header .icon').removeClass('active');
+            } else {
+                tmpArr.push(id);
+                strArr = JSON.stringify(tmpArr);
+                localStorage.bookmarks = strArr;
+
+                $('.card__header .icon').addClass('active');
+            }
         }
     }
-};
-
-export { checkBookmark, setBookmark };
+}

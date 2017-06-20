@@ -1,10 +1,7 @@
 'use strict';
 
-// import L from 'leaflet';
-// import provider from 'providers';
-// import CartoDB from 'cartodb';
-import { ripple, toaster } from './_material';
-import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariable, isNotificationGranted, isServiceWorkerSupported } from './_helper';
+import { ripple, toaster } from '../../_assets/btt/js/_material';
+import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariable, isNotificationGranted, isServiceWorkerSupported } from '../../_assets/btt/js/_helper';
 
 let $window = $(window),
     isIntervalInit = false,
@@ -12,40 +9,42 @@ let $window = $(window),
     busId,
     refreshInterval;
 
-export default class TrackMyBus {
+export default class Trackmybus {
     constructor() {
-        let that = this;
+        if ($('.trackMyBus').length) {
+            let that = this;
 
-        if (isServiceWorkerSupported()) {
-            // Just to wake up the server IF its sleeping
-            fetch('//' + BASE_URL + '/register', {
-                method: 'post'
+            if (isServiceWorkerSupported()) {
+                // Just to wake up the server IF its sleeping
+                fetch('//' + BASE_URL + '/register', {
+                    method: 'post'
+                });
+            }
+
+            busId = getQueryVariable('busStopId');
+
+            that.isGeolocationEnabled = true;
+
+            window.II.googleMap = this;
+
+            navigator.geolocation.getCurrentPosition(function (position) {
+                that.mapSettings = {
+                    'lat': position.coords.latitude,
+                    'long': position.coords.longitude,
+                    'zoom': 12,
+                    'marker': '/assets/btt/images/currentMarker.svg'
+                    // 'marker': 'https://maps.google.com/mapfiles/kml/paddle/blu-blank_maps.png'
+                };
+
+                that.loadGoogleMap();
             });
+
+            $window.on('resize', debounce(function () {
+                $('#map').css({
+                    height: $(document).outerHeight() - $('.header').outerHeight()
+                });
+            }, 250)).trigger('resize');
         }
-
-        busId = getQueryVariable('busStopId');
-
-        that.isGeolocationEnabled = true;
-
-        window.II.googleMap = this;
-
-        navigator.geolocation.getCurrentPosition(function (position) {
-            that.mapSettings = {
-                'lat': position.coords.latitude,
-                'long': position.coords.longitude,
-                'zoom': 12,
-                'marker': '/assets/btt/images/currentMarker.svg'
-                // 'marker': 'https://maps.google.com/mapfiles/kml/paddle/blu-blank_maps.png'
-            };
-
-            that.loadGoogleMap();
-        });
-
-        $window.on('resize', debounce(function () {
-            $('#map').css({
-                height: $(document).outerHeight() - $('.header').outerHeight()
-            });
-        }, 250)).trigger('resize');
     }
 
     loadGoogleMap() {
@@ -192,7 +191,7 @@ export default class TrackMyBus {
         var that = this;
 
         if (typeof MarkerClusterer == "undefined") {
-            setTimeout(function() {
+            setTimeout(function () {
                 that.initClusterMarker();
             }, 500);
         } else {

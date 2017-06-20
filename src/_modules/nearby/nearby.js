@@ -1,10 +1,7 @@
 'use strict';
 
-// import L from 'leaflet';
-// import provider from 'providers';
-// import CartoDB from 'cartodb';
-import { ripple, toaster } from './_material';
-import { loader, GMAP_API_KEY, debounce, easeOutExpo } from './_helper';
+import { ripple, toaster } from '../../_assets/btt/js/_material';
+import { loader, GMAP_API_KEY, debounce, easeOutExpo } from '../../_assets/btt/js/_helper';
 
 let $window = $(window),
     markers = [],
@@ -16,27 +13,16 @@ let $window = $(window),
     busStopName,
     map;
 
-export default class NearBy {
+export default class Nearby {
     constructor() {
-        var that = this;
+        if ($('.nearby').length) {
+            const that = this;
 
-        that.isGeolocationEnabled = true;
+            that.isGeolocationEnabled = true;
 
-        window.II.googleMap = this;
+            window.II.googleMap = this;
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                that.mapSettings = {
-                    'lat': position.coords.latitude,
-                    'long': position.coords.longitude,
-                    'zoom': zoomLevel,
-                    'marker': markerUrl
-                };
-
-                that.loadGoogleMap();
-            });
-
-            setInterval(function () {
+            if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
                     that.mapSettings = {
                         'lat': position.coords.latitude,
@@ -44,30 +30,43 @@ export default class NearBy {
                         'zoom': zoomLevel,
                         'marker': markerUrl
                     };
+
+                    that.loadGoogleMap();
                 });
 
-                that.updateMarker();
-            }, 5000);
-        } else {
-            toaster('Geolocation is not supported or disabled by this browser.');
+                setInterval(function () {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        that.mapSettings = {
+                            'lat': position.coords.latitude,
+                            'long': position.coords.longitude,
+                            'zoom': zoomLevel,
+                            'marker': markerUrl
+                        };
+                    });
 
-            that.isGeolocationEnabled = false;
+                    that.updateMarker();
+                }, 5000);
+            } else {
+                toaster('Geolocation is not supported or disabled by this browser.');
 
-            that.mapSettings = {
-                'lat': -35.2823083,
-                'long': 149.1285561,
-                'zoom': 15,
-                'marker': markerUrl
-            };
+                that.isGeolocationEnabled = false;
 
-            that.loadGoogleMap();
+                that.mapSettings = {
+                    'lat': -35.2823083,
+                    'long': 149.1285561,
+                    'zoom': 15,
+                    'marker': markerUrl
+                };
+
+                that.loadGoogleMap();
+            }
+
+            $window.on('resize', debounce(function () {
+                $('#map').css({
+                    height: $(document).outerHeight() - $('.header').outerHeight()
+                });
+            }, 250)).trigger('resize');
         }
-
-        $window.on('resize', debounce(function () {
-            $('#map').css({
-                height: $(document).outerHeight() - $('.header').outerHeight()
-            });
-        }, 250)).trigger('resize');
     }
 
     loadGoogleMap() {
