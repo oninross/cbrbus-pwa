@@ -26,7 +26,8 @@ export default class Bookmark {
             success: function (data) {
                 self.services = data;
 
-                if (localStorage.bookmarks) {
+
+                if (JSON.parse(localStorage.bookmarks).length) {
                     self.tmpArr = JSON.parse(localStorage.bookmarks);
 
                     for (let i = 0, l = self.tmpArr.length; i < l; i++) {
