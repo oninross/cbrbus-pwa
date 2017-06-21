@@ -1,9 +1,8 @@
-const OFFLINE_URL = '/pages/offline/';
+const OFFLINE_URL = '/offline/';
 
 importScripts('sw-toolbox.js');
 
 self.toolbox.precache([
-    '//developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js',
     '//maps.google.com/mapfiles/kml/paddle/blu-blank_maps.png',
     '//maps.google.com/mapfiles/kml/paddle/A_maps.png',
     '//maps.google.com/mapfiles/kml/paddle/B_maps.png',
@@ -32,7 +31,7 @@ self.toolbox.router.get('/(.*)', function (req, vals, opts) {
             }
             throw error;
         });
-    });
+});
 
 var arr = [],
     busId = 0,
@@ -80,4 +79,3 @@ self.addEventListener('notificationclick', function (event) {
         return clients.openWindow('/trackmybus/?busId=' + busId + '&vehicleRef=' + vehicleRef);
     }));
 });
-

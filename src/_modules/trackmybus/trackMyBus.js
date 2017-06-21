@@ -12,7 +12,7 @@ let $window = $(window),
 export default class Trackmybus {
     constructor() {
         if ($('.trackMyBus').length) {
-            let that = this;
+            let self = this;
 
             if (isServiceWorkerSupported()) {
                 // Just to wake up the server IF its sleeping
@@ -26,6 +26,7 @@ export default class Trackmybus {
             self.isGeolocationEnabled = true;
 
             window.II.googleMap = this;
+
 
             navigator.geolocation.getCurrentPosition(function (position) {
                 self.mapSettings = {
@@ -66,7 +67,7 @@ export default class Trackmybus {
     }
 
     loadData() {
-        let that = this;
+        let self = this;
 
         $.ajax({
             url: '/assets/btt/api/services.json',
@@ -100,8 +101,9 @@ export default class Trackmybus {
     }
 
     initMap(json) {
-        let that = this,
-            center = {
+        const self = this;
+
+        let center = {
                 lat: self.mapSettings.lat,
                 lng: self.mapSettings.long
             },
@@ -188,7 +190,7 @@ export default class Trackmybus {
     }
 
     initClusterMarker() {
-        var that = this;
+        const self = this;
 
         if (typeof MarkerClusterer == "undefined") {
             setTimeout(function () {
@@ -213,9 +215,9 @@ export default class Trackmybus {
     }
 
     notifyMe(id) {
-        var that = this;
+        const that = this;
 
-        // console.log('endpoint:  ' + window.II.pushData.endpoint)
+        console.log('endpoint:  ' + window.II.pushData.endpoint)
 
         fetch('//' + BASE_URL + '/sendNotification', {
             method: 'post',
@@ -234,8 +236,9 @@ export default class Trackmybus {
     }
 
     processData(xml) {
-        let that = this,
-            xmlDoc = $.parseXML(xml),
+        const self = this;
+
+        let xmlDoc = $.parseXML(xml),
             $xml = $(xmlDoc),
             $status = $xml.find('Status')[0].innerHTML == 'true' ? true : false,
             $monitoringRef = $xml.find('MonitoringRef'),
@@ -302,8 +305,9 @@ export default class Trackmybus {
     }
 
     callApi() {
-        let that = this,
-            busId = getQueryVariable('busId');
+        const self = this;
+
+        let busId = getQueryVariable('busId');
 
         if (busId < 10) {
             busId = '000' + busId.toString();

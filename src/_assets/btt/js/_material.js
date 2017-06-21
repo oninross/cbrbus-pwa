@@ -43,7 +43,7 @@ let toaster = function (msg) {
     });
 
     TweenMax.to(toaster, 0.75, {
-        scale: 0.25,
+        scale: 0.5,
         autoAlpha: 0,
         ease: Expo.easeOut,
         delay: 5,
@@ -56,7 +56,7 @@ let toaster = function (msg) {
         e.preventDefault();
 
         TweenMax.to($(this), 0.75, {
-            scale: 0.25,
+            scale: 0.5,
             autoAlpha: 0,
             ease: Expo.easeOut,
             onComplete: function () {
