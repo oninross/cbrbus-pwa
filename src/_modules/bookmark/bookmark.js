@@ -107,8 +107,8 @@ export default class Bookmark {
 
                 $('.card__header .icon').removeClass('active');
             } else {
-                tmpArr.push(id);
-                self.strArr = JSON.stringify(tmpArr);
+                self.tmpArr.push(id);
+                self.strArr = JSON.stringify(self.tmpArr);
                 localStorage.bookmarks = self.strArr;
 
                 $('.card__header .icon').addClass('active');

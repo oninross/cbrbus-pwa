@@ -377,6 +377,7 @@ export default class BusStop {
                 // Append Markup - FOR TESTING ONLY
                 // cardMarkup += gulp (v);
 
+                console.log(v)
                 if (v.estimatedArrival[0] > v.estimatedArrival[1]) {
                     v.estimatedArrival.sort();
                     tempArr = v.vehicleRefNum;
