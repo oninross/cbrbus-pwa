@@ -188,7 +188,6 @@
 
         .card__wrapper {
             background-color: $black;
-            border-radius: 2px;
             color: $white;
             height: auto;
             margin: 0 $gutter;
@@ -217,9 +216,7 @@
     }
 
     &__wrapper {
-        @include material-shadow(1);
-
-        background-color: $white;
+        border: 4px solid $black;
         line-height: 1;
         height: 164px;
         margin: 0 $gutter;
@@ -310,7 +307,7 @@
     }
 
     .eta {
-        border-top: 3px solid $black;
+        border-top: 2px solid $black;
         clear: both;
         // font-size: 1.8em;
         font-size: 1.3em;
@@ -410,11 +407,8 @@
 }
 
 .btn-refresh {
-    @include material-shadow(1);
-
     background-color: $green;
     border: 0;
-    border-radius: 2px;
     color: $white;
     font-size: 3em;
     overflow: hidden;

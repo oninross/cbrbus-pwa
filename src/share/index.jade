@@ -3,7 +3,7 @@ extends ../_layouts/base
 block config
     //- Correct base url pathing for this page
     - var baseUrl = '../'
-    - var pageTitle = ' About'
+    - var pageTitle = ' Share'
     - var navIndex = 5
 
 block content
@@ -12,6 +12,6 @@ block content
 
         p.intro If you love what we have done here, help us spread the word.  It would mean a lot to  us.
 
-        a.btn-share.-facebook(href="https://www.facebook.com/sharer.php?u=www.cbrbus.com.au", target="_blank") Share on Facebook
+        a.btn-share.-facebook.js-share(href="https://www.facebook.com/sharer.php?u=www.cbrbus.com.au", target="_blank") Share on Facebook
 
-        a.btn-share.-twitter(href="https://twitter.com/intent/tweet?url=www.cbrbus.com.au&text=CBR%20Buses%20https%3A%2F%2Fwww.cbrbus.com.au%20&hashtags=cbrbuses%20%23pwa", target="_blank") Tweet on Twitter
+        a.btn-share.-twitter.js-share(href="https://twitter.com/intent/tweet?url=www.cbrbus.com.au&text=CBR%20Buses%20https%3A%2F%2Fwww.cbrbus.com.au%20&hashtags=cbrbuses%20%23pwa", target="_blank") Tweet on Twitter
