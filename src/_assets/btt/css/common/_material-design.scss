@@ -49,7 +49,6 @@ input[type="password"],
 textarea {
     @include transition( all, 0.5s, $easeOutExpo );
 
-    background: $material-background;
     border: none;
     border-bottom: 1px solid $border-color;
     font-size: $default-font-size;
