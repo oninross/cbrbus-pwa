@@ -374,12 +374,11 @@ export default class BusStop {
 
             // Sort bus timings
             $.each(busArr, function (i, v) {
-                // Append Markup - FOR TESTING ONLY
-                // cardMarkup += gulp (v);
+            //     // Append Markup - FOR TESTING ONLY
+            //     // cardMarkup += gulp (v);
 
-                console.log(v)
-                if (v.estimatedArrival[0] > v.estimatedArrival[1]) {
-                    v.estimatedArrival.sort();
+                if ((v.estimatedArrival.length > 1) && (v.estimatedArrival[0] > v.estimatedArrival[1])) {
+                    v.estimatedArrival.swap(0, 1);
                     tempArr = v.vehicleRefNum;
                     tempArr.swap(0, 1);
                     v.vehicleRefNum = tempArr;
