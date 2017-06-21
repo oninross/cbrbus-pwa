@@ -1,73 +1,67 @@
 'use strict';
 
-// import L from 'leaflet';
-// import provider from 'providers';
-// import CartoDB from 'cartodb';
-import { ripple, toaster } from './_material';
-import { loader, GMAP_API_KEY, debounce, easeOutExpo } from './_helper';
+import { ripple, toaster } from '../../_assets/btt/js/_material';
+import { loader, GMAP_API_KEY, debounce, easeOutExpo } from '../../_assets/btt/js/_helper';
 
-let $window = $(window),
-    markers = [],
-    busArr = [],
-    busObjArr = [],
-    markerUrl = '/assets/btt/images/currentMarker.svg',
-    zoomLevel = 17,
-    busId,
-    busStopName,
-    map;
-
-export default class NearBy {
+export default class Nearby {
     constructor() {
-        var that = this;
+        if ($('.nearby').length) {
+            const self = this;
 
-        that.isGeolocationEnabled = true;
+            self.$window = $(window);
+            self.markers = [];
+            self.markerUrl = '/assets/btt/images/currentMarker.svg';
+            self.zoomLevel = 17;
 
-        window.II.googleMap = this;
+            self.isGeolocationEnabled = true;
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                that.mapSettings = {
-                    'lat': position.coords.latitude,
-                    'long': position.coords.longitude,
-                    'zoom': zoomLevel,
-                    'marker': markerUrl
-                };
+            window.II.googleMap = this;
 
-                that.loadGoogleMap();
-            });
-
-            setInterval(function () {
+            if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
-                    that.mapSettings = {
+                    self.mapSettings = {
                         'lat': position.coords.latitude,
                         'long': position.coords.longitude,
-                        'zoom': zoomLevel,
-                        'marker': markerUrl
+                        'zoom': self.zoomLevel,
+                        'marker': self.markerUrl
                     };
+
+                    self.loadGoogleMap();
                 });
 
-                that.updateMarker();
-            }, 5000);
-        } else {
-            toaster('Geolocation is not supported or disabled by this browser.');
+                setInterval(function () {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        self.mapSettings = {
+                            'lat': position.coords.latitude,
+                            'long': position.coords.longitude,
+                            'zoom': self.zoomLevel,
+                            'marker': self.markerUrl
+                        };
+                    });
 
-            that.isGeolocationEnabled = false;
+                    self.updateMarker();
+                }, 5000);
+            } else {
+                toaster('Geolocation is not supported or disabled by this browser.');
 
-            that.mapSettings = {
-                'lat': -35.2823083,
-                'long': 149.1285561,
-                'zoom': 15,
-                'marker': markerUrl
-            };
+                self.isGeolocationEnabled = false;
 
-            that.loadGoogleMap();
+                self.mapSettings = {
+                    'lat': -35.2823083,
+                    'long': 149.1285561,
+                    'zoom': 15,
+                    'marker': self.markerUrl
+                };
+
+                self.loadGoogleMap();
+            }
+
+            self.$window.on('resize', debounce(function () {
+                $('#map').css({
+                    height: $(document).outerHeight() - $('.header').outerHeight()
+                });
+            }, 250)).trigger('resize');
         }
-
-        $window.on('resize', debounce(function () {
-            $('#map').css({
-                height: $(document).outerHeight() - $('.header').outerHeight()
-            });
-        }, 250)).trigger('resize');
     }
 
     loadGoogleMap() {
@@ -90,14 +84,14 @@ export default class NearBy {
     }
 
     loadData() {
-        var that = this;
+        var self = this;
 
         $.ajax({
             url: '/assets/btt/api/services.json',
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             success: function (data) {
-                that.initMap(data);
+                self.initMap(data);
                 TweenMax.to('.loader', 0.75, {
                     autoAlpha: 0,
                     scale: 0,
@@ -124,19 +118,19 @@ export default class NearBy {
     }
 
     initMap(json) {
-        var that = this,
+        var self = this,
             center = {
-                lat: that.mapSettings.lat,
-                lng: that.mapSettings.long
+                lat: self.mapSettings.lat,
+                lng: self.mapSettings.long
             },
             currentIcon = {
-                url: that.mapSettings.marker,
+                url: self.mapSettings.marker,
                 size: new google.maps.Size(24, 24),
                 origin: new google.maps.Point(0, 0),
                 anchor: new google.maps.Point(12, 12)
             },
             map = new google.maps.Map(document.getElementById('map'), {
-                zoom: that.mapSettings.zoom,
+                zoom: self.mapSettings.zoom,
                 center: center,
                 streetViewControl: false,
                 mapTypeControl: false
@@ -149,9 +143,9 @@ export default class NearBy {
             },
             busMarker;
 
-        that.map = map;
+        self.map = map;
 
-        that.currentMarker = new google.maps.Marker({
+        self.currentMarker = new google.maps.Marker({
             icon: currentIcon,
             position: center,
             map: map
@@ -168,7 +162,7 @@ export default class NearBy {
                 map: map
             });
 
-            markers.push(busMarker);
+            self.markers.push(busMarker);
 
             var label = '';
             google.maps.event.addListener(busMarker, 'click', function (e) {
@@ -185,37 +179,37 @@ export default class NearBy {
         });
 
         // Add a marker clusterer to manage the markers.
-        that.initClusterMarker();
+        self.initClusterMarker();
 
-        if (that.isGeolocationEnabled) {
+        if (self.isGeolocationEnabled) {
             $('.widget-mylocation-button')
                 .fadeIn()
                 .on('click', function (e) {
                     e.preventDefault();
 
                     map.setCenter({
-                        lat: that.mapSettings.lat,
-                        lng: that.mapSettings.long
+                        lat: self.mapSettings.lat,
+                        lng: self.mapSettings.long
                     });
                 });
         }
     }
 
     updateMarker() {
-        var that = this;
+        var self = this;
 
-        that.currentMarker.setPosition({
+        self.currentMarker.setPosition({
             lat: this.mapSettings.lat,
             lng: this.mapSettings.long
         });
     }
 
     initClusterMarker() {
-        var that = this;
+        var self = this;
 
         if (typeof MarkerClusterer == "undefined") {
             setTimeout(function() {
-                that.initClusterMarker();
+                self.initClusterMarker();
             }, 500);
         } else {
             let clusterStyles = [
@@ -226,7 +220,7 @@ export default class NearBy {
                     textColor: '#ffffff'
                 }
             ],
-            markerCluster = new MarkerClusterer(that.map, markers, {
+            markerCluster = new MarkerClusterer(self.map, self.markers, {
                 styles: clusterStyles,
                 imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
                 maxZoom: 15,

@@ -24,7 +24,7 @@
 // cache, then increment the CACHE_VERSION value. It will kick off the service worker update
 // flow and the old cache(s) will be purged as part of the activate event handler when the
 // updated service worker is activated.
-var version = '0.16.1',
+var version = '0.16.2',
     now = Date.now(),
     OFFLINE_URL = 'offline/',
     urlsToPrefetch = [
@@ -136,7 +136,7 @@ self.addEventListener('fetch', function (event) {
 
     event.respondWith(
         // caches.match() will look for a cache entry in all of the caches available to the service worker.
-        // It's an alternative to first opening a specific named cache and then matching on that.
+        // It's an alternative to first opening a specific named cache and then matching on self.
         caches.match(event.request).then(function (response) {
             if (response) {
                 console.log('Found response in cache:', response);

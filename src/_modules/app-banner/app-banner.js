@@ -12,7 +12,7 @@ export default class AppBanner {
         if (iOS && safari && !addToHomeScreeen) {
             $('#app-banner').addClass('show');
             $('html').addClass('iOS');
-            
+
             $('.js-dismiss').on('click', function () {
                 $.cookie('addToHomeScreeen', true, { path: '/' });
                 $('#app-banner').removeClass('show');
