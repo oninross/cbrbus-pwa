@@ -48,7 +48,7 @@ $(() => {
     // ex: ga('send', 'event', 'image', 'click', 'image click', 'filename.jpg');
 
     $('.js-share').on('click', function () {
-        let $this = this,
+        let $this = $(this),
             media = '';
 
         if ($this.hasClass('-facebook')) {
