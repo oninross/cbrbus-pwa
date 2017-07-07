@@ -6,13 +6,14 @@ import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariabl
 let $window = $(window),
     isIntervalInit = false,
     markers = [],
-    busId,
     refreshInterval;
 
 export default class Trackmybus {
     constructor() {
         if ($('.trackMyBus').length) {
             let self = this;
+
+            self.isRouteDrawn = false;
 
             if (isServiceWorkerSupported()) {
                 // Just to wake up the server IF its sleeping
@@ -21,7 +22,7 @@ export default class Trackmybus {
                 });
             }
 
-            busId = getQueryVariable('busStopId');
+            self.busId = getQueryVariable('busStopId');
 
             self.isGeolocationEnabled = true;
 
@@ -141,50 +142,50 @@ export default class Trackmybus {
             map: map
         });
 
-        self.busStopMarker = new google.maps.Marker({
-            icon: busStopIcon,
-            position: busStopCenter[0],
-            map: map
-        })
+        // self.busStopMarker = new google.maps.Marker({
+        //     icon: busStopIcon,
+        //     position: busStopCenter[0],
+        //     map: map
+        // })
 
-        google.maps.event.addListener(self.busStopMarker, 'click', function (e) {
-            map.setZoom(18);
-            map.panTo(self.busStopMarker.position);
-        });
+        // google.maps.event.addListener(self.busStopMarker, 'click', function (e) {
+        //     map.setZoom(18);
+        //     map.panTo(self.busStopMarker.position);
+        // });
 
-        $.each(json, function (i, v) {
-            stopMarker = new google.maps.Marker({
-                id: v.data,
-                position: {
-                    lat: v.lat,
-                    lng: v.long
-                },
-                icon: {
-                    url: '/assets/btt/images/busMarker.svg'
-                },
-                map: map,
-                zIndex: 1
-            });
+        // $.each(json, function (i, v) {
+        //     stopMarker = new google.maps.Marker({
+        //         id: v.data,
+        //         position: {
+        //             lat: v.lat,
+        //             lng: v.long
+        //         },
+        //         icon: {
+        //             url: '/assets/btt/images/busMarker.svg'
+        //         },
+        //         map: map,
+        //         zIndex: 1
+        //     });
 
-            markers.push(stopMarker);
+        //     markers.push(stopMarker);
 
-            if (isServiceWorkerSupported()) {
-                google.maps.event.addListener(stopMarker, 'click', function (e) {
-                    if (isNotificationGranted()) {
-                        let busStopId = $(this)[0].id;
-                        self.notifyMe(busStopId);
+        //     if (isServiceWorkerSupported()) {
+        //         google.maps.event.addListener(stopMarker, 'click', function (e) {
+        //             if (isNotificationGranted()) {
+        //                 let busStopId = $(this)[0].id;
+        //                 self.notifyMe(busStopId);
 
-                        ga('send', 'event', 'Notify', 'click');
-                        toaster('You will be notified when your stop is approaching. ' + busStopId);
-                    } else {
-                        toaster('Please enable your notifications to know if your bus is approaching.');
-                    }
-                });
-            }
-        });
+        //                 ga('send', 'event', 'Notify', 'click');
+        //                 toaster('You will be notified when your stop is approaching. ' + busStopId);
+        //             } else {
+        //                 toaster('Please enable your notifications to know if your bus is approaching.');
+        //             }
+        //         });
+        //     }
+        // });
 
         // Add a marker clusterer to manage the markers.
-        self.initClusterMarker();
+        // self.initClusterMarker();
 
         self.callApi();
     }
@@ -282,6 +283,10 @@ export default class Trackmybus {
 
             if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && vehicleRef[0] != undefined) {
                 if (vehicleRef[0].innerHTML == $vehicleRefQuery) {
+                    self.busDir = directionRef[0].innerHTML == 'A' ? 0 : 1;
+
+                    self.drawRoute();
+
                     busMarker = new google.maps.Marker({
                         icon: 'https://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '_maps.png',
                         position: {
@@ -307,19 +312,19 @@ export default class Trackmybus {
     callApi() {
         const self = this;
 
-        let busId = getQueryVariable('busId');
+        self.busId = getQueryVariable('busId');
 
-        if (busId < 10) {
-            busId = '000' + busId.toString();
-        } else if (busId < 100) {
-            busId = '00' + busId.toString();
-        } else if (busId < 1000) {
-            busId = '0' + busId.toString();
+        if (self.busId < 10) {
+            self.busId = '000' + self.busId.toString();
+        } else if (self.busId < 100) {
+            self.busId = '00' + self.busId.toString();
+        } else if (self.busId < 1000) {
+            self.busId = '0' + self.busId.toString();
         }
 
         $.ajax({
             url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY + '/vm/service.xml',
-            data: '<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?><Siri version="2.0" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns="http://www.siri.org.uk/siri" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns3="http://www.ifopt.org.uk/ifopt"><ServiceRequest><RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp><RequestorRef>' + API_KEY + '</RequestorRef><VehicleMonitoringRequest version="2.0"><RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp><VehicleMonitoringRef>VM_ACT_' + busId + '</VehicleMonitoringRef></VehicleMonitoringRequest></ServiceRequest></Siri>',
+            data: '<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?><Siri version="2.0" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns="http://www.siri.org.uk/siri" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns3="http://www.ifopt.org.uk/ifopt"><ServiceRequest><RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp><RequestorRef>' + API_KEY + '</RequestorRef><VehicleMonitoringRequest version="2.0"><RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp><VehicleMonitoringRef>VM_ACT_' + self.busId + '</VehicleMonitoringRef></VehicleMonitoringRequest></ServiceRequest></Siri>',
             type: 'POST',
             contentType: "text/xml",
             dataType: "text",
@@ -332,5 +337,43 @@ export default class Trackmybus {
                 toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
             }
         });
+    }
+
+    drawRoute() {
+        const self = this;
+
+        if (self.isRouteDrawn) {
+            return false;
+        }
+
+        var busCoordinates = [];
+        $.ajax({
+            url: '//' + BASE_URL + '/getBusPath',
+            data: JSON.stringify({
+                'busId' : self.busId,
+                'busDir' : self.busDir
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            type: 'POST',
+            success: function (data) {
+                var busPath = new google.maps.Polyline({
+                    path: data.busCoordinates,
+                    geodesic: true,
+                    strokeColor: '#cc0000',
+                    strokeOpacity: 0.75,
+                    strokeWeight: 5
+                });
+
+                busPath.setMap(self.map);
+            },
+            error: function (error) {
+                console.log(error);
+
+                toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
+            }
+        });
+
+        self.isRouteDrawn = true;
     }
 }
