@@ -22,12 +22,9 @@ export default class Bookmark {
             cardMarkup = '';
 
         $.ajax({
-            url: 'https://oninross.carto.com/api/v2/sql?q=SELECT * FROM stops&api_key=f35be52ec1b8635c34ec7eab01827bb219750e7c',
-            dataType: 'jsonp',
-            contentType: "application/json; charset=utf-8",
+            url: '/assets/btt/api/services.json',
             success: function (data) {
-                console.log(data)
-                self.services = data.rows;
+                self.services = data;
 
                 if (JSON.parse(localStorage.bookmarks).length) {
                     self.tmpArr = JSON.parse(localStorage.bookmarks);
@@ -36,10 +33,10 @@ export default class Bookmark {
                         // iterate over each element in the array
                         for (let j = 0, m = self.services.length; j < m; j++) {
                             // look for the entry with a matching `code` value
-                            if (self.services[j].stop_id == self.tmpArr[i]) {
+                            if (self.services[j].data == self.tmpArr[i]) {
                                 // we found it
                                 // obj[i].name is the matched result
-                                self.busStopName = self.services[j].stop_name;
+                                self.busStopName = self.services[j].name;
                             }
                         }
 

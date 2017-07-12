@@ -87,9 +87,7 @@ export default class Nearby {
         var self = this;
 
         $.ajax({
-            url: 'https://oninross.carto.com/api/v2/sql?q=SELECT * FROM stops&api_key=f35be52ec1b8635c34ec7eab01827bb219750e7c',
-            dataType: 'jsonp',
-            contentType: "application/json; charset=utf-8",
+            url: '/assets/btt/api/services.json',
             success: function (data) {
                 self.initMap(data);
                 TweenMax.to('.loader', 0.75, {

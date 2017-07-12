@@ -185,7 +185,7 @@ export default class Trackmybus {
         });
 
         // Add a marker clusterer to manage the markers.
-        self.initClusterMarker();
+        // self.initClusterMarker();
 
         self.callApi();
     }

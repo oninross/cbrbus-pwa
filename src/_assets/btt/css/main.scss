@@ -240,6 +240,7 @@
         width: 100%;
 
         .card__wrapper {
+            border-color: $red;
             background-color: $red;
             height: auto;
             text-align: center;
@@ -395,6 +396,7 @@
         .btn {
             background-color: transparent;
             border-radius: 0;
+            bottom: 0;
             color: $black;
             line-height: 1;
             opacity: 0;
