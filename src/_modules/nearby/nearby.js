@@ -88,8 +88,6 @@ export default class Nearby {
 
         $.ajax({
             url: '/assets/btt/api/services.json',
-            dataType: 'json',
-            contentType: "application/json; charset=utf-8",
             success: function (data) {
                 self.initMap(data);
                 TweenMax.to('.loader', 0.75, {
@@ -154,7 +152,7 @@ export default class Nearby {
         $.each(json, function (i, v) {
             busMarker = new google.maps.Marker({
                 icon: stopIcon,
-                label: v.data,
+                label: v.data.toString(),
                 position: {
                     lat: v.lat,
                     lng: v.long
@@ -208,7 +206,7 @@ export default class Nearby {
         var self = this;
 
         if (typeof MarkerClusterer == "undefined") {
-            setTimeout(function() {
+            setTimeout(function () {
                 self.initClusterMarker();
             }, 500);
         } else {

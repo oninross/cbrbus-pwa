@@ -3,16 +3,17 @@
 import { ripple, toaster } from '../../_assets/btt/js/_material';
 import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariable, isNotificationGranted, isServiceWorkerSupported } from '../../_assets/btt/js/_helper';
 
-let $window = $(window),
-    isIntervalInit = false,
-    markers = [],
-    busId,
-    refreshInterval;
+let $window = $(window);
 
 export default class Trackmybus {
     constructor() {
         if ($('.trackMyBus').length) {
             let self = this;
+
+            self.refreshInterval = 0;
+            self.markers = [];
+            self.isRouteDrawn = false;
+            self.isIntervalInit = false;
 
             if (isServiceWorkerSupported()) {
                 // Just to wake up the server IF its sleeping
@@ -21,7 +22,7 @@ export default class Trackmybus {
                 });
             }
 
-            busId = getQueryVariable('busStopId');
+            self.busId = getQueryVariable('busStopId');
 
             self.isGeolocationEnabled = true;
 
@@ -166,7 +167,7 @@ export default class Trackmybus {
                 zIndex: 1
             });
 
-            markers.push(stopMarker);
+            self.markers.push(stopMarker);
 
             if (isServiceWorkerSupported()) {
                 google.maps.event.addListener(stopMarker, 'click', function (e) {
@@ -205,7 +206,7 @@ export default class Trackmybus {
                     textColor: '#ffffff'
                 }
             ],
-            markerCluster = new MarkerClusterer(self.map, markers, {
+            markerCluster = new MarkerClusterer(self.map, self.markers, {
                 styles: clusterStyles,
                 imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
                 maxZoom: 15,
@@ -251,13 +252,13 @@ export default class Trackmybus {
 
         console.log(xmlDoc);
 
-        if (isIntervalInit) {
-            $.each(markers, function (i, v) {
-                markers[i].setMap(null);
+        if (self.isIntervalInit) {
+            $.each(self.markers, function (i, v) {
+                self.markers[i].setMap(null);
             });
         } else {
-            isIntervalInit = true;
-            refreshInterval = setInterval(function () {
+            self.isIntervalInit = true;
+            self.refreshInterval = setInterval(function () {
                 self.callApi();
             }, 10000);
         }
@@ -282,6 +283,10 @@ export default class Trackmybus {
 
             if ($vehicleLat[0] != undefined && $vehicleLng[0] != undefined && vehicleRef[0] != undefined) {
                 if (vehicleRef[0].innerHTML == $vehicleRefQuery) {
+                    self.busDir = directionRef[0].innerHTML == 'A' ? 0 : 1;
+
+                    self.drawRoute();
+
                     busMarker = new google.maps.Marker({
                         icon: 'https://maps.google.com/mapfiles/kml/paddle/' + directionRef[0].innerHTML + '_maps.png',
                         position: {
@@ -291,7 +296,7 @@ export default class Trackmybus {
                         map: self.map
                     });
 
-                    markers.push(busMarker);
+                    self.markers.push(busMarker);
 
                     isVehicleFound = true;
                 }
@@ -300,26 +305,26 @@ export default class Trackmybus {
 
         if (!isVehicleFound) {
             toaster('Whoops! Sorry the vehicle you are tracking can not be found. Try again later.');
-            clearInterval(refreshInterval);
+            clearInterval(self.refreshInterval);
         }
     }
 
     callApi() {
         const self = this;
 
-        let busId = getQueryVariable('busId');
+        self.busId = getQueryVariable('busId');
 
-        if (busId < 10) {
-            busId = '000' + busId.toString();
-        } else if (busId < 100) {
-            busId = '00' + busId.toString();
-        } else if (busId < 1000) {
-            busId = '0' + busId.toString();
+        if (self.busId < 10) {
+            self.busId = '000' + self.busId.toString();
+        } else if (self.busId < 100) {
+            self.busId = '00' + self.busId.toString();
+        } else if (self.busId < 1000) {
+            self.busId = '0' + self.busId.toString();
         }
 
         $.ajax({
             url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY + '/vm/service.xml',
-            data: '<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?><Siri version="2.0" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns="http://www.siri.org.uk/siri" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns3="http://www.ifopt.org.uk/ifopt"><ServiceRequest><RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp><RequestorRef>' + API_KEY + '</RequestorRef><VehicleMonitoringRequest version="2.0"><RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp><VehicleMonitoringRef>VM_ACT_' + busId + '</VehicleMonitoringRef></VehicleMonitoringRequest></ServiceRequest></Siri>',
+            data: '<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?><Siri version="2.0" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns="http://www.siri.org.uk/siri" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns3="http://www.ifopt.org.uk/ifopt"><ServiceRequest><RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp><RequestorRef>' + API_KEY + '</RequestorRef><VehicleMonitoringRequest version="2.0"><RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp><VehicleMonitoringRef>VM_ACT_' + self.busId + '</VehicleMonitoringRef></VehicleMonitoringRequest></ServiceRequest></Siri>',
             type: 'POST',
             contentType: "text/xml",
             dataType: "text",
@@ -332,5 +337,46 @@ export default class Trackmybus {
                 toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
             }
         });
+    }
+
+    drawRoute() {
+        const self = this;
+
+        let busCoordinates = [];
+
+        if (self.isRouteDrawn) {
+            return false;
+        }
+
+        $.ajax({
+            url: 'https://oninross.carto.com/api/v2/sql?q=WITH Q1 AS (SELECT t.shape_id , count(t.shape_id) total FROM routes r INNER JOIN trips t ON t.route_id = r.route_id WHERE r.route_short_name = ' + Number(self.busId) + ' AND t.direction_id = ' + self.busDir + ' GROUP BY t.shape_id) SELECT DISTINCT s.* FROM shapes s WHERE s.shape_id IN (SELECT shape_id FROM Q1 WHERE total = (SELECT MAX(total) FROM Q1))&api_key=f35be52ec1b8635c34ec7eab01827bb219750e7c',
+            dataType: 'jsonp',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                $.each(data.rows, function (i, v) {
+                    busCoordinates.push({
+                        lat: v.shape_pt_lat,
+                        lng: v.shape_pt_lon
+                    });
+                });
+
+                var busPath = new google.maps.Polyline({
+                    path: busCoordinates,
+                    geodesic: true,
+                    strokeColor: '#cc0000',
+                    strokeOpacity: 0.75,
+                    strokeWeight: 5
+                });
+
+                busPath.setMap(self.map);
+
+                console.log('done');
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+
+        self.isRouteDrawn = true;
     }
 }
