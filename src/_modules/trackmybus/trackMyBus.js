@@ -185,7 +185,7 @@ export default class Trackmybus {
         });
 
         // Add a marker clusterer to manage the markers.
-        // self.initClusterMarker();
+        self.initClusterMarker();
 
         self.callApi();
     }
@@ -342,22 +342,26 @@ export default class Trackmybus {
     drawRoute() {
         const self = this;
 
+        let busCoordinates = [];
+
         if (self.isRouteDrawn) {
             return false;
         }
 
         $.ajax({
-            url: '//' + BASE_URL + '/getBusPath',
-            data: JSON.stringify({
-                'busId' : self.busId,
-                'busDir' : self.busDir
-            }),
+            url: 'https://oninross.carto.com/api/v2/sql?q=WITH Q1 AS (SELECT t.shape_id , count(t.shape_id) total FROM routes r INNER JOIN trips t ON t.route_id = r.route_id WHERE r.route_short_name = ' + Number(self.busId) + ' AND t.direction_id = ' + self.busDir + ' GROUP BY t.shape_id) SELECT DISTINCT s.* FROM shapes s WHERE s.shape_id IN (SELECT shape_id FROM Q1 WHERE total = (SELECT MAX(total) FROM Q1))&api_key=f35be52ec1b8635c34ec7eab01827bb219750e7c',
+            dataType: 'jsonp',
             contentType: "application/json; charset=utf-8",
-            dataType: 'json',
-            type: 'POST',
             success: function (data) {
+                $.each(data.rows, function (i, v) {
+                    busCoordinates.push({
+                        lat: v.shape_pt_lat,
+                        lng: v.shape_pt_lon
+                    });
+                });
+
                 var busPath = new google.maps.Polyline({
-                    path: data.busCoordinates,
+                    path: busCoordinates,
                     geodesic: true,
                     strokeColor: '#cc0000',
                     strokeOpacity: 0.75,
@@ -365,11 +369,11 @@ export default class Trackmybus {
                 });
 
                 busPath.setMap(self.map);
+
+                console.log('done');
             },
             error: function (error) {
                 console.log(error);
-
-                toaster('Whoops! Something went wrong! Error (' + error.status + ' ' + error.statusText + ')');
             }
         });
 
