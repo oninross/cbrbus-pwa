@@ -87,8 +87,8 @@ export default class Nearby {
         var self = this;
 
         $.ajax({
-            url: '/assets/btt/api/services.json',
-            dataType: 'json',
+            url: 'https://oninross.carto.com/api/v2/sql?q=SELECT * FROM stops&api_key=f35be52ec1b8635c34ec7eab01827bb219750e7c',
+            dataType: 'jsonp',
             contentType: "application/json; charset=utf-8",
             success: function (data) {
                 self.initMap(data);
@@ -151,13 +151,14 @@ export default class Nearby {
             map: map
         });
 
-        $.each(json, function (i, v) {
+
+        $.each(json.rows, function (i, v) {
             busMarker = new google.maps.Marker({
                 icon: stopIcon,
-                label: v.data,
+                label: v.stop_id.toString(),
                 position: {
-                    lat: v.lat,
-                    lng: v.long
+                    lat: v.stop_lat,
+                    lng: v.stop_lon
                 },
                 map: map
             });
@@ -208,7 +209,7 @@ export default class Nearby {
         var self = this;
 
         if (typeof MarkerClusterer == "undefined") {
-            setTimeout(function() {
+            setTimeout(function () {
                 self.initClusterMarker();
             }, 500);
         } else {

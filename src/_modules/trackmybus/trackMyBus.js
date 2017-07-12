@@ -3,17 +3,17 @@
 import { ripple, toaster } from '../../_assets/btt/js/_material';
 import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariable, isNotificationGranted, isServiceWorkerSupported } from '../../_assets/btt/js/_helper';
 
-let $window = $(window),
-    isIntervalInit = false,
-    markers = [],
-    refreshInterval;
+let $window = $(window);
 
 export default class Trackmybus {
     constructor() {
         if ($('.trackMyBus').length) {
             let self = this;
 
+            self.refreshInterval = 0;
+            self.markers = [];
             self.isRouteDrawn = false;
+            self.isIntervalInit = false;
 
             if (isServiceWorkerSupported()) {
                 // Just to wake up the server IF its sleeping
@@ -142,50 +142,50 @@ export default class Trackmybus {
             map: map
         });
 
-        // self.busStopMarker = new google.maps.Marker({
-        //     icon: busStopIcon,
-        //     position: busStopCenter[0],
-        //     map: map
-        // })
+        self.busStopMarker = new google.maps.Marker({
+            icon: busStopIcon,
+            position: busStopCenter[0],
+            map: map
+        })
 
-        // google.maps.event.addListener(self.busStopMarker, 'click', function (e) {
-        //     map.setZoom(18);
-        //     map.panTo(self.busStopMarker.position);
-        // });
+        google.maps.event.addListener(self.busStopMarker, 'click', function (e) {
+            map.setZoom(18);
+            map.panTo(self.busStopMarker.position);
+        });
 
-        // $.each(json, function (i, v) {
-        //     stopMarker = new google.maps.Marker({
-        //         id: v.data,
-        //         position: {
-        //             lat: v.lat,
-        //             lng: v.long
-        //         },
-        //         icon: {
-        //             url: '/assets/btt/images/busMarker.svg'
-        //         },
-        //         map: map,
-        //         zIndex: 1
-        //     });
+        $.each(json, function (i, v) {
+            stopMarker = new google.maps.Marker({
+                id: v.data,
+                position: {
+                    lat: v.lat,
+                    lng: v.long
+                },
+                icon: {
+                    url: '/assets/btt/images/busMarker.svg'
+                },
+                map: map,
+                zIndex: 1
+            });
 
-        //     markers.push(stopMarker);
+            self.markers.push(stopMarker);
 
-        //     if (isServiceWorkerSupported()) {
-        //         google.maps.event.addListener(stopMarker, 'click', function (e) {
-        //             if (isNotificationGranted()) {
-        //                 let busStopId = $(this)[0].id;
-        //                 self.notifyMe(busStopId);
+            if (isServiceWorkerSupported()) {
+                google.maps.event.addListener(stopMarker, 'click', function (e) {
+                    if (isNotificationGranted()) {
+                        let busStopId = $(this)[0].id;
+                        self.notifyMe(busStopId);
 
-        //                 ga('send', 'event', 'Notify', 'click');
-        //                 toaster('You will be notified when your stop is approaching. ' + busStopId);
-        //             } else {
-        //                 toaster('Please enable your notifications to know if your bus is approaching.');
-        //             }
-        //         });
-        //     }
-        // });
+                        ga('send', 'event', 'Notify', 'click');
+                        toaster('You will be notified when your stop is approaching. ' + busStopId);
+                    } else {
+                        toaster('Please enable your notifications to know if your bus is approaching.');
+                    }
+                });
+            }
+        });
 
         // Add a marker clusterer to manage the markers.
-        // self.initClusterMarker();
+        self.initClusterMarker();
 
         self.callApi();
     }
@@ -206,7 +206,7 @@ export default class Trackmybus {
                     textColor: '#ffffff'
                 }
             ],
-            markerCluster = new MarkerClusterer(self.map, markers, {
+            markerCluster = new MarkerClusterer(self.map, self.markers, {
                 styles: clusterStyles,
                 imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
                 maxZoom: 15,
@@ -252,13 +252,13 @@ export default class Trackmybus {
 
         console.log(xmlDoc);
 
-        if (isIntervalInit) {
-            $.each(markers, function (i, v) {
-                markers[i].setMap(null);
+        if (self.isIntervalInit) {
+            $.each(self.markers, function (i, v) {
+                self.markers[i].setMap(null);
             });
         } else {
-            isIntervalInit = true;
-            refreshInterval = setInterval(function () {
+            self.isIntervalInit = true;
+            self.refreshInterval = setInterval(function () {
                 self.callApi();
             }, 10000);
         }
@@ -296,7 +296,7 @@ export default class Trackmybus {
                         map: self.map
                     });
 
-                    markers.push(busMarker);
+                    self.markers.push(busMarker);
 
                     isVehicleFound = true;
                 }
@@ -305,7 +305,7 @@ export default class Trackmybus {
 
         if (!isVehicleFound) {
             toaster('Whoops! Sorry the vehicle you are tracking can not be found. Try again later.');
-            clearInterval(refreshInterval);
+            clearInterval(self.refreshInterval);
         }
     }
 
@@ -346,7 +346,6 @@ export default class Trackmybus {
             return false;
         }
 
-        var busCoordinates = [];
         $.ajax({
             url: '//' + BASE_URL + '/getBusPath',
             data: JSON.stringify({
