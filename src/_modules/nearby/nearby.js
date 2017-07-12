@@ -149,14 +149,13 @@ export default class Nearby {
             map: map
         });
 
-
-        $.each(json.rows, function (i, v) {
+        $.each(json, function (i, v) {
             busMarker = new google.maps.Marker({
                 icon: stopIcon,
-                label: v.stop_id.toString(),
+                label: v.data.toString(),
                 position: {
-                    lat: v.stop_lat,
-                    lng: v.stop_lon
+                    lat: v.lat,
+                    lng: v.long
                 },
                 map: map
             });
