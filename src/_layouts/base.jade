@@ -36,11 +36,11 @@ html.no-js(lang='en')
         meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
 
         if busStopId
-            title #{busStopId} #{busStopName} | CBR Buses
+            title #{busStopId} #{busStopName} | Canberra Bus Schedules Web App
         else
-            title #{pageTitle} | CBR Buses
+            title #{pageTitle} | Canberra Bus Schedules Web App
 
-        meta(name='description', content= 'CBR Buses')
+        meta(name='description', content= 'Canberra Bus Schedules Web App')
         meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
 
         meta(name='google-site-verification', content='oXearTxGSlotNgqnSGdz9E5lE8B73H42x5KWm2MqYk8')
@@ -69,22 +69,22 @@ html.no-js(lang='en')
         link(rel='icon', type='image/png', sizes='16x16', href='/assets/btt/images/favicon/favicon-16x16.png')
 
         meta(name='robots', content='follow')
-        meta(name='author', content='CBR Buses')
+        meta(name='author', content='Canberra Bus Schedules Web App')
         meta(name='copyright', content='2017')
         meta(name='description', content="Your easy to use CBR Bus schedule")
-        meta(name='keywords', content='CBR, Canberra, Bus, Schedule, Real-time')
+        meta(name='keywords', content='CBR, Canberra, Bus, Schedule, Real-time, Routes, Timetables')
 
-        meta(property='og:title', content='CBR Buses')
+        meta(property='og:title', content='Canberra Bus Schedules Web App')
         meta(property='og:type', content='website')
         meta(property='og:url', content='//www.cbrbus.com.au/')
         meta(property='og:image', content='')
         meta(property='og:description', content="Your easy to use CBR Bus schedule")
-        meta(property='og:site_name', content='CBR Buses')
+        meta(property='og:site_name', content='Canberra Bus Schedules Web App')
 
         meta(name='twitter:card', content='summary')
-        meta(name='twitter:creator', content='CBR Buses')
+        meta(name='twitter:creator', content='Canberra Bus Schedules Web App')
         meta(name='twitter:url', content='//www.cbrbus.com.au/')
-        meta(name='twitter:title', content='CBR Buses')
+        meta(name='twitter:title', content='Canberra Bus Schedules Web App')
         meta(name='twitter:description', content="Your easy to use CBR Bus schedule")
         meta(name='twitter:image', content='')
 
@@ -96,8 +96,17 @@ html.no-js(lang='en')
                 var _busStopId = '#{busStopId}',
                 _busStopName = '#{busStopName}';
 
-
     body
+        div(align='center')
+            script(async='', src='//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js')
+            // CBR Bus Ads
+            ins.adsbygoogle(style='display:block', data-ad-client='ca-pub-9063011790769465', data-ad-slot='5394949410', data-ad-format='auto')
+            script.
+                (adsbygoogle = window.adsbygoogle || []).push({
+                    google_ad_client: "ca-pub-9063011790769465",
+                    enable_page_level_ads: true
+                });
+
         header.header
             +primary-nav({ navIndex: navIndex })
 
