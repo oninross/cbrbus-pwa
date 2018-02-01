@@ -1,14 +1,11 @@
-// Normalize Styles
-@import "node_modules/normalize.css/normalize";
-
 // Import all needed help
 @import "common/_variables";
 @import "common/_mixin";
-// @import "common/_material-mixin";
+@import "common/_material-mixin";
 @import "common/_helpers";
 @import "common/_fonts";
 @import "common/_base";
-// @import "common/_grid";
+@import "common/_grid";
 // @import "common/_material-design";
 // @import "common/_mCustomScrollbar"
 
@@ -20,4 +17,8 @@
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+}
+
+.intro {
+    font-size: 1.8em;
 }

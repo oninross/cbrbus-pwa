@@ -1,0 +1,23 @@
+@import "~sass/common/_variables";
+@import "~sass/common/_mixin";
+@import "~sass/common/_helpers";
+@import "~sass/common/_fonts";
+@import "~sass/common/_base";
+
+.btn-share {
+    @extend .btn;
+    @include material-shadow(1);
+
+    display: block;
+    font-weight: $bold;
+    text-align: center;
+    width: 100%;
+
+    &.-facebook {
+        background-color: #3b5998;
+    }
+
+    &.-twitter {
+        background-color: #4099FF;
+    }
+}
