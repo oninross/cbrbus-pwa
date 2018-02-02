@@ -21,7 +21,9 @@
         "../node_modules/normalize.css/normalize.css",
         "sass/main.scss"
       ],
-      "scripts": [],
+      "scripts": [
+        "js/_modernizr.js"
+      ],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",

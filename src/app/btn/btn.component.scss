@@ -21,3 +21,14 @@
         background-color: #4099FF;
     }
 }
+
+.btn-begin {
+    @extend .btn;
+    @include material-shadow(1);
+
+    background-color: $green;
+    display: block;
+    font-weight: $bold;
+    text-align: center;
+    width: 100%;
+}

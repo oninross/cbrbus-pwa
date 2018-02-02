@@ -2,31 +2,36 @@
     <nav id="primary-nav">
         <ul>
             <li>
-                <a routerLink="/" class="active">
+                <a
+                    routerLink="/"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                     <span class="icon icon-search"></span>
                     Search
                 </a>
             </li>
             <li>
-                <a routerLink="/nearby/">
+                <a
+                    routerLink="/nearby/"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                     <span class="icon icon-map"></span>
                     Nearby
                 </a>
             </li>
             <li>
-                <a routerLink="/bookmarks/">
+                <a
+                    routerLink="/bookmarks/"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                     <span class="icon icon-bookmark"></span>
                     Bookmarks
                 </a>
             </li>
             <li>
-                <a routerLink="/about/">
+                <a
+                    routerLink="/about/"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                     <span class="icon icon-about"></span>
                     About
                 </a>
             </li>
             <li>
-                <a routerLink="/share/">
+                <a
+                    routerLink="/share/"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                     <span class="icon icon-share"></span>
                     Share
                 </a>

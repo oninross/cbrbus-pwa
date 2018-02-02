@@ -8,6 +8,8 @@ import { SearchComponent } from './search/search.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { ShareComponent } from './share/share.component';
 import { BtnComponent } from './btn/btn.component';
+import { AboutComponent } from './about/about.component';
+import { AccordionComponent } from './accordion/accordion.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import { BtnComponent } from './btn/btn.component';
     SearchComponent,
     NavigationComponent,
     ShareComponent,
-    BtnComponent
+    BtnComponent,
+    AboutComponent,
+    AccordionComponent
   ],
   imports: [
     BrowserModule,
