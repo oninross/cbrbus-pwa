@@ -1,0 +1,69 @@
+@import "~sass/common/_variables";
+@import "~sass/common/_mixin";
+@import "~sass/common/_helpers";
+@import "~sass/common/_fonts";
+@import "~sass/common/_base";
+
+.loader {
+    @include material-shadow(1);
+    @include centering-the-unknown;
+
+    background: $white;
+    border-radius: 50%;
+    height: 50px;
+    margin: 0 auto;
+    width: 50px;
+    z-index: 15;
+
+    &:before {
+        content: '';
+        display: block;
+        padding-top: 100%;
+    }
+
+    .circular {
+        @include absolute-center;
+
+        animation: rotate 2s linear infinite;
+        height: 75%;
+        margin: auto;
+        transform-origin: center center;
+        width: 75%;
+    }
+
+    .path {
+        stroke-dasharray: 1,200;
+        stroke-dashoffset: 0;
+        animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
+        stroke-linecap: round;
+    }
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes dash {
+    0% {
+        stroke-dasharray: 1,200;
+        stroke-dashoffset: 0;
+    }
+
+    50% {
+        stroke-dasharray: 89,200;
+        stroke-dashoffset: -35;
+    }
+
+    100% {
+        stroke-dasharray: 89,200;
+        stroke-dashoffset: -124;
+    }
+}
+
+@keyframes color {
+    100%, 0% {
+        stroke: $black;
+    }
+}

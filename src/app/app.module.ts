@@ -11,6 +11,7 @@ import { ShareComponent } from './share/share.component';
 import { BtnComponent } from './btn/btn.component';
 import { AboutComponent } from './about/about.component';
 import { AccordionComponent } from './accordion/accordion.component';
+import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
     declarations: [
@@ -20,7 +21,8 @@ import { AccordionComponent } from './accordion/accordion.component';
         ShareComponent,
         BtnComponent,
         AboutComponent,
-        AccordionComponent
+        AccordionComponent,
+        LoaderComponent
     ],
     imports: [
         BrowserModule,
