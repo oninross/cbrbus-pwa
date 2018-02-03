@@ -3,12 +3,17 @@ import { RouterModule, Routes } from '@angular/router';
 import { SearchComponent } from './search/search.component';
 import { ShareComponent } from './share/share.component';
 import { AboutComponent } from './about/about.component';
+import { NearbyComponent } from './nearby/nearby.component';
 
 
 const routes: Routes = [
     {
         path: 'search',
         component: SearchComponent
+    },
+    {
+        path: 'nearby',
+        component: NearbyComponent
     },
     {
         path: 'about',

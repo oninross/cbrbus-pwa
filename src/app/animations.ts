@@ -5,7 +5,6 @@ export const slideInOutAnimation =
         state('*', style({
             left: 0,
             opacity: 1,
-            padding: '0 15px',
             position: 'absolute'
         })),
 

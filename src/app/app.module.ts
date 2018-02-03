@@ -12,6 +12,7 @@ import { BtnComponent } from './btn/btn.component';
 import { AboutComponent } from './about/about.component';
 import { AccordionComponent } from './accordion/accordion.component';
 import { LoaderComponent } from './loader/loader.component';
+import { NearbyComponent } from './nearby/nearby.component';
 
 @NgModule({
     declarations: [
@@ -22,7 +23,8 @@ import { LoaderComponent } from './loader/loader.component';
         BtnComponent,
         AboutComponent,
         AccordionComponent,
-        LoaderComponent
+        LoaderComponent,
+        NearbyComponent
     ],
     imports: [
         BrowserModule,
