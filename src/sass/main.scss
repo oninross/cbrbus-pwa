@@ -27,3 +27,184 @@
     color: $red;
     font-weight: $bold;
 }
+
+.map {
+    height: 520px;
+}
+
+.bus-label {
+    border: 1px solid red;
+}
+
+.widget-mylocation {
+    width: 28px;
+    height: 28px;
+    position: absolute;
+    bottom: 90px;
+    right: 10px;
+}
+
+.widget-mylocation-button {
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 2px;
+    border: 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    display: block;
+    width: 29px;
+    height: 29px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background-color 0.16s ease-out;
+    position: relative;
+    display: none;
+
+    &[disabled] {
+        cursor: default;
+    }
+}
+
+.widget-mylocation-button-icon-common {
+    display: block;
+    height: 18px;
+    left: 6px;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 6px;
+    width: 18px;
+}
+
+.widget-mylocation-button .widget-mylocation-cookie {
+    background-image: url(//maps.gstatic.com/tactile/mylocation/mylocation-sprite-1x.png);
+    background-size: 180px 18px;
+}
+
+.highres .widget-mylocation-button .widget-mylocation-cookie {
+    background-image: url(//maps.gstatic.com/tactile/mylocation/mylocation-sprite-2x.png);
+}
+
+.widget-mylocation-button .widget-mylocation-cookieless {
+    background-image: url(//maps.gstatic.com/tactile/mylocation/mylocation-sprite-cookieless-v2-1x.png);
+    background-size: 180px 18px;
+}
+
+.widget-mylocation-button {
+    .widget-mylocation-button-normal {
+        background-position: 0 0;
+    }
+
+    &:hover .widget-mylocation-button-normal {
+        background-position: -36px 0;
+    }
+
+    &:active .widget-mylocation-button-normal {
+        background-position: -54px 0;
+    }
+
+    .widget-mylocation-button-disabled {
+        background-position: -18px 0;
+    }
+
+    .widget-mylocation-button-blue {
+        background-position: -144px 0;
+    }
+
+    &:hover .widget-mylocation-button-blue, &:active .widget-mylocation-button-blue {
+        background-position: -162px 0;
+    }
+}
+
+.widget-mylocation-button .widget-mylocation-button-acquiring {
+    background-image: url(//maps.gstatic.com/tactile/mylocation/mylocation-sprite-acquiring-1x.png);
+    background-size: 36px 18px;
+    opacity: 0.8;
+    -webkit-animation: acquiring-animation 1s steps(1) infinite;
+    animation: acquiring-animation 1s steps(1) infinite;
+}
+
+.widget-mylocation-tooltip {
+    position: absolute;
+    transition: opacity 0.13s ease-out 0.109s;
+    vertical-align: baseline;
+    line-height: normal;
+    right: 100%;
+    top: -1px;
+}
+
+.busMarkerIcon {
+    @include material-shadow(2);
+
+    background-color: $matte-black;
+    border-radius: 50%;
+    color: $white;
+    height: 50px !important;
+    font-weight: $bold;
+    left: -22px;
+    padding-top: 15px;
+
+    // position: relative;
+    text-align: center;
+    top: -18px;
+    width: 50px !important;
+    z-index: 10;
+}
+
+.sort-toggle {
+    margin-top: 13px;
+    opacity: 0;
+    position: relative;
+    text-align: right;
+    top: 150px;
+    z-index: 105;
+
+    label {
+        padding-left: 0;
+        padding-right: 60px;
+
+        &.checkbox {
+            &:before {
+                @include transition(all, 0.5s, $easeOutExpo);
+
+                @include inline-block;
+
+                content: "";
+                background: #d8d9db;
+                border: 1px solid #d8d9db;
+                border-radius: 12px;
+                height: 24px;
+                left: auto;
+                right: 0;
+                position: absolute;
+                width: 50px;
+            }
+
+            &:after {
+                @include scale(1);
+
+                background-color: $white;
+                border-radius: 50%;
+                content: '';
+                height: 22px;
+                left: auto;
+                right: 27px;
+                top: 1px !important;
+                width: 22px;
+            }
+        }
+    }
+
+    input[type="checkbox"] {
+        &:checked + label {
+            &:before {
+                background: $blue;
+                border: 1px solid $blue;
+            }
+
+            &:after {
+                left: auto;
+                right: 1px;
+            }
+        }
+    }
+}
+

@@ -3,6 +3,9 @@ import { GlobalVariable } from '../globals';
 
 import { TweenMax, Expo } from 'gsap/src/uncompressed/TweenMax';
 
+declare const google: any;
+declare const MarkerClusterer: any;
+
 @Component({
     selector: 'app-nearby',
     templateUrl: './nearby.component.html',
@@ -10,74 +13,29 @@ import { TweenMax, Expo } from 'gsap/src/uncompressed/TweenMax';
     providers: [GlobalVariable]
 })
 export class NearbyComponent implements OnInit {
+    markerUrl: String = '/assets/cbrbus/images/currentMarker.svg';
+    mapSettings: Object = {
+        lat: -35.2823083,
+        long: 149.1285561,
+        zoom: 15,
+        marker: this.markerUrl
+    };
+    isGeolocationEnabled: Boolean = true;
+    zoomLevel: Number = 17;
+    markers: Array<Object> = [];
+    map;
+    currentMarker;
+
     constructor(public globalVariable: GlobalVariable) { }
 
     ngOnInit() {
-        let self = this,
-            markers: Array<Object> = [],
-            mapSettings: Object = {},
-            markerUrl: String = '/assets/btt/images/currentMarker.svg',
-            zoomLevel: Number = 17,
-            isGeolocationEnabled: Boolean = true;
-
         // Attaching a property in the windows object
         (<any>window).II = {
-            initMap: self.initMap
+            googleMap: this
         };
 
-        mapSettings = {
-            'lat': -35.2823083,
-            'long': 149.1285561,
-            'zoom': 15,
-            'marker': markerUrl
-        };
-
-        this.loadGoogleMap();
-
-        // if (navigator.geolocation) {
-        //     navigator.geolocation.getCurrentPosition(function (position) {
-        //         mapSettings = {
-        //             'lat': position.coords.latitude,
-        //             'long': position.coords.longitude,
-        //             'zoom': zoomLevel,
-        //             'marker': markerUrl
-        //         };
-
-        //         self.loadGoogleMap();
-        //     });
-
-        //     setInterval(function () {
-        //         navigator.geolocation.getCurrentPosition(function (position) {
-        //             mapSettings = {
-        //                 'lat': position.coords.latitude,
-        //                 'long': position.coords.longitude,
-        //                 'zoom': zoomLevel,
-        //                 'marker': markerUrl
-        //             };
-        //         });
-
-        //         self.updateMarker();
-        //     }, 5000);
-        // } else {
-        //     // toaster('Geolocation is not supported or disabled by this browser.');
-
-        //     isGeolocationEnabled = false;
-
-        //     mapSettings = {
-        //         'lat': -35.2823083,
-        //         'long': 149.1285561,
-        //         'zoom': 15,
-        //         'marker': markerUrl
-        //     };
-
-        //     this.loadGoogleMap();
-        // }
-    }
-
-    private loadGoogleMap(): void {
-        console.log('loadGoogleMap: ' + this.globalVariable.GMAP_API_KEY);
         const script = document.createElement('script'),
-            scriptStr = 'https://maps.googleapis.com/maps/api/js?key=' + this.globalVariable.GMAP_API_KEY + '&callback=II.initMap',
+            scriptStr = 'https://maps.googleapis.com/maps/api/js?key=' + this.globalVariable.GMAP_API_KEY + '&callback=II.googleMap.initMap',
             clusterScript = document.createElement('script'),
             clusterScriptStr = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js';
 
@@ -94,11 +52,34 @@ export class NearbyComponent implements OnInit {
         document.body.appendChild(script);
     }
 
-    private initMap(): void {
+    initMap(): void {
         console.log('initMap');
 
-        const self = this,
-            loader = document.getElementsByClassName('loader')[0];
+        let center: Object = center = {
+                lat: this.mapSettings.lat,
+                lng: this.mapSettings.long
+            },
+            busMarker;
+
+        const loader = document.getElementsByClassName('loader')[0],
+            currentIcon = {
+                url: this.mapSettings.marker,
+                size: new google.maps.Size(24, 24),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(12, 12)
+            },
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: this.mapSettings.zoom,
+                center: center,
+                streetViewControl: false,
+                mapTypeControl: false
+            }),
+            stopIcon = {
+                url: '/assets/cbrbus/images/stopMarker.svg',
+                size: new google.maps.Size(40, 48),
+                origin: new google.maps.Point(0, -10),
+                anchor: new google.maps.Point(20, 48)
+            };
 
         TweenMax.to(loader, 0.75, {
             autoAlpha: 0,
@@ -108,13 +89,79 @@ export class NearbyComponent implements OnInit {
                 loader.parentNode.removeChild(loader);
             }
         });
+
+        this.map = map;
+
+        this.currentMarker = new google.maps.Marker({
+            icon: currentIcon,
+            position: center,
+            map: map
+        });
+
+
+        for (let i = 0, l = this.globalVariable.services.length; i < l; i++) {
+            let v = this.globalVariable.services[i];
+
+            busMarker = new google.maps.Marker({
+                icon: stopIcon,
+                label: v.data.toString(),
+                position: {
+                    lat: v.lat,
+                    lng: v.long
+                },
+                map: map
+            });
+        }
+
+
+        // Add a marker clusterer to manage the markers.
+        this.initClusterMarker();
+
+        if (this.isGeolocationEnabled) {
+            // $('.widget-mylocation-button')
+            //     .fadeIn()
+            //     .on('click', function (e) {
+            //         e.preventDefault();
+
+            //         map.setCenter({
+            //             lat: self.mapSettings.lat,
+            //             lng: self.mapSettings.long
+            //         });
+            //     });
+        }
     }
 
-    private updateMarker(): void {
+    updateMarker(): void {
         console.log('updateMarker')
+
+        this.currentMarker.setPosition({
+            lat: this.mapSettings.lat,
+            lng: this.mapSettings.long
+        });
     }
 
-    private initClusterMarker(): void {
-        console.log('initClusterMarker')
+    initClusterMarker(): void {
+        console.log('initClusterMarker');
+
+        if (typeof MarkerClusterer == "undefined") {
+            setTimeout(function () {
+                this.initClusterMarker();
+            }, 500);
+        } else {
+            let clusterStyles = [
+                {
+                    url: '/assets/cbrbus/images/cluster.svg',
+                    height: 40,
+                    width: 40,
+                    textColor: '#ffffff'
+                }
+            ],
+                markerCluster = new MarkerClusterer(this.map, this.markers, {
+                    styles: clusterStyles,
+                    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+                    maxZoom: 15,
+                    averageCenter: true
+                });
+        }
     }
 }
