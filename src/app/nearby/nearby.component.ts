@@ -68,7 +68,16 @@ export class NearbyComponent implements OnInit {
                 self.updateMarker();
             }, 5000);
         } else {
+            this.isGeolocationEnabled = false;
 
+            this.mapSettings = {
+                'lat': -35.2823083,
+                'long': 149.1285561,
+                'zoom': 15,
+                'marker': self.globalVariable.MARKER_URL
+            };
+
+            this.loadGoogleMap();
         }
 
         const event = new Event('resize'),
