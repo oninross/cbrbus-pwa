@@ -3,7 +3,6 @@ import { GlobalVariable } from '../globals';
 
 import { TweenMax, Expo } from 'gsap/src/uncompressed/TweenMax';
 import { Location } from '@angular/common';
-import { ToasterComponent } from '../toaster/toaster.component';
 
 declare const google: any;
 declare const MarkerClusterer: any;
@@ -44,42 +43,30 @@ export class NearbyComponent implements OnInit {
 
         if (navigator.geolocation) {
             // toaster('Geolocation is not supported or disabled by this browser.');
-            const toaster = new ToasterComponent();
-            toaster.toast('Geolocation is not supported or disabled by this browser.');
 
-            this.isGeolocationEnabled = false;
+            navigator.geolocation.getCurrentPosition(function (position) {
+                self.mapSettings = {
+                    lat: position.coords.latitude,
+                    long: position.coords.longitude,
+                    zoom: self.zoomLevel,
+                    marker: self.globalVariable.MARKER_URL
+                }
 
-            this.mapSettings = {
-                'lat': -35.2823083,
-                'long': 149.1285561,
-                'zoom': 15,
-                'marker': self.globalVariable.MARKER_URL
-            };
+                self.loadGoogleMap();
+            });
 
-            this.loadGoogleMap();
-            // navigator.geolocation.getCurrentPosition(function (position) {
-            //     self.mapSettings = {
-            //         lat: position.coords.latitude,
-            //         long: position.coords.longitude,
-            //         zoom: self.zoomLevel,
-            //         marker: self.globalVariable.MARKER_URL
-            //     }
+            setInterval(function () {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    self.mapSettings = {
+                        lat: position.coords.latitude,
+                        long: position.coords.longitude,
+                        zoom: self.zoomLevel,
+                        marker: self.globalVariable.MARKER_URL
+                    };
+                });
 
-            //     self.loadGoogleMap();
-            // });
-
-            // setInterval(function () {
-            //     navigator.geolocation.getCurrentPosition(function (position) {
-            //         self.mapSettings = {
-            //             lat: position.coords.latitude,
-            //             long: position.coords.longitude,
-            //             zoom: self.zoomLevel,
-            //             marker: self.globalVariable.MARKER_URL
-            //         };
-            //     });
-
-            //     self.updateMarker();
-            // }, 5000);
+                self.updateMarker();
+            }, 5000);
         } else {
 
         }
