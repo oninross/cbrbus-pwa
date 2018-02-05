@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { GlobalVariable } from '../globals';
+import { Component, OnInit, Inject } from '@angular/core';
+import { GlobalVariable } from '../__shared/globals';
 
 import { TweenMax, Expo } from 'gsap/src/uncompressed/TweenMax';
 import { Location } from '@angular/common';
+import { ViewContainerRef } from '@angular/core/src/linker/view_container_ref';
 
 declare const google: any;
 declare const MarkerClusterer: any;
@@ -31,9 +32,7 @@ export class NearbyComponent implements OnInit {
     constructor(
         public globalVariable: GlobalVariable,
         private location: Location
-    ) { }
-
-    ngOnInit() {
+    ) {
         const self = this;
 
         // Attaching a property in the windows object
@@ -44,30 +43,6 @@ export class NearbyComponent implements OnInit {
         if (navigator.geolocation) {
             // toaster('Geolocation is not supported or disabled by this browser.');
 
-            navigator.geolocation.getCurrentPosition(function (position) {
-                self.mapSettings = {
-                    lat: position.coords.latitude,
-                    long: position.coords.longitude,
-                    zoom: self.zoomLevel,
-                    marker: self.globalVariable.MARKER_URL
-                }
-
-                self.loadGoogleMap();
-            });
-
-            setInterval(function () {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    self.mapSettings = {
-                        lat: position.coords.latitude,
-                        long: position.coords.longitude,
-                        zoom: self.zoomLevel,
-                        marker: self.globalVariable.MARKER_URL
-                    };
-                });
-
-                self.updateMarker();
-            }, 5000);
-        } else {
             this.isGeolocationEnabled = false;
 
             this.mapSettings = {
@@ -78,6 +53,41 @@ export class NearbyComponent implements OnInit {
             };
 
             this.loadGoogleMap();
+
+            // navigator.geolocation.getCurrentPosition(function (position) {
+            //     self.mapSettings = {
+            //         lat: position.coords.latitude,
+            //         long: position.coords.longitude,
+            //         zoom: self.zoomLevel,
+            //         marker: self.globalVariable.MARKER_URL
+            //     }
+
+            //     self.loadGoogleMap();
+            // });
+
+            // setInterval(function () {
+            //     navigator.geolocation.getCurrentPosition(function (position) {
+            //         self.mapSettings = {
+            //             lat: position.coords.latitude,
+            //             long: position.coords.longitude,
+            //             zoom: self.zoomLevel,
+            //             marker: self.globalVariable.MARKER_URL
+            //         };
+            //     });
+
+            //     self.updateMarker();
+            // }, 5000);
+        } else {
+            // this.isGeolocationEnabled = false;
+
+            // this.mapSettings = {
+            //     'lat': -35.2823083,
+            //     'long': 149.1285561,
+            //     'zoom': 15,
+            //     'marker': self.globalVariable.MARKER_URL
+            // };
+
+            // this.loadGoogleMap();
         }
 
         const event = new Event('resize'),
@@ -89,6 +99,8 @@ export class NearbyComponent implements OnInit {
 
         window.dispatchEvent(event);
     }
+
+    ngOnInit() { }
 
     loadGoogleMap(): void {
         const script = document.createElement('script'),

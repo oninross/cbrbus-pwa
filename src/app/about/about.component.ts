@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { slideInOutAnimation } from '../animations';
+import { slideInOutAnimation } from '../__shared/animations';
 import { AccordionComponent } from '../accordion/accordion.component';
 
 @Component({

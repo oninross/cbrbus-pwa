@@ -1,7 +1,6 @@
 import { trigger, state, animate, transition, style } from '@angular/animations';
 
-export const slideInOutAnimation =
-    trigger('slideInOutAnimation', [
+export const slideInOutAnimation = trigger('slideInOutAnimation', [
         state('*', style({
             left: 0,
             opacity: 1,

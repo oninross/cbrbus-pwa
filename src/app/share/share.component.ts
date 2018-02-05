@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BtnComponent } from '../btn/btn.component';
-import { slideInOutAnimation } from '../animations';
+import { slideInOutAnimation } from '../__shared/animations';
 
 @Component({
     selector: 'app-share',

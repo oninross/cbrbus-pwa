@@ -24,7 +24,8 @@ import { NearbyComponent } from './nearby/nearby.component';
         AboutComponent,
         AccordionComponent,
         LoaderComponent,
-        NearbyComponent
+        NearbyComponent,
+        ToasterComponent
     ],
     imports: [
         BrowserModule,
