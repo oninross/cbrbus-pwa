@@ -2,9 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { GlobalVariable } from '../globals';
 
 import { TweenMax, Expo } from 'gsap/src/uncompressed/TweenMax';
+import { Location } from '@angular/common';
+import { ToasterComponent } from '../toaster/toaster.component';
 
 declare const google: any;
 declare const MarkerClusterer: any;
+
+class MapSettings {
+    lat: Number;
+    long: Number;
+    zoom: Number;
+    marker: String;
+}
 
 @Component({
     selector: 'app-nearby',
@@ -13,31 +22,83 @@ declare const MarkerClusterer: any;
     providers: [GlobalVariable]
 })
 export class NearbyComponent implements OnInit {
-    markerUrl: String = '/assets/cbrbus/images/currentMarker.svg';
-    mapSettings: Object = {
-        lat: -35.2823083,
-        long: 149.1285561,
-        zoom: 15,
-        marker: this.markerUrl
-    };
     isGeolocationEnabled: Boolean = true;
     zoomLevel: Number = 17;
     markers: Array<Object> = [];
-    map;
-    currentMarker;
+    mapSettings: MapSettings;
+    map = null;
+    currentMarker = null;
 
-    constructor(public globalVariable: GlobalVariable) { }
+    constructor(
+        public globalVariable: GlobalVariable,
+        private location: Location
+    ) { }
 
     ngOnInit() {
+        const self = this;
+
         // Attaching a property in the windows object
         (<any>window).II = {
             googleMap: this
         };
 
+        if (navigator.geolocation) {
+            // toaster('Geolocation is not supported or disabled by this browser.');
+            const toaster = new ToasterComponent();
+            toaster.toast('Geolocation is not supported or disabled by this browser.');
+
+            this.isGeolocationEnabled = false;
+
+            this.mapSettings = {
+                'lat': -35.2823083,
+                'long': 149.1285561,
+                'zoom': 15,
+                'marker': self.globalVariable.MARKER_URL
+            };
+
+            this.loadGoogleMap();
+            // navigator.geolocation.getCurrentPosition(function (position) {
+            //     self.mapSettings = {
+            //         lat: position.coords.latitude,
+            //         long: position.coords.longitude,
+            //         zoom: self.zoomLevel,
+            //         marker: self.globalVariable.MARKER_URL
+            //     }
+
+            //     self.loadGoogleMap();
+            // });
+
+            // setInterval(function () {
+            //     navigator.geolocation.getCurrentPosition(function (position) {
+            //         self.mapSettings = {
+            //             lat: position.coords.latitude,
+            //             long: position.coords.longitude,
+            //             zoom: self.zoomLevel,
+            //             marker: self.globalVariable.MARKER_URL
+            //         };
+            //     });
+
+            //     self.updateMarker();
+            // }, 5000);
+        } else {
+
+        }
+
+        const event = new Event('resize'),
+            header = <HTMLElement> document.getElementsByClassName('header')[0];
+
+        window.addEventListener('resize', this.globalVariable.debounce(function () {
+            document.getElementById('map').style.height = window.outerHeight - header.offsetHeight + 'px';
+        }, 250, false));
+
+        window.dispatchEvent(event);
+    }
+
+    loadGoogleMap(): void {
         const script = document.createElement('script'),
-            scriptStr = 'https://maps.googleapis.com/maps/api/js?key=' + this.globalVariable.GMAP_API_KEY + '&callback=II.googleMap.initMap',
+            scriptStr = '//maps.googleapis.com/maps/api/js?key=' + this.globalVariable.GMAP_API_KEY + '&callback=II.googleMap.initMap',
             clusterScript = document.createElement('script'),
-            clusterScriptStr = 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js';
+            clusterScriptStr = '//developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js';
 
         clusterScript.type = 'text/javascript';
         clusterScript.src = clusterScriptStr;
@@ -53,13 +114,12 @@ export class NearbyComponent implements OnInit {
     }
 
     initMap(): void {
-        console.log('initMap');
-
-        let center: Object = center = {
+        let self = this,
+            center: Object = {
                 lat: this.mapSettings.lat,
                 lng: this.mapSettings.long
             },
-            busMarker;
+            busMarker = null;
 
         const loader = document.getElementsByClassName('loader')[0],
             currentIcon = {
@@ -99,8 +159,9 @@ export class NearbyComponent implements OnInit {
         });
 
 
-        for (let i = 0, l = this.globalVariable.services.length; i < l; i++) {
-            let v = this.globalVariable.services[i];
+        let SERVICES = this.globalVariable.SERVICES;
+        for (let i = 0, l = SERVICES.length; i < l; i++) {
+            let v = SERVICES[i];
 
             busMarker = new google.maps.Marker({
                 icon: stopIcon,
@@ -111,6 +172,19 @@ export class NearbyComponent implements OnInit {
                 },
                 map: map
             });
+
+            self.markers.push(busMarker);
+
+            let label = '';
+            google.maps.event.addListener(busMarker, 'click', function (e) {
+                label = this.label;
+
+                let busStopName = self.globalVariable.SERVICES.map(function(v, i) {
+                    if (v.data == label) {
+                        self.location.go('/busstop/?busStopId=' + label + '&busStopName=' + v.name);
+                    }
+                });
+            });
         }
 
 
@@ -118,34 +192,35 @@ export class NearbyComponent implements OnInit {
         this.initClusterMarker();
 
         if (this.isGeolocationEnabled) {
-            // $('.widget-mylocation-button')
-            //     .fadeIn()
-            //     .on('click', function (e) {
-            //         e.preventDefault();
+            let myLocationBtn = <HTMLElement> document.getElementsByClassName('widget-mylocation-button')[0];
+            myLocationBtn.style.display = 'block';
 
-            //         map.setCenter({
-            //             lat: self.mapSettings.lat,
-            //             lng: self.mapSettings.long
-            //         });
-            //     });
+            myLocationBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                map.setCenter({
+                    lat: self.mapSettings.lat,
+                    lng: self.mapSettings.long
+                });
+            });
         }
     }
 
     updateMarker(): void {
-        console.log('updateMarker')
+        const self = this;
 
         this.currentMarker.setPosition({
-            lat: this.mapSettings.lat,
-            lng: this.mapSettings.long
+            lat: self.mapSettings.lat,
+            lng: self.mapSettings.long
         });
     }
 
     initClusterMarker(): void {
-        console.log('initClusterMarker');
+        const self = this;
 
         if (typeof MarkerClusterer == "undefined") {
             setTimeout(function () {
-                this.initClusterMarker();
+                self.initClusterMarker();
             }, 500);
         } else {
             let clusterStyles = [
@@ -156,9 +231,9 @@ export class NearbyComponent implements OnInit {
                     textColor: '#ffffff'
                 }
             ],
-                markerCluster = new MarkerClusterer(this.map, this.markers, {
+                markerCluster = new MarkerClusterer(self.map, self.markers, {
                     styles: clusterStyles,
-                    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+                    imagePath: '//developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
                     maxZoom: 15,
                     averageCenter: true
                 });

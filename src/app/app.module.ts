@@ -13,6 +13,7 @@ import { AboutComponent } from './about/about.component';
 import { AccordionComponent } from './accordion/accordion.component';
 import { LoaderComponent } from './loader/loader.component';
 import { NearbyComponent } from './nearby/nearby.component';
+import { ToasterComponent } from './toaster/toaster.component';
 
 @NgModule({
     declarations: [
@@ -24,7 +25,8 @@ import { NearbyComponent } from './nearby/nearby.component';
         AboutComponent,
         AccordionComponent,
         LoaderComponent,
-        NearbyComponent
+        NearbyComponent,
+        ToasterComponent
     ],
     imports: [
         BrowserModule,

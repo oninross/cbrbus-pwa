@@ -49,14 +49,13 @@
     border-radius: 2px;
     border: 0;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-    display: block;
+    display: none;
     width: 29px;
     height: 29px;
     overflow: hidden;
     cursor: pointer;
     transition: background-color 0.16s ease-out;
     position: relative;
-    display: none;
 
     &[disabled] {
         cursor: default;
