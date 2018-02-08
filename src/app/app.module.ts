@@ -13,6 +13,8 @@ import { AboutComponent } from './about/about.component';
 import { AccordionComponent } from './accordion/accordion.component';
 import { LoaderComponent } from './loader/loader.component';
 import { NearbyComponent } from './nearby/nearby.component';
+import { DomService } from './__shared/dom-service';
+import { ToasterComponent } from './toaster/toaster.component';
 
 @NgModule({
     declarations: [
@@ -24,14 +26,16 @@ import { NearbyComponent } from './nearby/nearby.component';
         AboutComponent,
         AccordionComponent,
         LoaderComponent,
-        NearbyComponent
+        NearbyComponent,
+        ToasterComponent
     ],
     imports: [
         BrowserModule,
         AppRoutingModule,
         BrowserAnimationsModule
     ],
-    providers: [],
-    bootstrap: [AppComponent]
+    providers: [DomService],
+    bootstrap: [AppComponent],
+    entryComponents: [ToasterComponent]
 })
 export class AppModule { }

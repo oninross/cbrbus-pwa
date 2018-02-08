@@ -3,7 +3,9 @@ import { GlobalVariable } from '../__shared/globals';
 
 import { TweenMax, Expo } from 'gsap/src/uncompressed/TweenMax';
 import { Location } from '@angular/common';
-import { ViewContainerRef } from '@angular/core/src/linker/view_container_ref';
+import { DomService } from '../__shared/dom-service';
+import { ToasterComponent } from '../toaster/toaster.component';
+import { slideInOutAnimation } from '../__shared/animations';
 
 declare const google: any;
 declare const MarkerClusterer: any;
@@ -19,7 +21,9 @@ class MapSettings {
     selector: 'app-nearby',
     templateUrl: './nearby.component.html',
     styleUrls: ['./nearby.component.scss'],
-    providers: [GlobalVariable]
+    providers: [GlobalVariable],
+    animations: [slideInOutAnimation],
+    host: { '[@slideInOutAnimation]': '' }
 })
 export class NearbyComponent implements OnInit {
     isGeolocationEnabled: Boolean = true;
@@ -31,7 +35,8 @@ export class NearbyComponent implements OnInit {
 
     constructor(
         public globalVariable: GlobalVariable,
-        private location: Location
+        private location: Location,
+        private domService: DomService
     ) {
         const self = this;
 
@@ -42,6 +47,7 @@ export class NearbyComponent implements OnInit {
 
         if (navigator.geolocation) {
             // toaster('Geolocation is not supported or disabled by this browser.');
+            this.domService.appendComponentToBody(ToasterComponent, 'Geolocation is not supported or disabled by this browser.');
 
             this.isGeolocationEnabled = false;
 

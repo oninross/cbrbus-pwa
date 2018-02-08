@@ -1,0 +1,64 @@
+@import "~sass/common/_variables";
+@import "~sass/common/_mixin";
+@import "~sass/common/_helpers";
+@import "~sass/common/_fonts";
+@import "~sass/common/_base";
+
+
+// Toaster
+.toaster-wrap {
+    bottom: 80px;
+    left: 20px;
+    max-width: 440px;
+    position: fixed;
+    width: 85%;
+    z-index: 50;
+
+    @include tablet {
+        width: 100%;
+    }
+}
+
+.toaster {
+    @include material-shadow(1);
+    @include scale(0.5, left bottom);
+
+    background: #323232;
+    border-radius: 4px;
+    color: $white;
+    margin-bottom: 10px;
+    opacity: 0;
+    padding: 20px;
+    padding-right: 40px;
+    visibility: hidden;
+
+    &:only-child,
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    p {
+        line-height: 1.25;
+        margin: 0;
+    }
+
+    button {
+        @include absolute-center;
+
+        background: none;
+        border: 0;
+        color: $white;
+        height: 20px;
+        left: auto;
+        padding: 0;
+        position: absolute;
+        right: 10px;
+        top: 0;
+        width: 20px;
+    }
+
+    .icon {
+        display: block;
+        font-size: 2em;
+    }
+}
