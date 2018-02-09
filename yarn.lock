@@ -190,6 +190,10 @@
   dependencies:
     "@types/jasmine" "*"
 
+"@types/jquery@^2.0.32":
+  version "2.0.48"
+  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-2.0.48.tgz#3e90d8cde2d29015e5583017f7830cb3975b2eef"
+
 "@types/node@^6.0.46", "@types/node@~6.0.60":
   version "6.0.96"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.96.tgz#7bf0bf40d6ce51e93762cc47d010c8cc5ebb2179"
@@ -1874,6 +1878,13 @@ detective@^4.0.0:
   dependencies:
     acorn "^5.2.1"
     defined "^1.0.0"
+
+devbridge-autocomplete@^1.4.7:
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/devbridge-autocomplete/-/devbridge-autocomplete-1.4.7.tgz#de003a1d3ceb2342f4a98bc64ef19db5fbff83f9"
+  dependencies:
+    "@types/jquery" "^2.0.32"
+    jquery ">=1.7"
 
 di@^0.0.1:
   version "0.0.1"
@@ -3624,6 +3635,10 @@ jasmine@^2.5.3:
 jasminewd2@^2.1.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/jasminewd2/-/jasminewd2-2.2.0.tgz#e37cf0b17f199cce23bea71b2039395246b4ec4e"
+
+jquery@>=1.7:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
 
 js-base64@^2.1.8, js-base64@^2.1.9:
   version "2.4.3"

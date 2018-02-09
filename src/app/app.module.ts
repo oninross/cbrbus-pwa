@@ -16,6 +16,10 @@ import { NearbyComponent } from './nearby/nearby.component';
 import { DomService } from './__shared/dom-service';
 import { ToasterComponent } from './toaster/toaster.component';
 import { GlobalVariable } from './__shared/globals';
+import { CardBusComponent } from './card-bus/card-bus.component';
+import { CardHeaderComponent } from './card-header/card-header.component';
+import { BusstopComponent } from './busstop/busstop.component';
+import { Helpers } from './__shared/helpers';
 
 @NgModule({
     declarations: [
@@ -28,14 +32,21 @@ import { GlobalVariable } from './__shared/globals';
         AccordionComponent,
         LoaderComponent,
         NearbyComponent,
-        ToasterComponent
+        ToasterComponent,
+        CardBusComponent,
+        CardHeaderComponent,
+        BusstopComponent
     ],
     imports: [
         BrowserModule,
         AppRoutingModule,
         BrowserAnimationsModule
     ],
-    providers: [DomService, GlobalVariable],
+    providers: [
+        DomService,
+        GlobalVariable,
+        Helpers
+    ],
     bootstrap: [AppComponent],
     entryComponents: [ToasterComponent]
 })

@@ -1,3 +1,29 @@
-<p>
-  search works!
-</p>
+<app-loader></app-loader>
+
+<section class="container search">
+    <div class="wrap">
+        <div class="col-12 input--wrapper">
+            <input type="text" placeholder="Search by bus stop name or number" data-hint="3000" class="floating-input" />
+            <button type="button" class="btn js-clear">
+                <span class="sr-only">clear</span>
+                <i class="icon icon-cross"></i>
+            </button>
+        </div>
+
+        <div class="col-6">
+            <div class="sort-toggle">
+                <input id="sort-toggle" type="checkbox" name="sort-toggle" class="js-toggle-sort" />
+                <label for="sort-toggle" class="checkbox">Sort by time</label>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <button type="button" class="btn-refresh js-refresh">
+                <span class="sr-only">Refresh</span>
+                <i class="icon icon-refresh"></i>
+            </button>
+        </div>
+
+        <div class="cards-wrapper"></div>
+    </div>
+</section>

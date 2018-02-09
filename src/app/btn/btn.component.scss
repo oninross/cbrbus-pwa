@@ -32,3 +32,25 @@
     text-align: center;
     width: 100%;
 }
+
+.btn-refresh {
+    background-color: $green;
+    border: 0;
+    color: $white;
+    font-size: 3em;
+    overflow: hidden;
+    opacity: 0;
+    padding: 0;
+    position: relative;
+    top: 150px;
+    visibility: hidden;
+    width: 100%;
+    z-index: 100;
+
+    .icon {
+        @include inline-block;
+
+        position: relative;
+        top: 3px;
+    }
+}

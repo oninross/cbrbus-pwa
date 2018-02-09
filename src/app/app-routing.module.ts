@@ -4,6 +4,7 @@ import { SearchComponent } from './search/search.component';
 import { ShareComponent } from './share/share.component';
 import { AboutComponent } from './about/about.component';
 import { NearbyComponent } from './nearby/nearby.component';
+import { BusstopComponent } from './busstop/busstop.component';
 
 
 const routes: Routes = [
@@ -22,6 +23,10 @@ const routes: Routes = [
     {
         path: 'share',
         component: ShareComponent
+    },
+    {
+        path: 'busstop',
+        component: BusstopComponent
     },
     {
         path: '',

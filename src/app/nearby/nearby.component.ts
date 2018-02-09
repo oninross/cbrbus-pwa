@@ -2,10 +2,10 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { GlobalVariable } from '../__shared/globals';
 
 import { TweenMax, Expo } from 'gsap/src/uncompressed/TweenMax';
-import { Location } from '@angular/common';
 import { DomService } from '../__shared/dom-service';
 import { ToasterComponent } from '../toaster/toaster.component';
 import { slideInOutAnimation } from '../__shared/animations';
+import { Router } from '@angular/router';
 
 declare const google: any;
 declare const MarkerClusterer: any;
@@ -35,7 +35,7 @@ export class NearbyComponent implements OnInit {
 
     constructor(
         public globalVariable: GlobalVariable,
-        private location: Location,
+        private router: Router,
         private domService: DomService
     ) {
         const self = this;
@@ -183,7 +183,12 @@ export class NearbyComponent implements OnInit {
 
                 let busStopName = self.globalVariable.SERVICES.map(function(v, i) {
                     if (v.data == label) {
-                        self.location.go('/busstop/?busStopId=' + label + '&busStopName=' + v.name);
+                        self.router.navigate(['/busstop/'], {
+                            queryParams: {
+                                busStopId: label,
+                                busStopName: v.name
+                            }
+                        });
                     }
                 });
             });
