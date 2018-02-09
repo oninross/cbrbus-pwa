@@ -46,7 +46,30 @@ export class NearbyComponent implements OnInit {
         };
 
         if (navigator.geolocation) {
-            // toaster('Geolocation is not supported or disabled by this browser.');
+            navigator.geolocation.getCurrentPosition(function (position) {
+                self.mapSettings = {
+                    lat: position.coords.latitude,
+                    long: position.coords.longitude,
+                    zoom: self.zoomLevel,
+                    marker: self.globalVariable.MARKER_URL
+                }
+
+                self.loadGoogleMap();
+            });
+
+            setInterval(function () {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    self.mapSettings = {
+                        lat: position.coords.latitude,
+                        long: position.coords.longitude,
+                        zoom: self.zoomLevel,
+                        marker: self.globalVariable.MARKER_URL
+                    };
+                });
+
+                self.updateMarker();
+            }, 5000);
+        } else {
             this.domService.appendComponentToBody(ToasterComponent, 'Geolocation is not supported or disabled by this browser.');
 
             this.isGeolocationEnabled = false;
@@ -59,41 +82,6 @@ export class NearbyComponent implements OnInit {
             };
 
             this.loadGoogleMap();
-
-            // navigator.geolocation.getCurrentPosition(function (position) {
-            //     self.mapSettings = {
-            //         lat: position.coords.latitude,
-            //         long: position.coords.longitude,
-            //         zoom: self.zoomLevel,
-            //         marker: self.globalVariable.MARKER_URL
-            //     }
-
-            //     self.loadGoogleMap();
-            // });
-
-            // setInterval(function () {
-            //     navigator.geolocation.getCurrentPosition(function (position) {
-            //         self.mapSettings = {
-            //             lat: position.coords.latitude,
-            //             long: position.coords.longitude,
-            //             zoom: self.zoomLevel,
-            //             marker: self.globalVariable.MARKER_URL
-            //         };
-            //     });
-
-            //     self.updateMarker();
-            // }, 5000);
-        } else {
-            // this.isGeolocationEnabled = false;
-
-            // this.mapSettings = {
-            //     'lat': -35.2823083,
-            //     'long': 149.1285561,
-            //     'zoom': 15,
-            //     'marker': self.globalVariable.MARKER_URL
-            // };
-
-            // this.loadGoogleMap();
         }
 
         const event = new Event('resize'),

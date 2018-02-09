@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 import { TweenMax, Expo } from 'gsap/src/uncompressed/TweenMax';
+import { DomService } from '../__shared/dom-service';
 
 @Component({
     selector: 'app-toaster',
@@ -12,15 +13,15 @@ export class ToasterComponent {
 
     index: number = 0;
 
-    constructor() {
-
-    }
+    constructor(
+        private domService: DomService
+    ) { }
 
     ngOnInit() {
         const self = this;
 
         setTimeout(() => {
-            let toaster = document.getElementsByClassName('toaster' + (this.index++))[0];
+            let toaster = document.getElementsByClassName('toaster' + this.index)[0];
 
             TweenMax.to(toaster, 0.75, {
                 scale: 1,
@@ -34,9 +35,7 @@ export class ToasterComponent {
                 ease: Expo.easeOut,
                 delay: 5,
                 onComplete: function () {
-                    // self.domService.destroyComponent();
-                    // let thisToaster = document.getElementsByClassName(toaster)[0];
-                    // thisToaster.parentNode.removeChild(thisToaster);
+                    self.domService.destroyComponent();
                 }
             });
         }, 0);

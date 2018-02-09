@@ -15,6 +15,7 @@ import { LoaderComponent } from './loader/loader.component';
 import { NearbyComponent } from './nearby/nearby.component';
 import { DomService } from './__shared/dom-service';
 import { ToasterComponent } from './toaster/toaster.component';
+import { GlobalVariable } from './__shared/globals';
 
 @NgModule({
     declarations: [
@@ -34,7 +35,7 @@ import { ToasterComponent } from './toaster/toaster.component';
         AppRoutingModule,
         BrowserAnimationsModule
     ],
-    providers: [DomService],
+    providers: [DomService, GlobalVariable],
     bootstrap: [AppComponent],
     entryComponents: [ToasterComponent]
 })

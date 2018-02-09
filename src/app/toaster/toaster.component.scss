@@ -32,11 +32,6 @@
     padding-right: 40px;
     visibility: hidden;
 
-    &:only-child,
-    &:last-child {
-        margin-bottom: 0;
-    }
-
     p {
         line-height: 1.25;
         margin: 0;
