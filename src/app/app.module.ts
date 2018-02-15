@@ -23,6 +23,7 @@ import { Helpers } from './__shared/helpers';
 import { CardEmptyComponent } from './card-empty/card-empty.component';
 import { CardComponent } from './card/card.component';
 import { ToggleComponent } from './toggle/toggle.component';
+import { BookmarksComponent } from './bookmarks/bookmarks.component';
 
 @NgModule({
     declarations: [
@@ -41,7 +42,8 @@ import { ToggleComponent } from './toggle/toggle.component';
         CardEmptyComponent,
         BusStopComponent,
         CardComponent,
-        ToggleComponent
+        ToggleComponent,
+        BookmarksComponent
     ],
     imports: [
         BrowserModule,
@@ -51,7 +53,8 @@ import { ToggleComponent } from './toggle/toggle.component';
     providers: [
         DomService,
         GlobalVariable,
-        Helpers
+        Helpers,
+        BookmarksComponent
     ],
     bootstrap: [AppComponent],
     entryComponents: [

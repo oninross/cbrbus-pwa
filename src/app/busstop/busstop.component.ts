@@ -9,6 +9,7 @@ import { ToasterComponent } from '../toaster/toaster.component';
 import { parseString } from 'xml2js/lib/xml2js';
 import { CardEmptyComponent } from '../card-empty/card-empty.component';
 import { CardHeaderComponent } from '../card-header/card-header.component';
+import { BookmarksComponent } from '../bookmarks/bookmarks.component';
 @Component({
     selector: 'app-busstop',
     templateUrl: './busstop.component.html',
@@ -27,7 +28,8 @@ export class BusStopComponent implements OnInit {
     constructor(
         private globalVariable: GlobalVariable,
         private helpers: Helpers,
-        private domService: DomService
+        private domService: DomService,
+        private bookmarks: BookmarksComponent
     ) { }
 
     ngOnInit() {
@@ -117,8 +119,6 @@ export class BusStopComponent implements OnInit {
             cardMarkup = '',
             vehicleFeatureRef = '';
 
-        console.log(json);
-        console.log(stopMonitoringDelivery)
         if (stopMonitoringDelivery == undefined) {
             self.domService.appendComponentToBody(CardEmptyComponent, {
                 isToaster: false
@@ -126,13 +126,12 @@ export class BusStopComponent implements OnInit {
         } else {
             // Display Bus Stop Name if Available
             if (self.busStopName !== undefined) {
-                // isBookmarked: self.bookmark.checkBookmark(self.busStopId) == true ? 'active' : ''
 
                 self.domService.appendComponentToBody(CardHeaderComponent, {
                     isToaster: false,
                     text: self.busStopName,
                     id: self.busStopId,
-                    isBookmarked: true
+                    isBookmarked: self.bookmarks.checkBookmark(self.busStopId) == true ? 'active' : ''
                 });
             }
         }
@@ -160,10 +159,10 @@ export class BusStopComponent implements OnInit {
             delay: 0.2
         }, 0.1);
 
-        // document.getElementsByClassName('card-wrapper')[0].addEventListener('click', function () {
-
-        // });
-    };
+        document.getElementsByClassName('card__header')[0].addEventListener('click', function (e) {
+            self.bookmarks.setBookmark(this.dataset.id);
+        });
+    }
 
     convertXML(xml) {
         const self = this;

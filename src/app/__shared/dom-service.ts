@@ -42,6 +42,7 @@ export class DomService {
 
         if (settings.isBookmarked != undefined) {
             (<any>this.componentRef.instance).isBookmarked = settings.isBookmarked;
+            (<any>this.componentRef.instance).index = settings.id;
         }
 
         // Attach component to the appRef so that it's inside the ng component tree
