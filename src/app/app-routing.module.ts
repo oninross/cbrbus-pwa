@@ -4,7 +4,7 @@ import { SearchComponent } from './search/search.component';
 import { ShareComponent } from './share/share.component';
 import { AboutComponent } from './about/about.component';
 import { NearbyComponent } from './nearby/nearby.component';
-import { BusstopComponent } from './busstop/busstop.component';
+import { BusStopComponent } from './busstop/busstop.component';
 
 
 const routes: Routes = [
@@ -26,7 +26,7 @@ const routes: Routes = [
     },
     {
         path: 'busstop',
-        component: BusstopComponent
+        component: BusStopComponent
     },
     {
         path: '',

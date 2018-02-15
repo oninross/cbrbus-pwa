@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 
 import { GlobalVariable } from './globals';
+import { ToasterComponent } from '../toaster/toaster.component';
 
 @Injectable()
 export class DomService {
@@ -23,16 +24,25 @@ export class DomService {
         private globalVariable: GlobalVariable
     ) { }
 
-    appendComponentToBody(component: any, text: String = 'Dom Service Text') {
+    appendComponentToBody(component: any, settings: any) {
         // Create a component reference from the component
         this.componentRef = this.componentFactoryResolver
             .resolveComponentFactory(component)
             .create(this.injector);
 
-        this.globalVariable.toasterIndex += 1;
 
-        (<any>this.componentRef.instance).message = text;
-        (<any>this.componentRef.instance).index = this.globalVariable.toasterIndex;
+        if (settings.isToaster) {
+            this.globalVariable.toasterIndex += 1;
+            (<any>this.componentRef.instance).index = this.globalVariable.toasterIndex;
+        }
+
+        if (settings.text !== '') {
+            (<any>this.componentRef.instance).text = settings.text;
+        }
+
+        if (settings.isBookmarked != undefined) {
+            (<any>this.componentRef.instance).isBookmarked = settings.isBookmarked;
+        }
 
         // Attach component to the appRef so that it's inside the ng component tree
         this.appRef.attachView(this.componentRef.hostView);
@@ -42,7 +52,11 @@ export class DomService {
             .rootNodes[0] as HTMLElement;
 
         // Append DOM element to the body
-        document.getElementsByClassName('toaster-wrap')[0].appendChild(domElem);
+        if (settings.isToaster) {
+            document.getElementsByClassName('toaster-wrap')[0].appendChild(domElem);
+        } else {
+            document.getElementsByClassName('cards-wrapper')[0].appendChild(domElem);
+        }
     }
 
     destroyComponent() {

@@ -18,8 +18,11 @@ import { ToasterComponent } from './toaster/toaster.component';
 import { GlobalVariable } from './__shared/globals';
 import { CardBusComponent } from './card-bus/card-bus.component';
 import { CardHeaderComponent } from './card-header/card-header.component';
-import { BusstopComponent } from './busstop/busstop.component';
+import { BusStopComponent } from './busstop/busstop.component';
 import { Helpers } from './__shared/helpers';
+import { CardEmptyComponent } from './card-empty/card-empty.component';
+import { CardComponent } from './card/card.component';
+import { ToggleComponent } from './toggle/toggle.component';
 
 @NgModule({
     declarations: [
@@ -35,7 +38,10 @@ import { Helpers } from './__shared/helpers';
         ToasterComponent,
         CardBusComponent,
         CardHeaderComponent,
-        BusstopComponent
+        CardEmptyComponent,
+        BusStopComponent,
+        CardComponent,
+        ToggleComponent
     ],
     imports: [
         BrowserModule,
@@ -48,6 +54,10 @@ import { Helpers } from './__shared/helpers';
         Helpers
     ],
     bootstrap: [AppComponent],
-    entryComponents: [ToasterComponent]
+    entryComponents: [
+        ToasterComponent,
+        CardEmptyComponent,
+        CardHeaderComponent
+    ]
 })
 export class AppModule { }

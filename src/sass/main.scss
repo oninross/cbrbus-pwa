@@ -148,6 +148,27 @@
     z-index: 10;
 }
 
+.timetable,
+.search,
+.bookmark {
+    margin-bottom: 115px;
+    padding-top: $gutterTablet;
+
+    p {
+        margin: 0;
+    }
+}
+
+.timetable {
+    margin-bottom: 100px;
+
+    .col-6 {
+        float: left;
+        width: 50%;
+    }
+}
+
+
 .sort-toggle {
     margin-top: 13px;
     opacity: 0;

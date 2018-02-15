@@ -1,3 +1,8 @@
-<p>
-  card-header works!
-</p>
+<button data-id="{{ busStopId }}" class="card card__header js-bookmark">
+    <div class="card__wrapper">
+        <div class="wrap">
+            <h2>{{ text }}</h2>
+            <i class="icon icon-star" [class.active]=isBookmarked></i>
+        </div>
+    </div>
+</button>

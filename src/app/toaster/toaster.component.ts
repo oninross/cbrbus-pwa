@@ -40,7 +40,4 @@ export class ToasterComponent {
             });
         }, 0);
     }
-
-    toasty() {
-    }
 }

@@ -6,6 +6,7 @@ import { DomService } from '../__shared/dom-service';
 import { ToasterComponent } from '../toaster/toaster.component';
 import { slideInOutAnimation } from '../__shared/animations';
 import { Router } from '@angular/router';
+import { Helpers } from '../__shared/helpers';
 
 declare const google: any;
 declare const MarkerClusterer: any;
@@ -21,7 +22,7 @@ class MapSettings {
     selector: 'app-nearby',
     templateUrl: './nearby.component.html',
     styleUrls: ['./nearby.component.scss'],
-    providers: [GlobalVariable],
+    providers: [GlobalVariable, Helpers],
     animations: [slideInOutAnimation],
     host: { '[@slideInOutAnimation]': '' }
 })
@@ -35,6 +36,7 @@ export class NearbyComponent implements OnInit {
 
     constructor(
         public globalVariable: GlobalVariable,
+        public helpers: Helpers,
         private router: Router,
         private domService: DomService
     ) {
@@ -70,7 +72,10 @@ export class NearbyComponent implements OnInit {
                 self.updateMarker();
             }, 5000);
         } else {
-            this.domService.appendComponentToBody(ToasterComponent, 'Geolocation is not supported or disabled by this browser.');
+            this.domService.appendComponentToBody(ToasterComponent, {
+                isToaster: true,
+                text: 'Geolocation is not supported or disabled by this browser.'
+            });
 
             this.isGeolocationEnabled = false;
 
@@ -85,9 +90,9 @@ export class NearbyComponent implements OnInit {
         }
 
         const event = new Event('resize'),
-            header = <HTMLElement> document.getElementsByClassName('header')[0];
+            header = <HTMLElement>document.getElementsByClassName('header')[0];
 
-        window.addEventListener('resize', this.globalVariable.debounce(function () {
+        window.addEventListener('resize', this.helpers.debounce(function () {
             document.getElementById('map').style.height = window.outerHeight - header.offsetHeight + 'px';
         }, 250, false));
 
@@ -181,7 +186,7 @@ export class NearbyComponent implements OnInit {
             google.maps.event.addListener(busMarker, 'click', function (e) {
                 label = this.label;
 
-                let busStopName = self.globalVariable.SERVICES.map(function(v, i) {
+                let busStopName = self.globalVariable.SERVICES.map(function (v, i) {
                     if (v.data == label) {
                         self.router.navigate(['/busstop/'], {
                             queryParams: {
@@ -199,7 +204,7 @@ export class NearbyComponent implements OnInit {
         this.initClusterMarker();
 
         if (this.isGeolocationEnabled) {
-            let myLocationBtn = <HTMLElement> document.getElementsByClassName('widget-mylocation-button')[0];
+            let myLocationBtn = <HTMLElement>document.getElementsByClassName('widget-mylocation-button')[0];
             myLocationBtn.style.display = 'block';
 
             myLocationBtn.addEventListener('click', function (e) {
