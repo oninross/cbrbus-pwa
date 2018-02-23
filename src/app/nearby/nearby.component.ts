@@ -142,10 +142,10 @@ export class NearbyComponent implements OnInit {
                 mapTypeControl: false
             }),
             stopIcon = {
-                url: '/assets/cbrbus/images/stopMarker.svg',
-                size: new google.maps.Size(40, 48),
-                origin: new google.maps.Point(0, -10),
-                anchor: new google.maps.Point(20, 48)
+                url: '/assets/cbrbus/images/stopMarker.png',
+                size: new google.maps.Size(32, 38),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(16, 38)
             };
 
         TweenMax.to(loader, 0.75, {
@@ -171,8 +171,8 @@ export class NearbyComponent implements OnInit {
             let v = SERVICES[i];
 
             busMarker = new google.maps.Marker({
+                id: v.data.toString(),
                 icon: stopIcon,
-                label: v.data.toString(),
                 position: {
                     lat: v.lat,
                     lng: v.long
@@ -182,15 +182,15 @@ export class NearbyComponent implements OnInit {
 
             self.markers.push(busMarker);
 
-            let label = '';
+            let id = '';
             google.maps.event.addListener(busMarker, 'click', function (e) {
-                label = this.label;
+                id = this.id;
 
                 let busStopName = self.globalVariable.SERVICES.map(function (v, i) {
-                    if (v.data == label) {
+                    if (v.data == id) {
                         self.router.navigate(['/busstop/'], {
                             queryParams: {
-                                busStopId: label,
+                                busStopId: id,
                                 busStopName: v.name
                             }
                         });
