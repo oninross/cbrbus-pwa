@@ -20,7 +20,7 @@ export class BookmarksComponent implements OnInit {
     tmpArrInd: number = 0;
     busStopName: string = '';
     strArr: string = '';
-    services;
+    services: Array<any> = [];
 
     constructor(
         private globalViable: GlobalVariable,
@@ -37,7 +37,7 @@ export class BookmarksComponent implements OnInit {
             self.tmpArr = JSON.parse(localStorage.bookmarks);
 
             for (let i = 0, l = self.tmpArr.length; i < l; i++) {
-                let busStopId;
+                let busStopId = 0;
 
                 // iterate over each element in the array
                 for (let j = 0, m = self.services.length; j < m; j++) {

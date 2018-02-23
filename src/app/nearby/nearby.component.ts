@@ -206,16 +206,14 @@ export class NearbyComponent implements OnInit {
         if (this.isGeolocationEnabled) {
             let myLocationBtn = <HTMLElement>document.getElementsByClassName('widget-mylocation-button')[0];
             myLocationBtn.style.display = 'block';
-
-            myLocationBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                map.setCenter({
-                    lat: self.mapSettings.lat,
-                    lng: self.mapSettings.long
-                });
-            });
         }
+    }
+
+    centerMap() {
+        this.map.setCenter({
+            lat: this.mapSettings.lat,
+            lng: this.mapSettings.long
+        });
     }
 
     updateMarker(): void {
