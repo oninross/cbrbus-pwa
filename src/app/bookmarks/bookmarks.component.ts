@@ -1,5 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 
+import { GlobalVariable } from '../__shared/globals';
+import { DomService } from '../__shared/dom-service';
+
+import { TweenMax, Expo } from 'gsap/src/uncompressed/TweenMax';
+import { ToasterComponent } from '../toaster/toaster.component';
+import { CardHeaderComponent } from '../card-header/card-header.component';
+import { Router } from '@angular/router';
+
 @Component({
     selector: 'app-bookmarks',
     templateUrl: './bookmarks.component.html',
@@ -8,15 +16,76 @@ import { Component, OnInit } from '@angular/core';
 export class BookmarksComponent implements OnInit {
 
     obj: object = {};
-    services: object = {};
     tmpArr: Array<any> = [];
     tmpArrInd: number = 0;
     busStopName: string = '';
     strArr: string = '';
+    services;
 
-    constructor() { }
+    constructor(
+        private globalViable: GlobalVariable,
+        private domService: DomService,
+        private router: Router
+    ) { }
 
     ngOnInit() {
+        const self = this;
+
+        self.services = self.globalViable.SERVICES;
+
+        if (JSON.parse(localStorage.bookmarks).length) {
+            self.tmpArr = JSON.parse(localStorage.bookmarks);
+
+            for (let i = 0, l = self.tmpArr.length; i < l; i++) {
+                let busStopId;
+
+                // iterate over each element in the array
+                for (let j = 0, m = self.services.length; j < m; j++) {
+                    busStopId = self.tmpArr[i];
+
+                    // look for the entry with a matching `code` value
+                    if (self.services[j].data == busStopId) {
+                        // we found it
+                        // obj[i].name is the matched result
+                        self.busStopName = self.services[j].name;
+                    }
+                }
+
+                // cardMarkup += cardBookmark(self.obj);
+                self.domService.appendComponentToBody(CardHeaderComponent, {
+                    isToaster: false,
+                    text: self.busStopName,
+                    id: busStopId,
+                    isBookmarked: self.checkBookmark(busStopId) == true ? 'active' : ''
+                });
+            }
+
+            TweenMax.staggerTo('.card', 0.75, {
+                opacity: 1,
+                top: 1,
+                ease: Expo.easeOut
+            }, 0.1);
+
+            let jsBookmark = document.getElementsByClassName('js-bookmark');
+
+            for (let i = 0, l = jsBookmark.length; i < l; i++) {
+                jsBookmark[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    self.router.navigate(['/busstop/'], {
+                        queryParams: {
+                            busStopId: this.dataset.id,
+                            busStopName: this.querySelector('h2').textContent
+                        }
+                    });
+                });
+            }
+        } else {
+            this.domService.appendComponentToBody(ToasterComponent, {
+                isToaster: true,
+                text: 'You have not bookmaked any stops yet.'
+            });
+        }
     }
 
     checkBookmark(id): boolean {
@@ -25,7 +94,7 @@ export class BookmarksComponent implements OnInit {
         if (localStorage.bookmarks) {
             self.tmpArr = JSON.parse(localStorage.bookmarks);
 
-            if (self.tmpArr.indexOf(Number(id)) > -1) {
+            if (self.tmpArr.includes(id)) {
                 return true;
             } else {
                 return false;

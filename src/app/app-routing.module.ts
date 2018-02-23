@@ -5,6 +5,7 @@ import { ShareComponent } from './share/share.component';
 import { AboutComponent } from './about/about.component';
 import { NearbyComponent } from './nearby/nearby.component';
 import { BusStopComponent } from './busstop/busstop.component';
+import { BookmarksComponent } from './bookmarks/bookmarks.component';
 
 
 const routes: Routes = [
@@ -15,6 +16,10 @@ const routes: Routes = [
     {
         path: 'nearby',
         component: NearbyComponent
+    },
+    {
+        path: 'bookmarks',
+        component: BookmarksComponent
     },
     {
         path: 'about',

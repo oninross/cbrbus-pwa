@@ -11,9 +11,9 @@
 
     float: left;
     margin-bottom: 30px;
-    // opacity: 0;
+    opacity: 0;
     position: relative;
-    // top: 150px;
+    top: 150px;
     width: 50%;
     z-index: 5;
 
@@ -38,9 +38,9 @@
         top: -150px;
     }
 
-    &:last-child {
-        margin-bottom: 90px;
-    }
+    // &:last-child {
+    //     margin-bottom: 90px;
+    // }
 
     &__header {
         background-color: transparent;
