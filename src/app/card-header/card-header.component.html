@@ -1,8 +1,8 @@
-<button attr.data-id="{{ index }}" class="card card__header js-bookmark">
+<button attr.data-id="{{ busStopId }}" class="card card__header">
     <div class="card__wrapper">
         <div class="wrap">
-            <h2>{{ text }}</h2>
-            <i class="icon icon-star" [class.active]=isBookmarked></i>
+            <h2>{{ busStopName }}</h2>
+            <i class="icon icon-star" [class.-active]="isBookmarked"></i>
         </div>
     </div>
 </button>

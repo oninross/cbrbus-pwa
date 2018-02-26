@@ -56,7 +56,7 @@ export class BookmarksComponent implements OnInit {
                     isToaster: false,
                     text: self.busStopName,
                     id: busStopId,
-                    isBookmarked: self.checkBookmark(busStopId) == true ? 'active' : ''
+                    isBookmark: self.checkBookmark(busStopId) == true ? 'active' : ''
                 });
             }
 

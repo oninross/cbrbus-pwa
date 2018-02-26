@@ -1,3 +1,18 @@
-<p>
-  card-bus works!
-</p>
+<div *ngFor="let bus of buses" class="card">
+    <div class="card__wrapper">
+        <div class="wrap">
+            <div class="bus">{{ bus.serviceNum }}</div>
+            <div class="feature">
+                <i *ngFor="let feature of bus.feature" class="icon icon-{{feature}}"></i>
+            </div>
+
+            <div class="eta">
+                <strong *ngIf="bus.estimatedArrival[0] < 0" class="departed">Departed</strong>
+                <strong *ngIf="bus.estimatedArrival[0] == 0" class="due">Due</strong>
+                <strong *ngIf="bus.estimatedArrival[0] == 1" class="arriving">Arriving</strong>
+                <strong *ngIf="bus.estimatedArrival[0] > 1">Arr: {{ bus.estimatedArrival[0] }} mins</strong>
+                <div *ngIf="bus.estimatedArrival[1] > 0" class="next">Nxt: {{ bus.estimatedArrival[1] }} mins</div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -60,7 +60,8 @@ import { BookmarksComponent } from './bookmarks/bookmarks.component';
     entryComponents: [
         ToasterComponent,
         CardEmptyComponent,
-        CardHeaderComponent
+        CardHeaderComponent,
+        CardBusComponent
     ]
 })
 export class AppModule { }

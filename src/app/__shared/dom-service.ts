@@ -31,19 +31,9 @@ export class DomService {
             .create(this.injector);
 
 
-        if (settings.isToaster) {
-            this.globalVariable.toasterIndex += 1;
-            (<any>this.componentRef.instance).index = this.globalVariable.toasterIndex;
-        }
-
-        if (settings.text !== '') {
-            (<any>this.componentRef.instance).text = settings.text;
-        }
-
-        if (settings.isBookmarked != undefined) {
-            (<any>this.componentRef.instance).isBookmarked = settings.isBookmarked;
-            (<any>this.componentRef.instance).index = settings.id;
-        }
+        this.globalVariable.toasterIndex += 1;
+        (<any>this.componentRef.instance).index = this.globalVariable.toasterIndex;
+        (<any>this.componentRef.instance).text = settings.text;
 
         // Attach component to the appRef so that it's inside the ng component tree
         this.appRef.attachView(this.componentRef.hostView);
@@ -53,11 +43,7 @@ export class DomService {
             .rootNodes[0] as HTMLElement;
 
         // Append DOM element to the body
-        if (settings.isToaster) {
-            document.getElementsByClassName('toaster-wrap')[0].appendChild(domElem);
-        } else {
-            document.getElementsByClassName('cards-wrapper')[0].appendChild(domElem);
-        }
+        document.getElementsByClassName('toaster-wrap')[0].appendChild(domElem);
     }
 
     destroyComponent() {

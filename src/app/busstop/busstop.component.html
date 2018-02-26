@@ -13,6 +13,14 @@
                 <i class="icon icon-refresh"></i>
             </button>
         </div>
-        <div class="cards-wrapper"></div>
+        <div class="cards-wrapper">
+            <app-card-header
+                [busStopId]='busStopId'
+                [busStopName]='busStopName'
+                [isBookmarked]='isBookmarked'
+            ></app-card-header>
+
+            <app-card-bus [buses]=buses></app-card-bus>
+        </div>
     </div>
 </section>

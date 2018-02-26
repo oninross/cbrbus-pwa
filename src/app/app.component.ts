@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
     templateUrl: './app.component.html',
     styleUrls: [
         './app.component.scss',
-        './toaster/toaster.component.scss',
+        './toaster/toaster.component.scss'
     ]
 })
 
