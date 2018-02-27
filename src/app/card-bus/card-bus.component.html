@@ -1,4 +1,8 @@
-<div *ngFor="let bus of buses" class="card">
+<div
+    *ngFor="let bus of buses"
+    (click)="showBusPath(bus)"
+    class="card"
+>
     <div class="card__wrapper">
         <div class="wrap">
             <div class="bus">{{ bus.serviceNum }}</div>
@@ -11,7 +15,7 @@
                 <strong *ngIf="bus.estimatedArrival[0] == 0" class="due">Due</strong>
                 <strong *ngIf="bus.estimatedArrival[0] == 1" class="arriving">Arriving</strong>
                 <strong *ngIf="bus.estimatedArrival[0] > 1">Arr: {{ bus.estimatedArrival[0] }} mins</strong>
-                <div *ngIf="bus.estimatedArrival[1] > 0" class="next">Nxt: {{ bus.estimatedArrival[1] }} mins</div>
+                <div *ngIf="bus.estimatedArrival[1] > 0 && bus.estimatedArrival[0] != bus.estimatedArrival[1]" class="next">Nxt: {{ bus.estimatedArrival[1] }} mins</div>
             </div>
         </div>
     </div>

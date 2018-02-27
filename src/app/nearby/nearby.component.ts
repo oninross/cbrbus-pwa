@@ -1,22 +1,17 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { GlobalVariable } from '../__shared/globals';
+import { Router } from '@angular/router';
 
 import { TweenMax, Expo } from 'gsap/src/uncompressed/TweenMax';
-import { DomService } from '../__shared/dom-service';
 import { ToasterComponent } from '../toaster/toaster.component';
-import { slideInOutAnimation } from '../__shared/animations';
-import { Router } from '@angular/router';
+
+import { GlobalVariable } from '../__shared/globals';
 import { Helpers } from '../__shared/helpers';
+import { DomService } from '../__shared/dom-service';
+import { slideInOutAnimation } from '../__shared/animations';
+import '../__shared/mapSettings';
 
 declare const google: any;
 declare const MarkerClusterer: any;
-
-class MapSettings {
-    lat: Number;
-    long: Number;
-    zoom: Number;
-    marker: String;
-}
 
 @Component({
     selector: 'app-nearby',
@@ -35,8 +30,8 @@ export class NearbyComponent implements OnInit {
     currentMarker = null;
 
     constructor(
-        public globalVariable: GlobalVariable,
-        public helpers: Helpers,
+        private globalVariable: GlobalVariable,
+        private helpers: Helpers,
         private router: Router,
         private domService: DomService
     ) {
@@ -73,7 +68,6 @@ export class NearbyComponent implements OnInit {
             }, 5000);
         } else {
             this.domService.appendComponentToBody(ToasterComponent, {
-                isToaster: true,
                 text: 'Geolocation is not supported or disabled by this browser.'
             });
 
@@ -101,7 +95,7 @@ export class NearbyComponent implements OnInit {
 
     ngOnInit() { }
 
-    loadGoogleMap(): void {
+    loadGoogleMap() {
         const script = document.createElement('script'),
             scriptStr = '//maps.googleapis.com/maps/api/js?key=' + this.globalVariable.GMAP_API_KEY + '&callback=II.googleMap.initMap',
             clusterScript = document.createElement('script'),
@@ -120,7 +114,7 @@ export class NearbyComponent implements OnInit {
         document.body.appendChild(script);
     }
 
-    initMap(): void {
+    initMap() {
         let self = this,
             center: Object = {
                 lat: this.mapSettings.lat,
@@ -216,7 +210,7 @@ export class NearbyComponent implements OnInit {
         });
     }
 
-    updateMarker(): void {
+    updateMarker() {
         const self = this;
 
         this.currentMarker.setPosition({
@@ -225,7 +219,7 @@ export class NearbyComponent implements OnInit {
         });
     }
 
-    initClusterMarker(): void {
+    initClusterMarker() {
         const self = this;
 
         if (typeof MarkerClusterer == "undefined") {

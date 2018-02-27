@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-card-bus',
@@ -10,11 +11,22 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class CardBusComponent implements OnInit {
 
-    @Input() buses:Array<any>;
+    @Input() buses: Array<any>;
 
-    constructor() { }
+    constructor(
+        private router: Router
+    ) { }
 
     ngOnInit() {
     }
 
+    showBusPath(event:any) {
+        this.router.navigate(['/trackmybus/'], {
+            queryParams: {
+                busStopId: event.busStopId,
+                busId: event.serviceNum,
+                vehicleRef: event.vehicleRefNum[0][0]
+            }
+        });
+    }
 }

@@ -52,12 +52,11 @@ export class BookmarksComponent implements OnInit {
                 }
 
                 // cardMarkup += cardBookmark(self.obj);
-                self.domService.appendComponentToBody(CardHeaderComponent, {
-                    isToaster: false,
-                    text: self.busStopName,
-                    id: busStopId,
-                    isBookmark: self.checkBookmark(busStopId) == true ? 'active' : ''
-                });
+                // self.domService.appendComponentToBody(CardHeaderComponent, {
+                //     text: self.busStopName,
+                //     id: busStopId,
+                //     isBookmark: self.checkBookmark(busStopId) == true ? 'active' : ''
+                // });
             }
 
             TweenMax.staggerTo('.card', 0.75, {
@@ -69,7 +68,7 @@ export class BookmarksComponent implements OnInit {
             let jsBookmark = document.getElementsByClassName('js-bookmark');
 
             for (let i = 0, l = jsBookmark.length; i < l; i++) {
-                jsBookmark[i].addEventListener('click', function(e) {
+                jsBookmark[i].addEventListener('click', function (e) {
                     e.preventDefault();
 
                     self.router.navigate(['/busstop/'], {
@@ -82,7 +81,6 @@ export class BookmarksComponent implements OnInit {
             }
         } else {
             this.domService.appendComponentToBody(ToasterComponent, {
-                isToaster: true,
                 text: 'You have not bookmaked any stops yet.'
             });
         }

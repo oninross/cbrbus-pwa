@@ -10,7 +10,6 @@ import { parseString } from 'xml2js/lib/xml2js';
 import { CardEmptyComponent } from '../card-empty/card-empty.component';
 import { CardHeaderComponent } from '../card-header/card-header.component';
 import { BookmarksComponent } from '../bookmarks/bookmarks.component';
-import { CardBusComponent } from '../card-bus/card-bus.component';
 
 @Component({
     selector: 'app-busstop',
@@ -87,7 +86,6 @@ export class BusStopComponent implements OnInit {
         request.onerror = function () {
             console.log(request.responseText);
             self.domService.appendComponentToBody(ToasterComponent, {
-                isToaster: true,
                 text: request.responseText
             });
         };
@@ -99,12 +97,10 @@ export class BusStopComponent implements OnInit {
         const self = this,
             serviceDelivery = json.Siri.ServiceDelivery[0],
             status = (serviceDelivery.Status[0] === 'true'),
-            cardHeader = new CardHeaderComponent(),
-            cardBus = new CardBusComponent();
+            cardHeader = new CardHeaderComponent();
 
         if (!status) {
             self.domService.appendComponentToBody(ToasterComponent, {
-                isToaster: true,
                 text: 'Whoops! Something went wrong!'
             });
             return false;
@@ -128,9 +124,7 @@ export class BusStopComponent implements OnInit {
             arr: Date;
 
         if (stopMonitoringDelivery == undefined) {
-            self.domService.appendComponentToBody(CardEmptyComponent, {
-                isToaster: false
-            });
+            self.domService.appendComponentToBody(CardEmptyComponent, {});
         } else {
             // Display Bus Stop Name if Available
             if (self.busStopName !== undefined) {
@@ -243,7 +237,6 @@ export class BusStopComponent implements OnInit {
             self.buses = busArr.slice(0);
         }
 
-        console.log(self.buses);
         setTimeout(() => {
             TweenMax.to('.btn-refresh', 0.75, {
                 autoAlpha: 1,

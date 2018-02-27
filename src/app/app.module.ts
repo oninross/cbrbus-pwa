@@ -24,6 +24,7 @@ import { CardEmptyComponent } from './card-empty/card-empty.component';
 import { CardComponent } from './card/card.component';
 import { ToggleComponent } from './toggle/toggle.component';
 import { BookmarksComponent } from './bookmarks/bookmarks.component';
+import { TrackMyBusComponent } from './track-my-bus/track-my-bus.component';
 
 @NgModule({
     declarations: [
@@ -43,7 +44,8 @@ import { BookmarksComponent } from './bookmarks/bookmarks.component';
         BusStopComponent,
         CardComponent,
         ToggleComponent,
-        BookmarksComponent
+        BookmarksComponent,
+        TrackMyBusComponent
     ],
     imports: [
         BrowserModule,

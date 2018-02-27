@@ -6,6 +6,7 @@ import { AboutComponent } from './about/about.component';
 import { NearbyComponent } from './nearby/nearby.component';
 import { BusStopComponent } from './busstop/busstop.component';
 import { BookmarksComponent } from './bookmarks/bookmarks.component';
+import { TrackMyBusComponent } from './track-my-bus/track-my-bus.component';
 
 
 const routes: Routes = [
@@ -32,6 +33,10 @@ const routes: Routes = [
     {
         path: 'busstop',
         component: BusStopComponent
+    },
+    {
+        path: 'trackmybus',
+        component: TrackMyBusComponent
     },
     {
         path: '',
