@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { BookmarksComponent } from '../bookmarks/bookmarks.component';
 
 @Component({
     selector: 'app-card-header',
@@ -13,6 +14,7 @@ export class CardHeaderComponent implements OnInit {
     @Input() busStopId: number;
     @Input() busStopName: string;
     @Input() isBookmarked: string;
+    @Input() bookmarkArr: Array<any>;
 
     constructor() { }
 
@@ -23,5 +25,9 @@ export class CardHeaderComponent implements OnInit {
         this.busStopId = busStopId;
         this.busStopName = busStopName;
         this.isBookmarked = isBookmarked;
+    }
+
+    toggleBookmark(id):void {
+        // this.bookmarks.setBookmark(id);
     }
 }

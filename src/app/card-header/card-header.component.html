@@ -1,8 +1,14 @@
-<button attr.data-id="{{ busStopId }}" class="card card__header">
+<button
+    *ngFor="let bookmark of bookmarkArr"
+    attr.data-id="{{ bookmark.id }}"
+    (click)="toggleBookmark(bookmark.id)"
+    class="card card__header js-bookmark"
+>
     <div class="card__wrapper">
         <div class="wrap">
-            <h2>{{ busStopName }}</h2>
-            <i class="icon icon-star" [class.-active]="isBookmarked"></i>
+            <h2>{{ bookmark.text }}</h2>
+            <i class="icon icon-star" [class.-active]="bookmark.isBookmark"></i>
         </div>
     </div>
 </button>
+

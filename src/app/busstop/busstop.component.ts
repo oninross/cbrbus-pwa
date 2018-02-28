@@ -24,11 +24,13 @@ import { BookmarksComponent } from '../bookmarks/bookmarks.component';
 export class BusStopComponent implements OnInit {
     @Input() index: number = 0;
     @Input() text: string = '';
-    @Input() buses: Array<any> = [];
+    @Input() busesArr: Array<any> = [];
+    @Input() bookmarkArr: Array<any> = [];
 
     busStopId: number;
     busStopName: string;
     isBookmarked: boolean;
+    isSortByTime: boolean;
 
     constructor(
         private globalVariable: GlobalVariable,
@@ -134,6 +136,7 @@ export class BusStopComponent implements OnInit {
             let monitoredStopVisit = stopMonitoringDelivery[0].MonitoredStopVisit;
             if (monitoredStopVisit.length) {
                 console.log('A')
+
                 for (let i = 0, l = monitoredStopVisit.length; i < l; i++) {
                     isBusPresent = false;
 
@@ -225,16 +228,33 @@ export class BusStopComponent implements OnInit {
 
             }
 
-            for (let i = 0, l = busArr.length; i < l; i++) {
-                if ((busArr[i].estimatedArrival.length > 1) && (busArr[i].estimatedArrival[0] > busArr[i].estimatedArrival[1])) {
-                    [busArr[i].estimatedArrival[0], busArr[i].estimatedArrival[1]] = [busArr[i].estimatedArrival[1], busArr[i].estimatedArrival[0]];
-                    tempArr = busArr[i].vehicleRefNum;
+            // Sort bus timings
+            busArr.forEach(function (v, i) {
+                if ((v.estimatedArrival.length > 1) && (v.estimatedArrival[0] > v.estimatedArrival[1])) {
+                    [v.estimatedArrival[0], v.estimatedArrival[1]] = [v.estimatedArrival[1], v.estimatedArrival[0]];
+                    tempArr = v.vehicleRefNum;
                     [tempArr[0], tempArr[1]] = [tempArr[1], tempArr[0]];
-                    busArr[i].vehicleRefNum = tempArr;
+                    v.vehicleRefNum = tempArr;
                 }
-            }
+            });
 
-            self.buses = busArr.slice(0);
+            let busArrSplice = busArr.slice(0);
+            if (self.isSortByTime) {
+                busArrSplice.sort(function (a, b) {
+                    return a.estimatedArrival[0] - b.estimatedArrival[0];
+                });
+            } else {
+                busArrSplice.sort(function (a, b) {
+                    return a.serviceNum - b.serviceNum;
+                });
+            }
+            self.bookmarkArr.push({
+                text: self.busStopName,
+                id: self.busStopId,
+                isBookmark: self.bookmarks.checkBookmark(self.busStopId) == true ? 'active' : ''
+            });
+
+            self.busesArr = busArrSplice;
         }
 
         setTimeout(() => {
@@ -258,14 +278,6 @@ export class BusStopComponent implements OnInit {
                 delay: 0.2
             }, 0.1);
         }, 0);
-
-        document.getElementsByClassName('card__header')[0].addEventListener('click', function (e) {
-            self.bookmarks.setBookmark(this.dataset.id);
-        });
-    }
-
-    ngAfterContentInit() {
-
     }
 
     convertXML(xml) {

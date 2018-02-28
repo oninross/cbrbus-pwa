@@ -378,7 +378,7 @@ export class TrackMyBusComponent implements OnInit {
         request.setRequestHeader('Content-Type', 'application/json');
         request.onload = function () {
             if (request.status >= 200 && request.status < 400) {
-                var busPath = new google.maps.Polyline({
+                let busPath = new google.maps.Polyline({
                     path: JSON.parse(request.response).busCoordinates,
                     geodesic: true,
                     strokeColor: '#cc0000',

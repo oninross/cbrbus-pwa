@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { GlobalVariable } from '../__shared/globals';
 import { DomService } from '../__shared/dom-service';
@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
     styleUrls: ['./bookmarks.component.scss']
 })
 export class BookmarksComponent implements OnInit {
+    @Input() bookmarkArr: Array<any>;
 
     obj: object = {};
     tmpArr: Array<any> = [];
@@ -29,7 +30,9 @@ export class BookmarksComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        const self = this;
+        const self = this,
+            cardHeader = new CardHeaderComponent(),
+            bookmarkArr: Array<any> = [];
 
         self.services = self.globalViable.SERVICES;
 
@@ -51,34 +54,38 @@ export class BookmarksComponent implements OnInit {
                     }
                 }
 
-                // cardMarkup += cardBookmark(self.obj);
-                // self.domService.appendComponentToBody(CardHeaderComponent, {
-                //     text: self.busStopName,
-                //     id: busStopId,
-                //     isBookmark: self.checkBookmark(busStopId) == true ? 'active' : ''
-                // });
-            }
-
-            TweenMax.staggerTo('.card', 0.75, {
-                opacity: 1,
-                top: 1,
-                ease: Expo.easeOut
-            }, 0.1);
-
-            let jsBookmark = document.getElementsByClassName('js-bookmark');
-
-            for (let i = 0, l = jsBookmark.length; i < l; i++) {
-                jsBookmark[i].addEventListener('click', function (e) {
-                    e.preventDefault();
-
-                    self.router.navigate(['/busstop/'], {
-                        queryParams: {
-                            busStopId: this.dataset.id,
-                            busStopName: this.querySelector('h2').textContent
-                        }
-                    });
+                bookmarkArr.push({
+                    text: self.busStopName,
+                    id: busStopId,
+                    isBookmark: self.checkBookmark(busStopId) == true ? 'active' : ''
                 });
             }
+
+            self.bookmarkArr = bookmarkArr;
+
+            setTimeout(() => {
+                TweenMax.staggerTo('.card', 0.75, {
+                    opacity: 1,
+                    top: 1,
+                    ease: Expo.easeOut
+                }, 0.1);
+
+                let jsBookmark = document.getElementsByClassName('js-bookmark');
+
+                for (let i = 0, l = jsBookmark.length; i < l; i++) {
+                    jsBookmark[i].addEventListener('click', function (e) {
+                        e.preventDefault();
+
+                        self.router.navigate(['/busstop/'], {
+                            queryParams: {
+                                busStopId: this.dataset.id,
+                                busStopName: this.querySelector('h2').textContent
+                            }
+                        });
+                    });
+                }
+            }, 0);
+
         } else {
             this.domService.appendComponentToBody(ToasterComponent, {
                 text: 'You have not bookmaked any stops yet.'
@@ -101,6 +108,7 @@ export class BookmarksComponent implements OnInit {
     }
 
     setBookmark(id): void {
+        console.log('setBookmark');
         const self = this,
             cardHeaderIcon = document.querySelector('.card__header .icon');
 
@@ -130,4 +138,6 @@ export class BookmarksComponent implements OnInit {
             }
         }
     }
+
+
 }
