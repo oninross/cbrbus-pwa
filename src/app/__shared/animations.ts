@@ -5,7 +5,8 @@ export const slideInOutAnimation = trigger('slideInOutAnimation', [
             left: 0,
             opacity: 1,
             position: 'absolute',
-            right: 0
+            right: 0,
+            top: 0
         })),
 
         transition(':enter', [
