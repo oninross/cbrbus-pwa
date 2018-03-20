@@ -2,6 +2,8 @@ import { Injectable } from "@angular/core";
 
 @Injectable()
 export class GlobalVariable {
+    isSortByTime: boolean = false;
+
     toasterIndex: number = 0;
 
     readonly BASE_URL: string = 'cbrserver.herokuapp.com'; // Production

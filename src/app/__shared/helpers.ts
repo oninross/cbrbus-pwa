@@ -41,4 +41,26 @@ export class Helpers {
 
         return false;
     }
+
+    readonly getSortByTime = function () {
+        if (localStorage.isSortByTime == undefined) {
+            localStorage.isSortByTime = JSON.stringify(false);
+        }
+
+        return JSON.parse(localStorage.isSortByTime);
+    }
+
+    setSortByTime = function (boolean) {
+        var bool = boolean;
+        switch (boolean) {
+            case 0:
+                bool = false;
+                break;
+            case 1:
+                bool = true;
+                break;
+        };
+
+        localStorage.isSortByTime = JSON.stringify(bool);
+    }
 }

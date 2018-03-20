@@ -30,7 +30,8 @@ export class BusStopComponent implements OnInit {
     busStopId: number;
     busStopName: string;
     isBookmarked: boolean;
-    isSortByTime: boolean;
+    loader;
+    refresh;
 
     constructor(
         private globalVariable: GlobalVariable,
@@ -40,7 +41,8 @@ export class BusStopComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        const self = this;
+        const self = this,
+            sortToggle = <HTMLInputElement>document.getElementById('sort-toggle');
 
         if (this.helpers.getQueryVariable('busStopId')) {
             this.busStopId = this.helpers.getQueryVariable('busStopId');
@@ -49,6 +51,62 @@ export class BusStopComponent implements OnInit {
         }
 
         self.lookupBusId(this.busStopId, this.busStopName);
+
+        self.loader = document.getElementsByClassName('loader')[0];
+        self.refresh = document.getElementsByClassName('js-refresh')[0];
+        self.globalVariable.isSortByTime = this.helpers.getSortByTime();
+
+        if (self.globalVariable.isSortByTime) {
+            sortToggle.setAttribute('checked', 'checked');
+        };
+
+        sortToggle.addEventListener('click', function () {
+            if (this.checked) {
+                self.globalVariable.isSortByTime = true;
+            } else {
+                self.globalVariable.isSortByTime = false;
+            }
+
+            self.helpers.setSortByTime(self.globalVariable.isSortByTime);
+            self.refreshTimetable();
+        });
+
+        self.refresh.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            self.refreshTimetable();
+        });
+    }
+
+    refreshTimetable() {
+        let self = this,
+            icon = this.refresh.querySelector('.icon');
+
+        TweenMax.to(icon, 1, {
+            rotation: 360,
+            ease: Expo.easeOut,
+            onComplete: function () {
+                TweenMax.set(icon, {
+                    rotation: 0
+                });
+            }
+        });
+
+        TweenMax.to(self.loader, 0.75, {
+            autoAlpha: 1,
+            scale: 1,
+            ease: Expo.easeOut
+        });
+
+        TweenMax.staggerTo('.card', 0.75, {
+            opacity: 0,
+            top: -50,
+            ease: Expo.easeOut
+        }, 0.1, function () {
+            self.busesArr = [];
+            self.bookmarkArr = [];
+            self.lookupBusId(self.busStopId, null);
+        });
     }
 
     lookupBusId(id, name) {
@@ -78,7 +136,6 @@ export class BusStopComponent implements OnInit {
                     scale: 0,
                     ease: Expo.easeOut,
                     onComplete: function () {
-                        loader.parentNode.removeChild(loader);
                         self.convertXML(request.response);
                     }
                 });
@@ -239,7 +296,7 @@ export class BusStopComponent implements OnInit {
             });
 
             let busArrSplice = busArr.slice(0);
-            if (self.isSortByTime) {
+            if (self.globalVariable.isSortByTime) {
                 busArrSplice.sort(function (a, b) {
                     return a.estimatedArrival[0] - b.estimatedArrival[0];
                 });
@@ -248,6 +305,7 @@ export class BusStopComponent implements OnInit {
                     return a.serviceNum - b.serviceNum;
                 });
             }
+
             self.bookmarkArr.push({
                 text: self.busStopName,
                 id: self.busStopId,
