@@ -1,7 +1,6 @@
 <button
     *ngFor="let bookmark of bookmarkArr"
     attr.data-id="{{ bookmark.id }}"
-    (click)="toggleBookmark(bookmark.id)"
     class="card card__header js-bookmark"
 >
     <div class="card__wrapper">

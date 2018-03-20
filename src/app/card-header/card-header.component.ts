@@ -26,8 +26,4 @@ export class CardHeaderComponent implements OnInit {
         this.busStopName = busStopName;
         this.isBookmarked = isBookmarked;
     }
-
-    toggleBookmark(id):void {
-        // this.bookmarks.setBookmark(id);
-    }
 }

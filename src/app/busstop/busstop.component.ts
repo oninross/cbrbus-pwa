@@ -32,6 +32,7 @@ export class BusStopComponent implements OnInit {
     isBookmarked: boolean;
     loader;
     refresh;
+    bookmark;
 
     constructor(
         private globalVariable: GlobalVariable,
@@ -335,6 +336,15 @@ export class BusStopComponent implements OnInit {
                 ease: Expo.easeOut,
                 delay: 0.2
             }, 0.1);
+
+            self.bookmark = document.getElementsByClassName('js-bookmark')[0];
+
+            self.bookmark.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                self.bookmarks.setBookmark(this.dataset.id);
+
+            });
         }, 0);
     }
 

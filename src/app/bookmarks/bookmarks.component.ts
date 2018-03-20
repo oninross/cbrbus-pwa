@@ -57,7 +57,7 @@ export class BookmarksComponent implements OnInit {
                 bookmarkArr.push({
                     text: self.busStopName,
                     id: busStopId,
-                    isBookmark: self.checkBookmark(busStopId) == true ? 'active' : ''
+                    isBookmark: self.checkBookmark(busStopId) == true ? '-active' : ''
                 });
             }
 
@@ -118,7 +118,7 @@ export class BookmarksComponent implements OnInit {
 
             localStorage.bookmarks = self.strArr;
 
-            cardHeaderIcon.classList.add('active');
+            cardHeaderIcon.classList.add('-active');
         } else {
             self.tmpArr = JSON.parse(localStorage.bookmarks);
 
@@ -128,16 +128,14 @@ export class BookmarksComponent implements OnInit {
                 self.strArr = JSON.stringify(self.tmpArr);
                 localStorage.bookmarks = self.strArr;
 
-                cardHeaderIcon.classList.remove('active');
+                cardHeaderIcon.classList.remove('-active');
             } else {
                 self.tmpArr.push(id);
                 self.strArr = JSON.stringify(self.tmpArr);
                 localStorage.bookmarks = self.strArr;
 
-                cardHeaderIcon.classList.add('active');
+                cardHeaderIcon.classList.add('-active');
             }
         }
     }
-
-
 }
