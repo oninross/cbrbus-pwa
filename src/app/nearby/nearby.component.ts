@@ -37,8 +37,6 @@ export class NearbyComponent implements OnInit {
     ) {
         const self = this;
 
-        console.log(self.globalVariable.isMapLoaded);
-
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 self.mapSettings = {

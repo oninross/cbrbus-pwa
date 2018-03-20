@@ -45,8 +45,6 @@ export class TrackMyBusComponent implements OnInit {
     ) {
         const self = this;
 
-        console.log(self.globalVariable.isMapLoaded);
-
         self.busId = this.helpers.getQueryVariable('busId');
         self.busStopId = this.helpers.getQueryVariable('busStopId');
         self.vehicleRef = this.helpers.getQueryVariable('vehicleRef');
@@ -248,6 +246,7 @@ export class TrackMyBusComponent implements OnInit {
             isVehicleFound: boolean = false;
 
         if (!status) {
+            console.log('Status is false!');
             self.domService.appendComponentToBody(ToasterComponent, {
                 text: 'Whoops! Something went wrong!'
             });
@@ -265,6 +264,7 @@ export class TrackMyBusComponent implements OnInit {
             }, 10000);
         }
 
+        // console.log(xml.Siri.ServiceDelivery[0].VehicleMonitoringDelivery[0]);
         let vehicleActivity = xml.Siri.ServiceDelivery[0].VehicleMonitoringDelivery[0].VehicleActivity,
             monitoredJourney,
             vehicleLocation,
@@ -307,6 +307,7 @@ export class TrackMyBusComponent implements OnInit {
         });
 
         if (!isVehicleFound) {
+            console.log('Vehicle not found!');
             self.domService.appendComponentToBody(ToasterComponent, {
                 text: 'Whoops! Sorry the vehicle you are tracking can not be found. Try again later.'
             });
@@ -317,6 +318,8 @@ export class TrackMyBusComponent implements OnInit {
 
     callApi() {
         const self = this;
+
+        self.busId = Number(self.busId);
 
         if (self.busId < 10) {
             self.busId = '000' + self.busId.toString();
