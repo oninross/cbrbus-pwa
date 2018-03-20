@@ -39,11 +39,6 @@ export class NearbyComponent implements OnInit {
 
         console.log(self.globalVariable.isMapLoaded);
 
-        // Attaching a property in the windows object
-        (<any>window).II = {
-            googleMap: this
-        };
-
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 self.mapSettings = {
@@ -53,7 +48,7 @@ export class NearbyComponent implements OnInit {
                     marker: self.globalVariable.MARKER_URL
                 }
 
-                self.loadGoogleMap();
+                self.initMap();
             });
 
             setInterval(function () {
@@ -82,7 +77,7 @@ export class NearbyComponent implements OnInit {
                 'marker': self.globalVariable.MARKER_URL
             };
 
-            this.loadGoogleMap();
+            this.initMap();
         }
 
         const event = new Event('resize'),
@@ -96,31 +91,6 @@ export class NearbyComponent implements OnInit {
     }
 
     ngOnInit() { }
-
-    loadGoogleMap() {
-        if (this.globalVariable.isMapLoaded) {
-            this.initMap();
-        } else {
-            const script = document.createElement('script'),
-                scriptStr = '//maps.googleapis.com/maps/api/js?key=' + this.globalVariable.GMAP_API_KEY + '&callback=II.googleMap.initMap',
-                clusterScript = document.createElement('script'),
-                clusterScriptStr = '//developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js';
-
-            clusterScript.type = 'text/javascript';
-            clusterScript.src = clusterScriptStr;
-            clusterScript.async = true;
-            clusterScript.defer = true;
-            document.body.appendChild(clusterScript);
-
-            script.type = 'text/javascript';
-            script.src = scriptStr;
-            script.async = true;
-            script.defer = true;
-            document.body.appendChild(script);
-
-            this.globalVariable.isMapLoaded = true;
-        }
-    }
 
     initMap() {
         let self = this,

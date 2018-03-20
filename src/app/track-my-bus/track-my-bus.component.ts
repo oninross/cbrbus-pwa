@@ -47,11 +47,6 @@ export class TrackMyBusComponent implements OnInit {
 
         console.log(self.globalVariable.isMapLoaded);
 
-        // Attaching a property in the windows object
-        (<any>window).II = {
-            googleMap: this
-        };
-
         self.busId = this.helpers.getQueryVariable('busId');
         self.busStopId = this.helpers.getQueryVariable('busStopId');
         self.vehicleRef = this.helpers.getQueryVariable('vehicleRef');
@@ -67,7 +62,7 @@ export class TrackMyBusComponent implements OnInit {
                 // 'marker': 'https://maps.google.com/mapfiles/kml/paddle/blu-blank_maps.png'
             };
 
-            self.loadGoogleMap();
+            self.initMap();
         });
 
         const event = new Event('resize'),
@@ -84,32 +79,6 @@ export class TrackMyBusComponent implements OnInit {
 
     ngOnDestroy() {
         clearInterval(this.refreshInterval);
-    }
-
-    loadGoogleMap() {
-        if (this.globalVariable.isMapLoaded) {
-            this.initMap();
-        } else {
-            const script = document.createElement('script'),
-                scriptStr = '//maps.googleapis.com/maps/api/js?key=' + this.globalVariable.GMAP_API_KEY + '&callback=II.googleMap.initMap',
-                clusterScript = document.createElement('script'),
-                clusterScriptStr = '//developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js';
-
-            clusterScript.type = 'text/javascript';
-            clusterScript.src = clusterScriptStr;
-            clusterScript.async = true;
-            clusterScript.defer = true;
-            document.body.appendChild(clusterScript);
-
-            script.type = 'text/javascript';
-            script.src = scriptStr;
-            script.async = true;
-            script.defer = true;
-            document.body.appendChild(script);
-
-            this.globalVariable.isMapLoaded = true;
-        }
-
     }
 
     initMap() {
