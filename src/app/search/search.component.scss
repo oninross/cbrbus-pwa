@@ -4,64 +4,70 @@
 @import "~sass/common/_fonts";
 @import "~sass/common/_base";
 
-input[type="text"] {
-    @include transition( all, 0.5s, $easeOutExpo );
+:host /deep/ {
+    .completer-input {
+        @include transition(all, 0.5s, $easeOutExpo);
 
-    border: none;
-    border-bottom: 1px solid $border-color;
-    font-size: $default-font-size;
-    font-family: inherit;
-    font-weight: $light;
-    padding: 10px 0;
-    width: 100%;
+        border: none;
+        border-bottom: 1px solid $border-color;
+        font-size: 3em;
+        font-family: inherit;
+        font-weight: $light;
+        padding: 10px 0;
+        width: 100%;
 
-    &:focus {
-        border-bottom: 1px solid $black;
-        color: $black;
-        outline: 0;
+        &.-selected {
+            font-size: 1.6em;
+        }
+
+        &:focus {
+            border-bottom: 1px solid $black;
+            color: $black;
+            outline: 0;
+        }
+
+        &[disabled] {
+            background: none;
+            border-bottom: 1px dotted $border-color;
+
+            &:hover {
+                cursor: not-allowed;
+            }
+        }
     }
 
-    &[disabled]  {
-        background: none;
-        border-bottom: 1px dotted $border-color;
-
-        &:hover { cursor: not-allowed; }
+    .completer-dropdown-holder {
+        font-size: 1.4em;
+        top: 6px;
+        position: relative;
+        max-width: 0;
+        width: 100%;
     }
 }
 
 .search {
+    display: flex;
     height: 100vh;
-    margin-bottom: 115px;
+    margin-bottom: 0;
     padding-top: $gutterTablet;
     padding-top: 0;
     position: relative;
 
-    &.selected {
-        margin-bottom: 0;
+    & > .wrap {
+        @include transition(all, 1s, $easeInOutExpo);
+
+        height: 115px;
+        margin: auto;
+        padding-top: 20px;
+        width: 100%;
+    }
+
+    &.-selected {
+        margin-bottom: 150px;
 
         .wrap {
             height: 100%;
         }
-
-        input[type="text"] {
-            font-size: 1.6em;
-        }
-    }
-
-    & > .wrap {
-        @include absolute-center();
-        @include transition(all, 1s, $easeInOutExpo);
-
-        height: 115px;
-        padding-top: 20px;
-    }
-
-    input[type="text"] {
-        font-size: 3em;
-    }
-
-    p {
-        margin: 0;
     }
 
     .col-6 {
@@ -70,61 +76,53 @@ input[type="text"] {
     }
 }
 
-.autocomplete {
-    &-suggestions {
-        border: 1px solid $grey;
-        background: $white;
-        overflow: auto;
+.input--wrapper {
+    margin-top: 5px;
+    position: relative;
 
-        strong {
-            font-weight: normal;
-            color: $blue;
-        }
-    }
-
-    &-suggestion {
-        font-size: 1.4em;
-        padding: 2px 5px;
-        white-space: nowrap;
-        overflow: hidden;
-    }
-
-    &-selected {
-        background: #F0F0F0;
-    }
-
-    &-group {
-        padding: 2px 5px;
-
-        strong {
-            display: block;
-            border-bottom: 1px solid #000;
-        }
+    .btn {
+        background-color: transparent;
+        border-radius: 0;
+        bottom: 0;
+        color: $black;
+        line-height: 1;
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        visibility: hidden;
     }
 }
 
-.input {
-    &--wrapper {
-        margin-top: 5px;
-        position: relative;
+// .autocomplete {
+//     &-suggestions {
+//         border: 1px solid $grey;
+//         background: $white;
+//         overflow: auto;
 
-        input[type="text"] {
-            overflow: hidden;
-            padding-right: 15px;
-            text-overflow: ellipsis;
-        }
+//         strong {
+//             font-weight: normal;
+//             color: $blue;
+//         }
+//     }
 
-        .btn {
-            background-color: transparent;
-            border-radius: 0;
-            bottom: 0;
-            color: $black;
-            line-height: 1;
-            opacity: 0;
-            position: absolute;
-            right: 0;
-            top: 0;
-            visibility: hidden;
-        }
-    }
-}
+//     &-suggestion {
+//         font-size: 1.4em;
+//         padding: 2px 5px;
+//         white-space: nowrap;
+//         overflow: hidden;
+//     }
+
+//     &-selected {
+//         background: #F0F0F0;
+//     }
+
+//     &-group {
+//         padding: 2px 5px;
+
+//         strong {
+//             display: block;
+//             border-bottom: 1px solid #000;
+//         }
+//     }
+// }

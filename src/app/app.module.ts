@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './/app-routing.module';
+import { Ng2CompleterModule } from "ng2-completer";
 
 
 import { AppComponent } from './app.component';
@@ -25,6 +26,7 @@ import { CardComponent } from './card/card.component';
 import { ToggleComponent } from './toggle/toggle.component';
 import { BookmarksComponent } from './bookmarks/bookmarks.component';
 import { TrackMyBusComponent } from './track-my-bus/track-my-bus.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [
@@ -50,7 +52,9 @@ import { TrackMyBusComponent } from './track-my-bus/track-my-bus.component';
     imports: [
         BrowserModule,
         AppRoutingModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        Ng2CompleterModule,
+        FormsModule
     ],
     providers: [
         DomService,

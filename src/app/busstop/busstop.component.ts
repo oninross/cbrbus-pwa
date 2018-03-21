@@ -1,12 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Helpers } from '../__shared/helpers';
 import { GlobalVariable } from '../__shared/globals';
-
-import { TweenMax, Expo } from 'gsap/src/uncompressed/TweenMax';
 import { DomService } from '../__shared/dom-service';
-import { ToasterComponent } from '../toaster/toaster.component';
 
 import { parseString } from 'xml2js/lib/xml2js';
+import { TweenMax, Expo } from 'gsap/src/uncompressed/TweenMax';
+
+import { ToasterComponent } from '../toaster/toaster.component';
 import { CardEmptyComponent } from '../card-empty/card-empty.component';
 import { CardHeaderComponent } from '../card-header/card-header.component';
 import { BookmarksComponent } from '../bookmarks/bookmarks.component';
@@ -51,7 +51,7 @@ export class BusStopComponent implements OnInit {
             this.isBookmarked = this.bookmarks.checkBookmark(self.busStopId);
         }
 
-        self.lookupBusId(this.busStopId, this.busStopName);
+        self.lookupBusId(this.busStopId);
 
         self.loader = document.getElementsByClassName('loader')[0];
         self.refresh = document.getElementsByClassName('js-refresh')[0];
@@ -106,11 +106,11 @@ export class BusStopComponent implements OnInit {
         }, 0.1, function () {
             self.busesArr = [];
             self.bookmarkArr = [];
-            self.lookupBusId(self.busStopId, null);
+            self.lookupBusId(self.busStopId);
         });
     }
 
-    lookupBusId(id, name) {
+    lookupBusId(id) {
         const self = this,
             loader = document.getElementsByClassName('loader')[0];
 

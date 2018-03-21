@@ -4,6 +4,18 @@
 @import "~sass/common/_fonts";
 @import "~sass/common/_base";
 
+:host /deep/ {
+    .loader {
+        .search & {
+            transform: scale(0);
+
+            &.-show {
+                transform: scale(1);
+            }
+        }
+    }
+}
+
 .loader {
     @include material-shadow(1);
     @include centering-the-unknown;

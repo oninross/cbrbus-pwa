@@ -1,9 +1,18 @@
-<app-loader></app-loader>
-
 <section class="container search">
+    <app-loader></app-loader>
+
     <div class="wrap">
         <div class="col-12 input--wrapper">
-            <input type="text" placeholder="Search by bus stop name or number" data-hint="3000" class="floating-input" />
+            <ng2-completer
+                [(ngModel)]="searchStr"
+                [datasource]="dataService"
+                [autoMatch]="true"
+                [autofocus]="true"
+                [openOnFocus]="true"
+                [selectOnClick]="true"
+                (selected)="selected(searchStr)"
+            ></ng2-completer>
+
             <button type="button" class="btn js-clear">
                 <span class="sr-only">clear</span>
                 <i class="icon icon-cross"></i>
@@ -16,14 +25,16 @@
                 <label for="sort-toggle" class="checkbox">Sort by time</label>
             </div>
         </div>
-
         <div class="col-6">
             <button type="button" class="btn-refresh js-refresh">
                 <span class="sr-only">Refresh</span>
                 <i class="icon icon-refresh"></i>
             </button>
         </div>
+        <div class="cards-wrapper">
+            <app-card-header [bookmarkArr]='bookmarkArr'></app-card-header>
 
-        <div class="cards-wrapper"></div>
+            <app-card-bus [buses]='busesArr'></app-card-bus>
+        </div>
     </div>
 </section>
