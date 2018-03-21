@@ -9,7 +9,7 @@ import { DomService } from '../__shared/dom-service';
     styleUrls: ['./toaster.component.scss']
 })
 export class ToasterComponent {
-    @Input() message: string = 'Toasty!';
+    @Input() text: string = 'Toasty!';
 
     index: number = 0;
 

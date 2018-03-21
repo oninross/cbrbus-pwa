@@ -39,9 +39,8 @@ export class SearchComponent implements OnInit {
     loader;
     refresh;
     bookmark;
-
-    protected searchStr: string;
-    protected dataService: CompleterData;
+    searchStr: string;
+    dataService: CompleterData;
 
     constructor(
         private completerService: CompleterService,
@@ -81,7 +80,7 @@ export class SearchComponent implements OnInit {
         });
     }
 
-    selected(selected: CompleterItem): void {
+    selected(selected: string): void {
         console.log(selected);
 
         const self = this,
@@ -89,11 +88,13 @@ export class SearchComponent implements OnInit {
             search = document.getElementsByClassName('search')[0],
             searchBox = document.getElementsByClassName('completer-input')[0];
 
+        let selectedItem:any = selected;
+
         self.loader = document.getElementsByClassName('loader')[0];
         self.globalVariable.isSortByTime = this.helpers.getSortByTime();
 
-        self.busStopId = selected.toString().slice(0, 4);
-        self.busStopName = selected.toString().slice(7);
+        self.busStopId = selectedItem.toString().slice(0, 4);
+        self.busStopName = selectedItem.toString().slice(7);
         self.isBookmarked = this.bookmarks.checkBookmark(self.busStopId);
         self.loader.classList.add('-show');
 
