@@ -173,15 +173,9 @@ export class TrackMyBusComponent implements OnInit {
             google.maps.event.addListener(busMarker, 'click', function (e) {
                 id = this.id;
 
-                let busStopName = self.globalVariable.SERVICES.map(function (v, i) {
-                    if (v.data == id) {
-                        // self.router.navigate(['/busstop/'], {
-                        //     queryParams: {
-                        //         busStopId: id,
-                        //         busStopName: v.name
-                        //     }
-                        // });
-                    }
+                self.notifyMe(id);
+                self.domService.appendComponentToBody(ToasterComponent, {
+                    text: 'You will be notified when your stop is approaching. ' + id
                 });
             });
         }
@@ -223,7 +217,7 @@ export class TrackMyBusComponent implements OnInit {
 
         console.log('endpoint:  ' + (<any>window).II.pushData.endpoint)
 
-        fetch('//' + this.globalVariable.BASE_URL + '/sendNotification', {
+        fetch('//' + self.globalVariable.BASE_URL + '/sendNotification', {
             method: 'post',
             headers: {
                 'Content-type': 'application/json'
@@ -232,7 +226,7 @@ export class TrackMyBusComponent implements OnInit {
                 endpoint: (<any>window).II.pushData.endpoint,
                 key: (<any>window).II.pushData.key,
                 authSecret: (<any>window).II.pushData.authSecret,
-                busId: this.helpers.getQueryVariable('busId'),
+                busId: self.helpers.getQueryVariable('busId'),
                 busStopId: id,
                 vehicleRef: self.vehicleRef
             })

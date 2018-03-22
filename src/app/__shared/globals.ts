@@ -8,12 +8,13 @@ export class GlobalVariable {
 
     public toasterIndex: number = 0;
 
+    // readonly BASE_URL: string = '10.16.0.118'; // Development
     readonly BASE_URL: string = 'cbrserver.herokuapp.com'; // Production
 
     readonly API_KEY: string = 'A6F762'; // Development
     // readonly API_KEY:string = 'AE9887'; // Production/
 
-    readonly GMAP_API_KEY: string = 'AIzaSyCzm0EJG9cmuQzaGvictLx6M5rXcD5L2LA'; // Development
+    // readonly GMAP_API_KEY: string = 'AIzaSyCzm0EJG9cmuQzaGvictLx6M5rXcD5L2LA'; // Development
     // readonly GMAP_API_KEY:string = 'AIzaSyDpsNC8Bae_vZwZQTWoh9PGAb4yBlI9JIQ'; // Production
 
     readonly VAPID_PUBLIC_KEY: string = 'BICxnXBM_YNm-XbMG2OWfotUv4roMv7yxsXiowl0QDYs8ERPPlUd4A1Tcd8S3sXI7WneX9c2mh1xxNAdIjKzy0I'

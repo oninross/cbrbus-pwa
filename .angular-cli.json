@@ -8,7 +8,15 @@
       "root": "src",
       "outDir": "dist",
       "assets": [
-        "assets"
+        "assets",
+        {
+          "input": "assets/cbrbus/js/service-worker.js",
+          "output": "./service-worker.js"
+        },
+        {
+          "input": "assets/offline/index.html",
+          "output": "./offline/index.html"
+        }
       ],
       "index": "index.html",
       "main": "main.ts",
@@ -22,7 +30,7 @@
         "sass/main.scss"
       ],
       "scripts": [
-        "js/_modernizr.js"
+        "js/_sw.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
@@ -57,7 +65,6 @@
   },
   "defaults": {
     "styleExt": "scss",
-    "component": {
-    }
+    "component": {}
   }
 }
