@@ -127,7 +127,7 @@ export class SearchComponent implements OnInit {
             }
         });
 
-        TweenMax.to(self.loader, 0.75, {
+        TweenMax.to('.loader', 0.75, {
             autoAlpha: 1,
             scale: 1,
             ease: Expo.easeOut
@@ -145,8 +145,7 @@ export class SearchComponent implements OnInit {
     }
 
     lookupBusId(id) {
-        const self = this,
-            loader = document.getElementsByClassName('loader')[0];
+        const self = this;
 
         let xml = `<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
             <Siri version="2.0" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns="http://www.siri.org.uk/siri" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns3="http://www.ifopt.org.uk/ifopt">
@@ -166,7 +165,7 @@ export class SearchComponent implements OnInit {
         request.setRequestHeader('Content-Type', 'text/xml');
         request.onload = function () {
             if (request.status >= 200 && request.status < 400) {
-                TweenMax.to(loader, 0.75, {
+                TweenMax.to('.loader', 0.75, {
                     autoAlpha: 0,
                     scale: 0,
                     ease: Expo.easeOut,

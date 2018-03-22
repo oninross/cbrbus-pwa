@@ -30,7 +30,6 @@ export class BusStopComponent implements OnInit {
     busStopId: number;
     busStopName: string;
     isBookmarked: boolean;
-    loader;
     refresh;
     bookmark;
 
@@ -39,11 +38,8 @@ export class BusStopComponent implements OnInit {
         private helpers: Helpers,
         private domService: DomService,
         private bookmarks: BookmarksComponent
-    ) { }
-
-    ngOnInit() {
-        const self = this,
-            sortToggle = <HTMLInputElement>document.getElementById('sort-toggle');
+    ) {
+        const self = this;
 
         if (this.helpers.getQueryVariable('busStopId')) {
             this.busStopId = this.helpers.getQueryVariable('busStopId');
@@ -52,8 +48,12 @@ export class BusStopComponent implements OnInit {
         }
 
         self.lookupBusId(this.busStopId);
+    }
 
-        self.loader = document.getElementsByClassName('loader')[0];
+    ngOnInit() {
+        const self = this,
+            sortToggle = <HTMLInputElement>document.getElementById('sort-toggle')
+
         self.refresh = document.getElementsByClassName('js-refresh')[0];
         self.globalVariable.isSortByTime = this.helpers.getSortByTime();
 
@@ -93,7 +93,7 @@ export class BusStopComponent implements OnInit {
             }
         });
 
-        TweenMax.to(self.loader, 0.75, {
+        TweenMax.to('.loader', 0.75, {
             autoAlpha: 1,
             scale: 1,
             ease: Expo.easeOut
@@ -111,8 +111,7 @@ export class BusStopComponent implements OnInit {
     }
 
     lookupBusId(id) {
-        const self = this,
-            loader = document.getElementsByClassName('loader')[0];
+        const self = this;
 
         let xml = `<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
             <Siri version="2.0" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns="http://www.siri.org.uk/siri" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns3="http://www.ifopt.org.uk/ifopt">
@@ -132,7 +131,7 @@ export class BusStopComponent implements OnInit {
         request.setRequestHeader('Content-Type', 'text/xml');
         request.onload = function () {
             if (request.status >= 200 && request.status < 400) {
-                TweenMax.to(loader, 0.75, {
+                TweenMax.to('.loader', 0.75, {
                     autoAlpha: 0,
                     scale: 0,
                     ease: Expo.easeOut,
