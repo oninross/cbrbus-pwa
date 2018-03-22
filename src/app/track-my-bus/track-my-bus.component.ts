@@ -215,8 +215,6 @@ export class TrackMyBusComponent implements OnInit {
     notifyMe(id) {
         const self = this;
 
-        console.log('endpoint:  ' + (<any>window).II.pushData.endpoint)
-
         fetch('//' + self.globalVariable.BASE_URL + '/sendNotification', {
             method: 'post',
             headers: {
@@ -240,10 +238,10 @@ export class TrackMyBusComponent implements OnInit {
             isVehicleFound: boolean = false;
 
         if (!status) {
-            console.log('Status is false!');
             self.domService.appendComponentToBody(ToasterComponent, {
                 text: 'Whoops! Something went wrong!'
             });
+
             return false;
         }
 
@@ -269,7 +267,6 @@ export class TrackMyBusComponent implements OnInit {
             busMarker;
 
 
-        console.log(xml)
         vehicleActivity.forEach(function (el, i) {
             monitoredJourney = el.MonitoredVehicleJourney[0];
 
@@ -327,7 +324,6 @@ export class TrackMyBusComponent implements OnInit {
         request.open('POST', 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + self.globalVariable.API_KEY + '/vm/service.xml', true);
         request.setRequestHeader('Content-Type', 'text/xml');
         request.onload = function () {
-            console.log(request);
             if (request.status >= 200 && request.status < 400) {
                 self.convertXML(request.response);
             }

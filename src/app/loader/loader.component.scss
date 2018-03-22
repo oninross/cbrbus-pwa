@@ -18,12 +18,12 @@
 
 .loader {
     @include material-shadow(1);
-    @include centering-the-unknown;
+    @include absolute-center;
 
     background: $white;
     border-radius: 50%;
     height: 50px;
-    margin: 0 auto;
+    margin: auto;
     width: 50px;
     z-index: 15;
 

@@ -90,8 +90,6 @@ export class SearchComponent implements OnInit {
     }
 
     selected(selected: string): void {
-        console.log(selected);
-
         const self = this,
             busstop = new BusStopComponent(self.globalVariable, self.helpers, self.domService, self.bookmarks),
             search = document.getElementsByClassName('search')[0],
@@ -319,7 +317,7 @@ export class SearchComponent implements OnInit {
                     }
                 }
             } else {
-
+                console.log('B');
             }
 
             // Sort bus timings

@@ -283,7 +283,7 @@ export class BusStopComponent implements OnInit {
                     }
                 }
             } else {
-
+                console.log('B');
             }
 
             // Sort bus timings

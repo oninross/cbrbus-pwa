@@ -108,7 +108,6 @@ export class BookmarksComponent implements OnInit {
     }
 
     setBookmark(id): void {
-        console.log('setBookmark');
         const self = this,
             cardHeaderIcon = document.querySelector('.card__header .icon');
 
