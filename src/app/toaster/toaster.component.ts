@@ -21,7 +21,8 @@ export class ToasterComponent {
         const self = this;
 
         setTimeout(() => {
-            let toaster = document.getElementsByClassName('toaster' + this.index)[0];
+            let toaster = document.getElementsByClassName('toaster' + this.index)[0],
+                dismiss = toaster.querySelector('.js-dismiss');
 
             TweenMax.to(toaster, 0.75, {
                 scale: 1,
@@ -37,6 +38,17 @@ export class ToasterComponent {
                 onComplete: function () {
                     self.domService.destroyComponent();
                 }
+            });
+
+            dismiss.addEventListener('click', function () {
+                TweenMax.to(toaster, 0.75, {
+                    scale: 0.5,
+                    autoAlpha: 0,
+                    ease: Expo.easeOut,
+                    onComplete: function () {
+                        self.domService.destroyComponent();
+                    }
+                });
             });
         }, 0);
     }
