@@ -10,8 +10,12 @@
       "assets": [
         "assets",
         {
-          "input": "assets/cbrbus/js/service-worker.js",
+          "input": "./service-worker.js",
           "output": "./service-worker.js"
+        },
+        {
+          "input": "./manifest.json",
+          "output": "./manifest.json"
         },
         {
           "input": "assets/offline/index.html",

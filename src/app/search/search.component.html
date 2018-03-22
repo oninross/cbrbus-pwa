@@ -7,9 +7,8 @@
                 [(ngModel)]="searchStr"
                 [datasource]="dataService"
                 [autoMatch]="true"
-                [autofocus]="true"
-                [openOnFocus]="true"
                 [selectOnClick]="true"
+                [placeholder]="'Search by bus stop name or number'"
                 (selected)="selected(searchStr)"
             ></ng2-completer>
 
