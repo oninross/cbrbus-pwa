@@ -28,13 +28,16 @@ export class NearbyComponent implements OnInit {
     mapSettings: MapSettings;
     map = null;
     currentMarker = null;
+    refreshInterval: number = 0;
 
     constructor(
         private globalVariable: GlobalVariable,
         private helpers: Helpers,
         private router: Router,
         private domService: DomService
-    ) {
+    ) { }
+
+    ngOnInit() {
         const self = this;
 
         if (navigator.geolocation) {
@@ -49,7 +52,7 @@ export class NearbyComponent implements OnInit {
                 self.initMap();
             });
 
-            setInterval(function () {
+            self.refreshInterval = <any>setInterval(function () {
                 navigator.geolocation.getCurrentPosition(function (position) {
                     self.mapSettings = {
                         lat: position.coords.latitude,
@@ -78,17 +81,25 @@ export class NearbyComponent implements OnInit {
             this.initMap();
         }
 
-        const event = new Event('resize'),
-            header = <HTMLElement>document.getElementsByClassName('header')[0];
+        const event = new Event('resize');
 
-        window.addEventListener('resize', this.helpers.debounce(function () {
-            document.getElementById('map').style.height = window.outerHeight - header.offsetHeight + 'px';
-        }, 250, false));
+        window.addEventListener('resize', function (e) {
+            self.resizeWindow(this, e);
+        });
 
         window.dispatchEvent(event);
     }
 
-    ngOnInit() { }
+
+    ngOnDestroy() {
+        clearInterval(this.refreshInterval);
+    }
+
+    resizeWindow(el, e) {
+        const header = <HTMLElement>document.getElementsByClassName('header')[0];
+
+        document.getElementById('map').style.height = window.outerHeight - header.offsetHeight + 'px';
+    }
 
     initMap() {
         let self = this,

@@ -36,11 +36,13 @@ export class SearchComponent implements OnInit {
     busStopId: string;
     busStopName: string;
     isBookmarked: boolean;
-    loader;
-    refresh;
-    bookmark;
     searchStr: string;
     dataService: CompleterData;
+    loader;
+    refresh;
+    sortToggle;
+    bookmark;
+    that;
 
     constructor(
         private completerService: CompleterService,
@@ -53,31 +55,38 @@ export class SearchComponent implements OnInit {
     }
 
     ngOnInit() {
-        const self = this,
-            sortToggle = <HTMLInputElement>document.getElementById('sort-toggle');
+        const self = this;
 
+        self.that = this;
         self.refresh = document.getElementsByClassName('js-refresh')[0];
+        self.sortToggle = <HTMLInputElement>document.getElementById('sort-toggle');
 
         if (self.globalVariable.isSortByTime) {
-            sortToggle.setAttribute('checked', 'checked');
+            self.sortToggle.setAttribute('checked', 'checked');
         };
 
-        sortToggle.addEventListener('click', function () {
-            if (this.checked) {
-                self.globalVariable.isSortByTime = true;
-            } else {
-                self.globalVariable.isSortByTime = false;
-            }
-
-            self.helpers.setSortByTime(self.globalVariable.isSortByTime);
-            self.refreshTimetable();
+        self.sortToggle.addEventListener('click', function (e) {
+            self.sortToggleHandler(this, e);
         });
 
         self.refresh.addEventListener('click', function (e) {
-            e.preventDefault();
-
-            self.refreshTimetable();
+            self.refreshHandler(this, e);
         });
+    }
+
+    sortToggleHandler(el, e) {
+        if (e.srcElement.checked) {
+            this.globalVariable.isSortByTime = true;
+        } else {
+            this.globalVariable.isSortByTime = false;
+        }
+
+        this.helpers.setSortByTime(this.globalVariable.isSortByTime);
+        this.refreshTimetable();
+    }
+
+    refreshHandler(el, e) {
+        this.refreshTimetable();
     }
 
     selected(selected: string): void {
@@ -88,7 +97,7 @@ export class SearchComponent implements OnInit {
             search = document.getElementsByClassName('search')[0],
             searchBox = document.getElementsByClassName('completer-input')[0];
 
-        let selectedItem:any = selected;
+        let selectedItem: any = selected;
 
         self.loader = document.getElementsByClassName('loader')[0];
         self.globalVariable.isSortByTime = this.helpers.getSortByTime();
