@@ -151,13 +151,15 @@ export default class Nearby {
 
         $.each(json, function (i, v) {
             busMarker = new google.maps.Marker({
-                icon: stopIcon,
-                label: v.data.toString(),
                 position: {
                     lat: v.lat,
                     lng: v.long
                 },
-                map: map
+                icon: {
+                    url: '/assets/btt/images/busMarker.svg'
+                },
+                map: map,
+                zIndex: 1
             });
 
             self.markers.push(busMarker);
