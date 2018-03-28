@@ -9,7 +9,6 @@ import 'jquery.cookie';
 import './_modernizr';
 
 import Accordion from '../../../_modules/accordion/accordion';
-import AppBanner from '../../../_modules/app-banner/app-banner';
 import Search from '../../../_modules/search/search';
 import NearBy from '../../../_modules/nearby/nearby';
 import Bookmark from '../../../_modules/bookmark/bookmark';
@@ -29,7 +28,6 @@ var $window = $(window),
 window.II = {};
 
 $(() => {
-    new AppBanner();
     new Search();
     new NearBy();
     new TrackMyBus();
