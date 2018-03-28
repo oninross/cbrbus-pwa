@@ -20,61 +20,62 @@ $(() => {
 //////////////
 // Toaster  //
 //////////////
-let toasterInd = 0;
-let toaster = function (msg = "Toaster message", ttl = 5, isReload = false) {
-    // Alert Toaster
-    let popupAlert = doT.template($('#toaster-template').html()),
-        obj = {
-            ind: toasterInd,
-            message: msg,
-            isReload: isReload
-        };
+let toasterInd = 0,
+    toaster = function (msg = "Toaster message", ttl = 5, isReload = false) {
+        // Alert Toaster
+        let popupAlert = doT.template($('#toaster-template').html()),
+            obj = {
+                ind: toasterInd,
+                message: msg,
+                isReload: isReload
+            };
 
-    if (!$('.toaster-wrap').length) {
-        $('#main').after('<div class="toaster-wrap" />');
-    }
+        if (!$('.toaster__wrap').length) {
+            $('#main').after('<div class="toaster__wrap" />');
+        }
 
-    $('.toaster-wrap').append(popupAlert(obj));
+        $('.toaster__wrap').append(popupAlert(obj));
 
-    let toaster = '.toaster' + toasterInd;
+        let toaster = '.toaster' + toasterInd;
 
-    TweenMax.to(toaster, 0.75, {
-        opacity: 1,
-        scale: 1,
-        ease: Expo.easeOut
-    });
-
-    if (ttl !== 0) {
-        TweenMax.to(toaster, 0.75, {
-            opacity: 0,
-            scale: 0.75,
-            ease: Expo.easeOut,
-            delay: ttl,
-            onComplete: function () {
-                $(toaster).remove();
-            }
+        TweenLite.to(toaster, 0.75, {
+            opacity: 1,
+            scale: 1,
+            ease: Expo.easeOut
         });
-    }
 
-    $(toaster).on('click', '.js-dismiss', function (e) {
-        e.preventDefault();
+        if (ttl !== 0) {
+            TweenLite.to(toaster, 0.75, {
+                opacity: 0,
+                scale: 0.75,
+                ease: Expo.easeOut,
+                delay: ttl,
+                onComplete: function () {
+                    $(toaster).remove();
+                }
+            });
+        }
 
-        TweenMax.to($(this).parent(), 0.75, {
-            opacity: 0,
-            scale: 0.75,
-            ease: Expo.easeOut,
-            onComplete: function () {
-                $(toaster).remove();
-            }
+        $(toaster).on('click', '.js-dismiss', function (e) {
+            e.preventDefault();
+
+            TweenLite.to($(this).parent(), 0.75, {
+                opacity: 0,
+                scale: 0.75,
+                ease: Expo.easeOut,
+                onComplete: function () {
+                    $(toaster).remove();
+                }
+            });
         });
-    });
 
-    toasterInd++;
-};
+        toasterInd++;
+    };
 
 $('body').on('click', '.js-refresh', function () {
     window.location.reload();
 });
+
 
 
 

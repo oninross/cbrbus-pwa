@@ -155,6 +155,7 @@ export default class Trackmybus {
 
         $.each(json, function (i, v) {
             stopMarker = new google.maps.Marker({
+                id: v.data,
                 position: {
                     lat: v.lat,
                     lng: v.long
