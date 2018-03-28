@@ -349,14 +349,15 @@ input[type="checkbox"]{
 
 .toaster {
     @include material-shadow(1);
-    @include scale(0.5, left bottom);
 
     background: #323232;
     border-radius: 4px;
     color: $white;
     margin-bottom: 10px;
+    opacity: 0;
     padding: 20px;
-    padding-right: 40px;
+    transform: scale(0.75);
+    transform-origin: left bottom;
 
     &:only-child,
     &:last-child {
@@ -364,26 +365,39 @@ input[type="checkbox"]{
     }
 
     p {
-        line-height: 1.25;
+        color: $white;
+        font: 1.4em 'HelveticaNeue';
         margin: 0;
+        padding-right: 100px;
     }
 
     button {
-        @include absolute-center;
-
         background: none;
         border: 0;
+        bottom: 0;
+        color: $white;
         height: 20px;
-        left: auto;
+        margin: auto;
         padding: 0;
         position: absolute;
-        right: 10px;
+        right: 20px;
         top: 0;
         width: 20px;
+    }
+
+    .btn-refresh {
+        color: $yellow;
+        font-size: 1.3em;
+        right: 50px;
+        width: auto;
     }
 
     .icon {
         display: block;
         font-size: 2em;
+    }
+
+    .container {
+        padding: 0;
     }
 }

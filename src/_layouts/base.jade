@@ -1,5 +1,4 @@
 include ../_modules/primary-nav/primary-nav
-include ../_modules/app-banner/app-banner
 
 //- Custom Configuration
 block config
@@ -47,7 +46,7 @@ html.no-js(lang='en')
 
         link(rel='manifest', href='/manifest.json')
         meta(name='mobile-web-app-capable', content='yes')
-        //- meta(name='apple-mobile-web-app-capable', content='yes')
+        meta(name='apple-mobile-web-app-capable', content='yes')
         meta(name='msapplication-TileColor', content='#383838')
         meta(name='msapplication-TileImage', content='/assets/btt/images/favicon/ms-icon-144x144.png')
         meta(name='theme-color', content='#383838')
@@ -108,8 +107,6 @@ html.no-js(lang='en')
         main#main
             block content
 
-        +app-banner()
-
         block scripts
             script(src= baseUrl + 'assets/btt/js/main.js')
 
@@ -118,6 +115,16 @@ html.no-js(lang='en')
                     p {{! it.message}}
                     button.js-dismiss
                         span.sr-only Close
+                        i.icon.icon-cross
+
+            script#toaster-template(type='text/template')
+                .toaster(class='toaster{{= it.ind }}')
+                    p {{! it.message }}
+                    | {{? it.isReload }}
+                    button.btn-refresh.js-refresh REFRESH
+                    | {{? }}
+                    button.js-dismiss
+                        span.vh Close
                         i.icon.icon-cross
 
             script#card-header(type='text/template')
