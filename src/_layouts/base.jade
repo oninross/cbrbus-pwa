@@ -111,21 +111,20 @@ html.no-js(lang='en')
             script(src= baseUrl + 'assets/btt/js/main.js')
 
             script#toaster-template(type='text/template')
-                .toaster(class='toaster{{= it.ind }}')
-                    p {{! it.message}}
+                | {{? it.isReload }}
+                .toaster__card.-refresh(class='toaster{{= it.ind }}')
+                    p {{! it.message }}
+                    button.refresh-toaster.js-refresh REFRESH
                     button.js-dismiss
                         span.sr-only Close
                         i.icon.icon-cross
-
-            script#toaster-template(type='text/template')
-                .toaster(class='toaster{{= it.ind }}')
+                |{{?? }}
+                .toaster__card(class='toaster{{= it.ind }}')
                     p {{! it.message }}
-                    | {{? it.isReload }}
-                    button.btn-refresh.js-refresh REFRESH
-                    | {{? }}
                     button.js-dismiss
-                        span.vh Close
+                        span.sr-only Close
                         i.icon.icon-cross
+                | {{? }}
 
             script#card-header(type='text/template')
                 button.card.card__header.js-bookmark(data-id='{{! it.busStopId }}')

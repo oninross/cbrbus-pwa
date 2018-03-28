@@ -334,70 +334,71 @@ input[type="checkbox"]{
 
 
 // Toaster
-.toaster-wrap {
-    bottom: 80px;
-    left: 20px;
-    max-width: 440px;
-    position: fixed;
-    width: 85%;
-    z-index: 50;
-
-    @include tablet {
-        width: 100%;
-    }
-}
-
 .toaster {
-    @include material-shadow(1);
+    &__wrap {
+        bottom: 30px;
+        left: 30px;
+        max-width: 440px;
+        position: fixed;
+        width: 100%;
+        z-index: 25;
 
-    background: #323232;
-    border-radius: 4px;
-    color: $white;
-    margin-bottom: 10px;
-    opacity: 0;
-    padding: 20px;
-    transform: scale(0.75);
-    transform-origin: left bottom;
-
-    &:only-child,
-    &:last-child {
-        margin-bottom: 0;
+        @include mobile {
+            max-width: 260px;
+        }
     }
 
-    p {
+    &__card {
+        @include material-shadow(1);
+
+        background: #323232;
+        border-radius: 4px;
         color: $white;
-        font: 1.4em 'HelveticaNeue';
-        margin: 0;
-        padding-right: 100px;
-    }
+        margin-bottom: 10px;
+        opacity: 0;
+        padding: 20px;
+        padding-right: 40px;
+        transform: scale(0.75);
+        transform-origin: left bottom;
 
-    button {
-        background: none;
-        border: 0;
-        bottom: 0;
-        color: $white;
-        height: 20px;
-        margin: auto;
-        padding: 0;
-        position: absolute;
-        right: 20px;
-        top: 0;
-        width: 20px;
-    }
+        &:only-child,
+        &:last-child {
+            margin-bottom: 0;
+        }
 
-    .btn-refresh {
-        color: $yellow;
-        font-size: 1.3em;
-        right: 50px;
-        width: auto;
-    }
+        &.-refresh {
+            padding-right: 120px;
+        }
 
-    .icon {
-        display: block;
-        font-size: 2em;
-    }
+        p {
+            line-height: 1.25;
+            margin: 0;
+        }
 
-    .container {
-        padding: 0;
+        button {
+            @include absolute-center;
+
+            background: none;
+            border: 0;
+            color: $white;
+            cursor: pointer;
+            height: 20px;
+            left: auto;
+            padding: 0;
+            right: 10px;
+            width: 20px;
+        }
+
+        .refresh-toaster {
+            color: $yellow;
+            font-size: 1.3em;
+            right: 50px;
+            width: auto;
+        }
+
+        .icon {
+            display: block;
+            font-size: 20px;
+        }
     }
 }
