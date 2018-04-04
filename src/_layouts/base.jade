@@ -1,4 +1,6 @@
 include ../_modules/primary-nav/primary-nav
+include ../_modules/app-banner/app-banner
+
 
 //- Custom Configuration
 block config
@@ -106,6 +108,8 @@ html.no-js(lang='en')
 
         main#main
             block content
+
+        +app-banner()
 
         block scripts
             script(src= baseUrl + 'assets/btt/js/main.js')

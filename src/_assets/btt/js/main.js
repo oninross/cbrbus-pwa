@@ -16,6 +16,7 @@ import TrackMyBus from '../../../_modules/trackMyBus/trackMyBus';
 
 import { BASE_URL, debounce, isMobile, isServiceWorkerSupported } from './_helper';
 import { toaster } from './_material';
+import AppBanner from '../../../_modules/app-banner/app-banner';
 
 // Variable declaration
 var $window = $(window),
@@ -32,6 +33,7 @@ $(() => {
     new NearBy();
     new TrackMyBus();
     new Accordion();
+    new AppBanner();
 
     if ($('.bookmark').length) {
         var bookmark = new Bookmark();
