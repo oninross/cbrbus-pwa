@@ -1,19 +1,29 @@
 import React, {PropTypes, Component} from 'react';
 
-export default class Button extends Component {
+import './button.scss';
+
+export class Button extends Component {
   render() {
     return (
       <div>
-        <h2>{this.props.text}</h2>
+        <a href={this.props.link} target={this.props.target} className={this.props.class} rel={this.props.rel}>{this.props.text}</a>
       </div>
     );
   }
 }
 
 Button.defaultProps = {
-  text: 'My brand new component!'
+  text: 'Button text',
+  link: '#',
+  target: '_self',
+  class: '',
+  rel: 'noopener noreferrer'
 };
 
 Button.propTypes = {
-  text: PropTypes.string
+  text: PropTypes.string,
+  link: PropTypes.string,
+  target: PropTypes.string,
+  class: PropTypes.string,
+  rel: PropTypes.string
 };
