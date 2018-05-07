@@ -1,6 +1,6 @@
 import React, {PropTypes, Component} from 'react';
 
-export default class About extends Component {
+export class About extends Component {
   render() {
     return (
       <div>
@@ -11,7 +11,7 @@ export default class About extends Component {
 }
 
 About.defaultProps = {
-  text: 'My brand new component!'
+  text: 'About route'
 };
 
 About.propTypes = {

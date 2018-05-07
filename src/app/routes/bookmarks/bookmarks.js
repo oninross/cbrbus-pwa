@@ -1,6 +1,6 @@
 import React, {PropTypes, Component} from 'react';
 
-export default class Bookmarks extends Component {
+export class Bookmarks extends Component {
   render() {
     return (
       <div>
@@ -11,7 +11,7 @@ export default class Bookmarks extends Component {
 }
 
 Bookmarks.defaultProps = {
-  text: 'My brand new component!'
+  text: 'Bookmarks route'
 };
 
 Bookmarks.propTypes = {

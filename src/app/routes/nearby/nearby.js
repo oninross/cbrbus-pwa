@@ -1,6 +1,6 @@
 import React, {PropTypes, Component} from 'react';
 
-export default class Nearby extends Component {
+export class Nearby extends Component {
   render() {
     return (
       <div>
@@ -11,7 +11,7 @@ export default class Nearby extends Component {
 }
 
 Nearby.defaultProps = {
-  text: 'My brand new component!'
+  text: 'Nearby route'
 };
 
 Nearby.propTypes = {

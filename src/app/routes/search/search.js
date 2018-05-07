@@ -1,6 +1,6 @@
 import React, {PropTypes, Component} from 'react';
 
-export default class Search extends Component {
+export class Search extends Component {
   render() {
     return (
       <div>
@@ -11,7 +11,7 @@ export default class Search extends Component {
 }
 
 Search.defaultProps = {
-  text: 'My brand new component!'
+  text: 'Search route'
 };
 
 Search.propTypes = {
