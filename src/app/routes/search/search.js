@@ -1,19 +1,12 @@
-import React, {PropTypes, Component} from 'react';
+import React, {Component} from 'react';
+import {Navigation} from '../../components/navigation/navigation';
 
 export class Search extends Component {
   render() {
     return (
       <div>
-        <h2>{this.props.text}</h2>
+        <Navigation/>
       </div>
     );
   }
 }
-
-Search.defaultProps = {
-  text: 'Search route'
-};
-
-Search.propTypes = {
-  text: PropTypes.string
-};

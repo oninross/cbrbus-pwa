@@ -8,10 +8,11 @@ import {Bookmarks} from './app/routes/bookmarks/bookmarks';
 import {About} from './app/routes/about/about';
 import {Share} from './app/routes/share/share';
 
-import './index.scss';
+import './app/styles/index.scss';
 
 ReactDOM.render(
   <Router history={browserHistory}>
+    <Route path="/" component={Search}/>
     <Route path="/search" component={Search}/>
     <Route path="/nearby" component={Nearby}/>
     <Route path="/bookmarks" component={Bookmarks}/>

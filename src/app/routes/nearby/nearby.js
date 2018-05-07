@@ -1,19 +1,12 @@
-import React, {PropTypes, Component} from 'react';
+import React, {Component} from 'react';
+import {Navigation} from '../../components/navigation/navigation';
 
 export class Nearby extends Component {
   render() {
     return (
       <div>
-        <h2>{this.props.text}</h2>
+        <Navigation/>
       </div>
     );
   }
 }
-
-Nearby.defaultProps = {
-  text: 'Nearby route'
-};
-
-Nearby.propTypes = {
-  text: PropTypes.string
-};
