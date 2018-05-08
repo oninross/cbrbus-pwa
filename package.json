@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "gsap": "^1.20.4",
     "imagemin-pngquant": "^5.1.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
