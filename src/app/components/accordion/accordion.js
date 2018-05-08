@@ -3,7 +3,7 @@ import React, {PropTypes, Component} from 'react';
 import {TweenMax, Expo} from 'gsap/src/uncompressed/TweenMax';
 import 'gsap/src/uncompressed/plugins/ScrollToPlugin';
 export class Accordion extends Component {
-  handleClick(e) {
+  handleToggle(e) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -28,7 +28,7 @@ export class Accordion extends Component {
 
     if (isNew === true) {
       return (
-        <button className="accordion__header" onClick={this.handleClick}>
+        <button className="accordion__header" onClick={this.handleToggle}>
           {this.props.text}
           <sup>BETA</sup>
           <div className="accordion__btn">
@@ -38,7 +38,7 @@ export class Accordion extends Component {
       );
     }
     return (
-      <button className="accordion__header" onClick={this.handleClick}>
+      <button className="accordion__header" onClick={this.handleToggle}>
         {this.props.text}
         <div className="accordion__btn">
           <span className="sr-only">Toggle accordion</span>
