@@ -151,6 +151,7 @@ export default class Nearby {
 
         $.each(json, function (i, v) {
             busMarker = new google.maps.Marker({
+                id: v.data,
                 position: {
                     lat: v.lat,
                     lng: v.long
@@ -166,7 +167,7 @@ export default class Nearby {
 
             var label = '';
             google.maps.event.addListener(busMarker, 'click', function (e) {
-                label = this.label;
+                label = this.id;
 
                 var busStopName = $.map(json, function (n) {
                         if (n.data == label) {
