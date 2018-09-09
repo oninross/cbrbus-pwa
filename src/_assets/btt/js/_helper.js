@@ -9,8 +9,7 @@ const BASE_URL = 'cbrserver.herokuapp.com'; // Production
 const API_KEY = 'A6F762'; // Development
 // const API_KEY = 'AE9887'; // Production/
 
-const GMAP_API_KEY = 'AIzaSyCzm0EJG9cmuQzaGvictLx6M5rXcD5L2LA'; // Development && Production
-// const GMAP_API_KEY = 'AIzaSyDpsNC8Bae_vZwZQTWoh9PGAb4yBlI9JIQ'; // Production
+const GMAP_API_KEY = 'AIzaSyABNiHujowTbJozOhxSBV-jqqPz22u9fYU'; // Development && Production
 
 let debounce = function (func, wait, immediate) {
     var timeout;
