@@ -72,7 +72,7 @@ let toasterInd = 0,
         toasterInd++;
     };
 
-$('body').on('click', '.js-refresh', function () {
+$('body').on('click', '.js-refresh-app', function () {
     window.location.reload();
 });
 
