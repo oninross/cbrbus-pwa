@@ -175,7 +175,7 @@ export default class Trackmybus {
                         let busStopId = $(this)[0].id;
                         self.notifyMe(busStopId);
 
-                        ga('send', 'event', 'Notify', 'click');
+                        // ga('send', 'event', 'Notify', 'click');
                         toaster('You will be notified when your stop is approaching. ' + busStopId);
                     } else {
                         toaster('Please enable your notifications to know if your bus is approaching.');

@@ -1,9 +1,8 @@
 'use strict';
 
 import 'autocomplete';
-import doT from 'doT';
 import { loader, debounce, getSortByTime, setSortByTime } from '../../_assets/btt/js/_helper';
-import { ripple, toaster } from '../../_assets/btt/js/_material';
+import { toaster } from '../../_assets/btt/js/_material';
 
 import Bookmark from '../bookmark/bookmark';
 import BusStop from '../busstop/busstop';
@@ -103,7 +102,7 @@ export default class Search {
                             $(this).closest('.search').addClass('selected');
 
                             self.getData(suggestion.data);
-                            ga('send', 'event', 'Bus Stop Search', 'click', self.busStopId);
+                            // ga('send', 'event', 'Bus Stop Search', 'click', self.busStopId);
                         },
                         onSearchStart: function (query) {
                             TweenMax.to('.search .btn', 0.75, {

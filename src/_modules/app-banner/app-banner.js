@@ -9,9 +9,9 @@ export default class AppBanner {
             safari = iOS && !ua.match(/CriOS/i),
             addToHomeScreeen = $.cookie('addToHomeScreeen') == undefined ? false : $.cookie('addToHomeScreeen');
 
-        console.error(iOS)
-        console.error(safari)
-        console.error(addToHomeScreeen)
+        // console.error(iOS)
+        // console.error(safari)
+        // console.error(addToHomeScreeen)
         if (iOS && safari && !addToHomeScreeen) {
             $('#app-banner').addClass('show');
             $('html').addClass('iOS');
