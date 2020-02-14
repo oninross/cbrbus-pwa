@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "cbrbusesnearme"
+    "default": "cbr-buses",
+    "production": "cbr-buses"
   }
 }

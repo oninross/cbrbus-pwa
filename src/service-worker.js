@@ -184,8 +184,8 @@ self.addEventListener('push', function (event) {
     var payload = {
         title: 'CBR Buses',
         body: 'Your bus has arrived.',
-        icon: 'https://cbrbuses.firebaseapp.com/assets/btt/images/notify-image.png',
-        url: 'https://cbrbuses.firebaseapp.com/?busId=' + busId + '&vehicleRef=' + vehicleRef
+        icon: 'https://cbr-buses.firebaseapp.com/assets/btt/images/notify-image.png',
+        url: 'https://cbr-buses.firebaseapp.com/?busId=' + busId + '&vehicleRef=' + vehicleRef
     };
 
     event.waitUntil(
