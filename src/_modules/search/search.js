@@ -1,9 +1,8 @@
 'use strict';
 
 import 'autocomplete';
-import doT from 'doT';
 import { loader, debounce, getSortByTime, setSortByTime } from '../../_assets/btt/js/_helper';
-import { ripple, toaster } from '../../_assets/btt/js/_material';
+import { toaster } from '../../_assets/btt/js/_material';
 
 import Bookmark from '../bookmark/bookmark';
 import BusStop from '../busstop/busstop';
@@ -23,11 +22,6 @@ export default class Search {
         if ($('.search').length) {
             let $search = $('.search input[type="text"]');
 
-            $('.js-clear').on('click', function () {
-                $search.autocomplete().clear();
-                $search.val('').focus();
-            });
-
             self.$body.on('click', '.js-bookmark', function (e) {
                 e.preventDefault();
 
@@ -37,6 +31,11 @@ export default class Search {
             if (self.isSortByTime) {
                 $('#sort-toggle').attr('checked', true);
             };
+
+            $('.js-clear').on('click', function () {
+                $search.autocomplete().clear();
+                $search.val('').focus();
+            });
 
             $('.js-toggle-sort').on('click', function () {
                 if ($('#sort-toggle:checked').length) {
@@ -103,7 +102,7 @@ export default class Search {
                             $(this).closest('.search').addClass('selected');
 
                             self.getData(suggestion.data);
-                            ga('send', 'event', 'Bus Stop Search', 'click', self.busStopId);
+                            // ga('send', 'event', 'Bus Stop Search', 'click', self.busStopId);
                         },
                         onSearchStart: function (query) {
                             TweenMax.to('.search .btn', 0.75, {

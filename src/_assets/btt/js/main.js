@@ -14,17 +14,12 @@ import NearBy from '../../../_modules/nearby/nearby';
 import Bookmark from '../../../_modules/bookmark/bookmark';
 import TrackMyBus from '../../../_modules/trackMyBus/trackMyBus';
 
-import { BASE_URL, debounce, isMobile, isServiceWorkerSupported } from './_helper';
+import { isServiceWorkerSupported } from './_helper';
 import { toaster } from './_material';
 import AppBanner from '../../../_modules/app-banner/app-banner';
 
 // Variable declaration
-var $window = $(window),
-    $body = $('body'),
-    $header = $('.header'),
-    isMobileDevice = isMobile(),
-    lastScrollTop = 0,
-    vapidPublicKey = 'BICxnXBM_YNm-XbMG2OWfotUv4roMv7yxsXiowl0QDYs8ERPPlUd4A1Tcd8S3sXI7WneX9c2mh1xxNAdIjKzy0I';
+var vapidPublicKey = 'BICxnXBM_YNm-XbMG2OWfotUv4roMv7yxsXiowl0QDYs8ERPPlUd4A1Tcd8S3sXI7WneX9c2mh1xxNAdIjKzy0I';
 
 window.II = {};
 
@@ -57,7 +52,7 @@ $(() => {
             media = 'Twitter';
         }
 
-        ga('send', 'event', 'Social Share', 'click', media);
+        // ga('send', 'event', 'Social Share', 'click', media);
     });
 
 
@@ -177,7 +172,7 @@ if (isServiceWorkerSupported()) {
     });
 
     window.addEventListener('beforeinstallprompt', function (e) {
-        ga('send', 'event', 'Prompt to add to homescreen', 'click');
+        // ga('send', 'event', 'Prompt to add to homescreen', 'click');
 
         // e.userChoice will return a Promise. For more details read: http://www.html5rocks.com/en/tutorials/es6/promises/
         e.userChoice.then(function (choiceResult) {
@@ -185,10 +180,10 @@ if (isServiceWorkerSupported()) {
 
             if (choiceResult.outcome == 'dismissed') {
                 console.log('User cancelled homescreen install');
-                ga('send', 'event', 'Cancelled add to homescreen', 'click');
+                // ga('send', 'event', 'Cancelled add to homescreen', 'click');
             } else {
                 console.log('User added to homescreen');
-                ga('send', 'event', 'Added to homescreen', 'click');
+                // ga('send', 'event', 'Added to homescreen', 'click');
             }
         });
     });

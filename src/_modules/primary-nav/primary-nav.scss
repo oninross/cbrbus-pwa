@@ -4,12 +4,13 @@
         @include normalise-list;
         @include clearfix;
 
+        display: flex;
         font-size: 1.1em;
+        justify-content: center;
     }
 
     li {
-        float: left;
-        width: 20%;
+        width: 100%;
     }
 
     a {

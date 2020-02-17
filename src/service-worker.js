@@ -24,7 +24,7 @@
 // cache, then increment the CACHE_VERSION value. It will kick off the service worker update
 // flow and the old cache(s) will be purged as part of the activate event handler when the
 // updated service worker is activated.
-var version = '0.17.8',
+var version = '0.17.10',
     now = Date.now(),
     OFFLINE_URL = 'offline/',
     urlsToPrefetch = [
@@ -184,8 +184,8 @@ self.addEventListener('push', function (event) {
     var payload = {
         title: 'CBR Buses',
         body: 'Your bus has arrived.',
-        icon: 'https://cbrbuses.firebaseapp.com/assets/btt/images/notify-image.png',
-        url: 'https://cbrbuses.firebaseapp.com/?busId=' + busId + '&vehicleRef=' + vehicleRef
+        icon: 'https://cbr-buses.firebaseapp.com/assets/btt/images/notify-image.png',
+        url: 'https://cbr-buses.firebaseapp.com/?busId=' + busId + '&vehicleRef=' + vehicleRef
     };
 
     event.waitUntil(
