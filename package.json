@@ -57,7 +57,7 @@
     "karma-jasmine": "~0.3.6",
     "karma-phantomjs-launcher": "^1.0.4",
     "lodash": "^4.17.10",
-    "minimist": "~1.2.0",
+    "minimist": "~1.2.3",
     "phantomjs": "~1.9.19",
     "rimraf": "~2.5.0",
     "vinyl-buffer": "~1.0.0",
