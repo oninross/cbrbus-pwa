@@ -6,7 +6,7 @@
     "cartodb": "^0.5.1",
     "devbridge-autocomplete": "^1.2.26",
     "dot": "^1.0.3",
-    "gsap": "^1.19.0",
+    "gsap": "^3.6.0",
     "jquery": "~2.2.0",
     "jquery-lazyload": "^1.9.7",
     "jquery.cookie": "^1.4.1",
