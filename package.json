@@ -2,9 +2,12 @@
   "name": "btt",
   "version": "2.0.0",
   "dependencies": {
+    "devbridge-autocomplete": "^1.4.11",
     "dot": "^1.1.3",
     "gsap": "^3.6.0",
     "jquery": "^3.5.1",
+    "jquery.cookie": "^1.4.1",
+    "malihu-custom-scrollbar-plugin": "^3.1.5",
     "normalize.css": "~8.0.1",
     "scrollmonitor": "^1.2.4",
     "vanilla-lazyload": "^17.3.0"
@@ -94,7 +97,7 @@
     "baseUrl": "./",
     "directories": {
       "source": "src",
-      "assets": "assets/firestarter",
+      "assets": "assets/btt",
       "destination": "build",
       "temporary": "tmp",
       "//": "Directories relative to `source` directory",
@@ -103,6 +106,7 @@
       "images": "_images",
       "css": "_css",
       "fonts": "_fonts",
+      "api": "_api",
       "js": "_js",
       "data": "_data"
     },
