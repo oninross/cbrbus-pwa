@@ -1,7 +1,6 @@
-node_modules/
-build/
-tmp/
-.tmp/
-dist/
-package-lock.json
-yarn.lock
+node_modules
+*.log
+build
+tmp
+.grunt
+.DS_Store
