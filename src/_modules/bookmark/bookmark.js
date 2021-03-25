@@ -1,6 +1,7 @@
 'use strict';
 
 import doT from 'doT';
+import gsap from "gsap";
 import { ripple, toaster } from '../../_assets/btt/js/_material';
 
 export default class Bookmark {
@@ -50,11 +51,12 @@ export default class Bookmark {
 
                     $('.cards-wrapper').html(cardMarkup);
 
-                    TweenMax.staggerTo('.card', 0.75, {
+                    gsap.to('.card', 0.75, {
                         opacity: 1,
                         top: 1,
-                        ease: Expo.easeOut
-                    }, 0.1);
+                        ease: "expo.out",
+                        stagger: 0.1
+                    })
                 } else {
                     toaster('You have not bookmaked any stops yet.');
                 }

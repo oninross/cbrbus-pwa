@@ -1,5 +1,7 @@
 'use strict';
 
+import $ from "jquery";
+import gsap from "gsap";
 import { ripple, toaster } from '../../_assets/btt/js/_material';
 import { loader, GMAP_API_KEY, debounce, easeOutExpo } from '../../_assets/btt/js/_helper';
 
@@ -90,10 +92,10 @@ export default class Nearby {
             url: '/assets/btt/api/services.json',
             success: function (data) {
                 self.initMap(data);
-                TweenMax.to('.loader', 0.75, {
+                gsap.to('.loader', 0.75, {
                     autoAlpha: 0,
                     scale: 0,
-                    ease: Expo.easeOut,
+                    ease: "expo.out",
                     onComplete: function () {
                         $('.loader').remove();
                     }
@@ -101,10 +103,10 @@ export default class Nearby {
             },
             error: function (error) {
                 console.log(error);
-                TweenMax.to('.loader', 0.75, {
+                gsap.to('.loader', 0.75, {
                     autoAlpha: 0,
                     scale: 0,
-                    ease: Expo.easeOut,
+                    ease: "expo.out",
                     onComplete: function () {
                         $('.loader').remove();
                     }

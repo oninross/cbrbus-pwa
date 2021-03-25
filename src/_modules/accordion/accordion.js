@@ -1,7 +1,9 @@
 'use strict';
 
+import $ from "jquery";
+import gsap from "gsap";
 import { easeOutExpo } from '../../_assets/btt/js/_helper';
-import scrollTo from 'scrollTo';
+// import scrollTo from '../../../node_modules/gsap/ScrollToPlugin';
 
 export default class Accordion {
     constructor() {
@@ -24,9 +26,9 @@ export default class Accordion {
                 $this.toggleClass('active');
                 $next.slideToggle(easeOutExpo);
 
-                TweenMax.to(window, 1, {
+                gsap.to(window, 1, {
                     scrollTo: $accordion.offset().top - $('.header').outerHeight(),
-                    ease: Expo.easeOut,
+                    ease: "expo.out",
                     delay: 0.5
                 });
             });
