@@ -1,5 +1,7 @@
 'use strict';
 
+import $ from "jquery";
+import gsap from "gsap";
 import { ripple, toaster } from '../../_assets/btt/js/_material';
 import { BASE_URL, API_KEY, GMAP_API_KEY, debounce, easeOutExpo, getQueryVariable, isNotificationGranted, isServiceWorkerSupported } from '../../_assets/btt/js/_helper';
 
@@ -77,10 +79,10 @@ export default class Trackmybus {
             success: function (data) {
                 self.initMap(data);
 
-                TweenMax.to('.loader', 0.75, {
+                gsap.to('.loader', 0.75, {
                     autoAlpha: 0,
                     scale: 0,
-                    ease: Expo.easeOut,
+                    ease: "expo.out",
                     onComplete: function () {
                         $('.loader').remove();
                     }
@@ -88,10 +90,10 @@ export default class Trackmybus {
             },
             error: function (error) {
                 console.log(error);
-                TweenMax.to('.loader', 0.75, {
+                gsap.to('.loader', 0.75, {
                     autoAlpha: 0,
                     scale: 0,
-                    ease: Expo.easeOut,
+                    ease: "expo.out",
                     onComplete: function () {
                         $('.loader').remove();
                     }
@@ -323,7 +325,7 @@ export default class Trackmybus {
         }
 
         $.ajax({
-            url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY + '/vm/service.xml',
+            url: 'https://cors-ahead.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY + '/vm/service.xml',
             data: '<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?><Siri version="2.0" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns="http://www.siri.org.uk/siri" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0" xmlns:ns3="http://www.ifopt.org.uk/ifopt"><ServiceRequest><RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp><RequestorRef>' + API_KEY + '</RequestorRef><VehicleMonitoringRequest version="2.0"><RequestTimestamp>' + new Date().toISOString() + '</RequestTimestamp><VehicleMonitoringRef>VM_ACT_' + self.busId + '</VehicleMonitoringRef></VehicleMonitoringRequest></ServiceRequest></Siri>',
             type: 'POST',
             contentType: "text/xml",

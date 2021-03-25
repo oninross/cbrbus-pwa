@@ -1,5 +1,7 @@
 'use strict';
 
+import $ from "jquery";
+import gsap from "gsap";
 import doT from 'dot';
 
 $(() => {
@@ -38,17 +40,17 @@ let toasterInd = 0,
 
         let toaster = '.toaster' + toasterInd;
 
-        TweenLite.to(toaster, 0.75, {
+        gsap.to(toaster, 0.75, {
             opacity: 1,
             scale: 1,
-            ease: Expo.easeOut
+            ease: "expo.out"
         });
 
         if (ttl !== 0) {
-            TweenLite.to(toaster, 0.75, {
+            gsap.to(toaster, 0.75, {
                 opacity: 0,
                 scale: 0.75,
-                ease: Expo.easeOut,
+                ease: "expo.out",
                 delay: ttl,
                 onComplete: function () {
                     $(toaster).remove();
@@ -59,10 +61,10 @@ let toasterInd = 0,
         $(toaster).on('click', '.js-dismiss', function (e) {
             e.preventDefault();
 
-            TweenLite.to($(this).parent(), 0.75, {
+            gsap.to($(this).parent(), 0.75, {
                 opacity: 0,
                 scale: 0.75,
-                ease: Expo.easeOut,
+                ease: "expo.out",
                 onComplete: function () {
                     $(toaster).remove();
                 }
@@ -108,10 +110,10 @@ let ripple = function (e, el) {
     el.append(svg);
 
     var $ripple = el.find('.ripple' + inc);
-    TweenMax.from($ripple.find('circle'), 1.5, {
+    gsap.from($ripple.find('circle'), 1.5, {
         attr: { r: 0 },
         opacity: 0.75,
-        ease: Expo.easeOut,
+        ease: "expo.out",
         onComplete: function () {
             $ripple.remove();
         }

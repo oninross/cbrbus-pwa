@@ -1,6 +1,8 @@
 'use strict';
 
-import 'autocomplete';
+import $ from "jquery";
+import gsap from "gsap";
+import 'devbridge-autocomplete';
 import { loader, debounce, getSortByTime, setSortByTime } from '../../_assets/btt/js/_helper';
 import { toaster } from '../../_assets/btt/js/_material';
 
@@ -56,11 +58,11 @@ export default class Search {
 
                 var $this = $(this);
 
-                TweenMax.to($this.find('.icon'), 1, {
+                gsap.to($this.find('.icon'), 1, {
                     rotation: 360,
-                    ease: Expo.easeOut,
+                    ease: "expo.out",
                     onComplete: function () {
-                        TweenMax.set($this.find('.icon'), {
+                        gsap.set($this.find('.icon'), {
                             rotation: 0
                         });
                     }
@@ -68,13 +70,16 @@ export default class Search {
 
                 self.$body.append(loader);
 
-                TweenMax.staggerTo('.card', 0.75, {
+                gsap.to('.card', 0.75, {
                     opacity: 0,
                     top: -50,
-                    ease: Expo.easeOut
-                }, 0.1, function () {
-                    self.busStop.lookupBusId(self.busStopId, self.busStopName);
-                });
+                    ease: "expo.out",
+                    stagger: 0.1,
+                    onComplete: () => {
+                        self.busStop.lookupBusId(self.busStopId, self.busStopName);
+                    }
+                })
+
             });
 
             $(window).on('resize', debounce(function () {
@@ -105,15 +110,15 @@ export default class Search {
                             // ga('send', 'event', 'Bus Stop Search', 'click', self.busStopId);
                         },
                         onSearchStart: function (query) {
-                            TweenMax.to('.search .btn', 0.75, {
+                            gsap.to('.search .btn', 0.75, {
                                 autoAlpha: 1,
-                                ease: Expo.easeOut
+                                ease: "expo.out"
                             });
                         },
                         onHide: function () {
-                            TweenMax.to('.search .btn', 0.75, {
+                            gsap.to('.search .btn', 0.75, {
                                 autoAlpha: 0,
-                                ease: Expo.easeOut
+                                ease: "expo.out"
                             });
                         }
                     });

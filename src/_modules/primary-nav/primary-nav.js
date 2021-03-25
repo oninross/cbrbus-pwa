@@ -1,5 +1,6 @@
 'use strict';
 
+import gsap from "gsap";
 import { ripple } from '../../_assets/btt/js/_material';
 import { debounce, isMobile, easeOutExpo } from '../../_assets/btt/js/_helper';
 
@@ -30,7 +31,7 @@ export default class PrimaryNav {
         let $primaryNav = $('.js-mobile-menu'),
             $subNav = $('.js-sub-nav');
 
-        TweenMax.killTweensOf($dropdownList);
+        gsap.killTweensOf($dropdownList);
 
         checkNavHeight();
 

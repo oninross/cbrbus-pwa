@@ -1,13 +1,12 @@
 {
   "generator-yeogurt": {
     "config": {
-      "projectName": "btt",
-      "htmlOption": "jade",
-      "jsPreprocessor": "es6",
+      "projectName": "firestarter",
+      "htmlOption": "pug",
       "cssOption": "sass",
       "sassSyntax": "scss",
       "testFramework": "jasmine"
     },
-    "version": "1.5.3"
+    "version": "3.1.2"
   }
 }

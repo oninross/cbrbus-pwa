@@ -74,6 +74,17 @@
     -webkit-transition-timing-function: $easing;
 }
 
+@mixin scale ($scale: 1, $origin: center) {
+    -webkit-transform: scale($scale);
+        -ms-transform: scale($scale);
+            transform: scale($scale);
+
+    @if ($origin != center) {
+        @include origin($origin);
+    }
+}
+
+
 @mixin normalise-list() {
     padding: 0;
     margin: 0;

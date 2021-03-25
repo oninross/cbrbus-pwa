@@ -4,7 +4,7 @@
 'use strict';
 
 import $ from 'jquery';
-import 'TweenMax';
+import gsap from 'gsap';
 import 'jquery.cookie';
 import './_modernizr';
 
@@ -37,7 +37,7 @@ $(() => {
     }
 
     // Set framerate to 60fps
-    TweenMax.ticker.fps(60);
+    gsap.ticker.fps(60);
 
     // ga('send', 'event', 'category', 'action', 'label', 'value');
     // ex: ga('send', 'event', 'image', 'click', 'image click', 'filename.jpg');

@@ -1,5 +1,7 @@
 'use strict';
 
+import $ from "jquery";
+import gsap from "gsap";
 import doT from 'doT';
 import { API_KEY, loader, getQueryVariable, isNotificationGranted, debounce, getSortByTime, setSortByTime } from '../../_assets/btt/js/_helper';
 import { ripple, toaster } from '../../_assets/btt/js/_material';
@@ -52,24 +54,26 @@ export default class BusStop {
                 var $this = $(this),
                     $icon = $this.find('.icon');
 
-                TweenMax.to($icon, 1, {
+                gsap.to($icon, 1, {
                     rotation: 360,
-                    ease: Expo.easeOut,
+                    ease: "expo.out",
                     onComplete: function () {
-                        TweenMax.set($icon, {
+                        gsap.set($icon, {
                             rotation: 0
                         });
                     }
                 });
 
-                TweenMax.staggerTo('.card', 0.75, {
+                gsap.to('.card', 0.75, {
                     opacity: 0,
                     top: -50,
-                    ease: Expo.easeOut
-                }, 0.1, function () {
-                    $('.cards-wrapper').empty();
-                    self.lookupBusId(self.busStopId, null);
-                });
+                    ease: "expo.out",
+                    stagger: 0.1,
+                    onComplete: () => {
+                        $('.cards-wrapper').empty();
+                        self.lookupBusId(self.busStopId, null);
+                    }
+                })
 
                 $('.cards-wrapper').off('click', '.card', self.cardListener);
             });
@@ -119,17 +123,17 @@ export default class BusStop {
 
 
         $.ajax({
-            // url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY +'/vm/service.xml',
-            url: 'https://cors-anywhere.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY + '/sm/service.xml',
+            // url: 'https://cors-ahead.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY +'/vm/service.xml',
+            url: 'https://cors-ahead.herokuapp.com/http://siri.nxtbus.act.gov.au:11000/' + API_KEY + '/sm/service.xml',
             data: $xml,
             type: 'POST',
             contentType: "text/xml",
             dataType: "text",
             success: function (xml) {
-                TweenMax.to('.loader', 0.75, {
+                gsap.to('.loader', 0.75, {
                     autoAlpha: 0,
                     scale: 0,
-                    ease: Expo.easeOut,
+                    ease: "expo.out",
                     onComplete: function () {
                         $('.loader').remove();
 
@@ -152,8 +156,6 @@ export default class BusStop {
             json = xotree.parseXML(xml),
             serviceDelivery = json.Siri.ServiceDelivery,
             $status = serviceDelivery.Status;
-
-        console.log(json);
 
         if (!$status) {
             toaster('Whoops! Something went wrong!');
@@ -406,25 +408,26 @@ export default class BusStop {
         // Render Markup
         $('.cards-wrapper').html(cardMarkup);
 
-        TweenMax.to('.btn-refresh', 0.75, {
+        gsap.to('.btn-refresh', 0.75, {
             autoAlpha: 1,
             top: 0,
-            ease: Expo.easeOut
+            ease: "expo.out"
         });
 
-        TweenMax.to('.sort-toggle', 0.75, {
+        gsap.to('.sort-toggle', 0.75, {
             autoAlpha: 1,
             top: 0,
-            ease: Expo.easeOut,
+            ease: "expo.out",
             delay: 0.1
         });
 
-        TweenMax.staggerTo('.card', 0.75, {
+        gsap.to('.card', 0.75, {
             opacity: 1,
             top: 0,
-            ease: Expo.easeOut,
-            delay: 0.2
-        }, 0.1);
+            ease: "expo.out",
+            delay: 0.2,
+            stagger: 0.1
+        })
 
         $('.cards-wrapper').on('click', '.card', self.cardListener);
     }
