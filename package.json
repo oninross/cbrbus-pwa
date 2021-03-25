@@ -1,6 +1,6 @@
 {
   "name": "btt",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "dependencies": {
     "devbridge-autocomplete": "^1.4.11",
     "dot": "^1.1.3",
