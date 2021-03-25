@@ -44,7 +44,7 @@ let browserifyTask = (files, done) => {
       bundler
         .bundle()
         .on("error", function(err) {
-          fancyLog("Browserify compile error:", "\n", err.stack, "\n");
+          fancyLog("Browserify compile error:", "\n", err, "\n");
           this.emit("end");
         })
         .pipe(vsource(entry))

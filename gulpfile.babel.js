@@ -20,7 +20,7 @@ glob
 gulp.task(
   "build",
   gulp.series(
-    gulp.parallel("copy", "copyFonts", "imagemin", "pug", "sass", "browserify"),
+    gulp.parallel("copy", "copyFonts", "copyApi", "imagemin", "pug", "sass", "browserify"),
     "rev"
   )
 );
@@ -32,6 +32,7 @@ gulp.task(
     gulp.parallel(
       "copy",
       "copyFonts",
+      "copyApi",
       "imagemin",
       "pug",
       "sass",

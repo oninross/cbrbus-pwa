@@ -1,0 +1,12 @@
+extends ../_layouts/base
+
+block config
+    //- Correct base url pathing for this page
+    - var baseUrl = '../'
+    - var trackMyBus = true
+
+block content
+    section.trackMyBus
+        #map.map
+
+

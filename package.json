@@ -97,17 +97,17 @@
     "baseUrl": "./",
     "directories": {
       "source": "src",
-      "assets": "assets/btt",
+      "assets": "",
       "destination": "build",
       "temporary": "tmp",
       "//": "Directories relative to `source` directory",
       "modules": "_modules",
       "layouts": "_layouts",
-      "images": "_images",
-      "css": "_css",
-      "fonts": "_fonts",
-      "api": "_api",
-      "js": "_js",
+      "images": "_assets/btt/images",
+      "css": "_assets/btt/css",
+      "fonts": "_assets/btt/css/fonts",
+      "api": "_assets/btt/api",
+      "js": "_assets/btt/js",
       "data": "_data"
     },
     "entries": {

@@ -6,11 +6,10 @@ This "Layouts" folder is designated for all page layouts.
 
 An example layout:
 
-
-````pug
+```jade
 extend ./base
 
-//- Add extra stylesheets
+// Add extra stylesheets
 block append stylesheets
 
 block content
@@ -21,41 +20,37 @@ block content
     block second
         //- Add second column content here
 
-//- Add extra scripts
+// Add extra scripts
 block append scripts
 ```
 
 > NOTE: The `append stylesheets` and `append scripts` blocks allow you to add on any layout-specific scripts or stylesheets.
-> The `content` block is overriding the parent `base.pug` file's block by the same name since we are extending from it.
+> The `content` block is overriding the parent `base.jade` file's block by the same name since we are extending from it.
 > The `first` and `second` blocks can contain default markup, but also allow you to extend from this layout and overwrite them.
-> You can read more about extensions and blocks on the [Pug website](https://pugjs.org/api/reference.html)
+> You can read more about extensions and blocks on the [Jade website](http://jade-lang.com/reference/)
 
 ## Sub-generator
 
 You can easily create new layouts using the built-in sub-generator like so:
 
-````sh
-
+```
 yo yeogurt:layout two-col
-
 ```
 
 ### Extend from a layout other than `base`
 
-You can also create a new layout that extends from a different layout file than `base.pug`.
+You can also create a new layout that extends from a different layout file than `base.jade`.
 
-```sh
-
+```
 yo yeogurt:layout three-col --layout=two-col
-
-````
+```
 
 This new layout will look something like this:
 
-```pug
+```jade
 extend ./two-col
 
-//- Add extra stylesheets
+// Add extra stylesheets
 block append stylesheets
 
 block content
@@ -63,6 +58,6 @@ block content
   .layout-wrapper.three-col
     block three-col
 
-//- Add extra scripts
+// Add extra scripts
 block append scripts
 ```

@@ -1,0 +1,404 @@
+.menu {
+    .line {
+        background: $white;
+        display: block;
+        height: 2px;
+        margin: 2px auto;
+        position: relative;
+        top: 0;
+        width: 15px;
+    }
+}
+
+
+// Cards
+.card {
+    @include transition( all, 1s, $easeOutExpo );
+
+    opacity: 0;
+    position: relative;
+    top: 150px;
+
+    &.show {
+        opacity: 1;
+        top: 0;
+    }
+
+    &.up {
+        top: -150px;
+    }
+
+    .card-wrapper {
+        background: $white;
+        border-radius: 2px;
+        min-height: 100px;
+        padding: 15px;
+    }
+
+    @include tablet {
+        margin-bottom: 30px;
+    }
+}
+
+
+
+// Input
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+    @include transition( all, 0.5s, $easeOutExpo );
+
+    border: none;
+    border-bottom: 1px solid $border-color;
+    font-size: $default-font-size;
+    font-weight: $light;
+    padding: 10px 0;
+    width: 100%;
+
+    &:focus {
+        border-bottom: 1px solid $black;
+        color: $black;
+        outline: 0;
+    }
+
+    &[disabled]  {
+        background: none;
+        border-bottom: 1px dotted $border-color;
+
+        &:hover { cursor: not-allowed; }
+    }
+}
+
+.floating {
+    position: relative;
+
+    .placeholder {
+        @include transition( all, 0.5s, $easeOutExpo );
+
+        font-size: $default-font-size;
+        position: absolute;
+        top: 8px;
+    }
+
+    .hint {
+        @include transition( all, 0.5s, $easeOutExpo );
+        display: block;
+        opacity: 0;
+        padding: 5px 0;
+        position: relative;
+        top: -5px;
+        width: 100%;
+    }
+
+    &.focus {
+        .placeholder {
+            color: $black;
+            font-size: 1em;
+            top: -10px;
+        }
+
+        .hint {
+            opacity: 1;
+            top: 0;
+        }
+    }
+}
+
+
+// Radio Buttons / Checkboxes
+label {
+    display: block;
+    font-size: $default-font-size;
+    line-height: normal;
+    padding-left: 30px;
+    position: relative;
+    margin-bottom: 10px;
+    width: 100%;
+
+    &.radio-button {
+        &:before {
+            @include transition( all, 0.5s, $easeOutExpo );
+            @include inline-block;
+
+            border: 2px solid $grey;
+            border-radius: 50%;
+            content: "";
+            height: 18px;
+            left: 0;
+            margin-right: 20px;
+            position: absolute;
+            width: 18px;
+        }
+
+        &:after {
+            @include transition( all, 0.5s, $easeOutExpo );
+            @include scale(0.0);
+
+            background: transparent;
+            border-radius: 50%;
+            content: "";
+            display: block;
+            height: 18px;
+            left: 0;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            width: 18px;
+        }
+    }
+
+    &.checkbox {
+        &:before {
+            @include transition( all, 0.5s, $easeOutExpo );
+            @include inline-block;
+
+            content: "";
+            border: 2px solid $grey;
+            border-radius: 3px;
+            height: 20px;
+            left: 0;
+            position: absolute;
+            width: 20px;
+        }
+
+        &:after {
+            @include transition( all, 0.5s, $easeOutExpo );
+            @include scale(0);
+            @include inline-block;
+            @extend %icomoon;
+
+            color: transparent;
+            content: "\e28a";
+            font-size: 1em;
+            height: 10px;
+            left: 2px;
+            margin: auto;
+            position: absolute;
+            top: 6px;
+            width: 10px;
+        }
+    }
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    display: none;
+}
+
+input[type="radio"]{
+    &:checked + label {
+        &:before { border: 2px solid $black; }
+        &:after {
+            @include scale (0.45);
+
+            background: $black;
+        }
+    }
+}
+
+input[type="checkbox"]{
+    &:checked + label {
+        &:before {
+            background: $black;
+            border: 2px solid $black;
+        }
+
+        &:after {
+            @include scale (1);
+
+            color: $white;
+            left: 1px;
+            top: 1px;
+        }
+    }
+}
+
+
+// Progress Bar
+.progress {
+    background: lighten( $black, 30% );
+    border-radius: 0;
+    height: 4px;
+    width: 100%;
+
+    .progress-bar {
+        @include transition( width, 0.5s, $easeInOutExpo );
+
+        background: $black;
+        height: 100%;
+        margin-left: 0;
+        width: 0;
+    }
+}
+
+.loader {
+    @include material-shadow(1);
+
+    background: $white;
+    border-radius: 50%;
+    height: 75px;
+    position: relative;
+    width: 75px;
+
+    &:before {
+        content:'';
+        display: block;
+        padding-top: 100%;
+    }
+}
+
+.circular {
+    @include absolute-center;
+
+    animation: rotate 2s linear infinite;
+    height: 75%;
+    margin: auto;
+    transform-origin: center center;
+    width: 75%;
+}
+
+.shadow-z0 {
+    @include material-shadow(0);
+}
+
+.shadow-z1 {
+    @include material-shadow(1);
+}
+
+.shadow-z2 {
+    @include material-shadow(2);
+}
+
+.shadow-z3 {
+    @include material-shadow(3);
+}
+
+.shadow-z4 {
+    @include material-shadow(4);
+}
+
+.shadow-z5 {
+    @include material-shadow(5);
+}
+
+@include tablet {
+    // Buttons and CTAs
+    .btn {
+        width: auto;
+    }
+}
+
+
+// Loader
+.path {
+    stroke-dasharray: 1,200;
+    stroke-dashoffset: 0;
+
+    animation:
+        dash 1.5s ease-in-out infinite,
+        color 6s ease-in-out infinite
+    ;
+    stroke-linecap: round;
+}
+
+@keyframes rotate{
+    100%{
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes dash{
+    0%{
+        stroke-dasharray: 1,200;
+        stroke-dashoffset: 0;
+    }
+
+    50%{
+        stroke-dasharray: 89,200;
+        stroke-dashoffset: -35;
+    }
+
+    100%{
+        stroke-dasharray: 89,200;
+        stroke-dashoffset: -124;
+    }
+}
+
+@keyframes color{
+    100%, 0%{
+        stroke: $black;
+    }
+}
+
+
+
+// Toaster
+.toaster {
+    &__wrap {
+        bottom: 30px;
+        left: 30px;
+        max-width: 440px;
+        position: fixed;
+        width: 100%;
+        z-index: 25;
+
+        @include mobile {
+            max-width: 260px;
+        }
+    }
+
+    &__card {
+        @include material-shadow(1);
+
+        background: #323232;
+        border-radius: 4px;
+        color: $white;
+        margin-bottom: 10px;
+        opacity: 0;
+        padding: 20px;
+        padding-right: 40px;
+        transform: scale(0.75);
+        transform-origin: left bottom;
+
+        &:only-child,
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        &.-refresh {
+            padding-right: 120px;
+        }
+
+        p {
+            line-height: 1.25;
+            margin: 0;
+        }
+
+        button {
+            @include absolute-center;
+
+            background: none;
+            border: 0;
+            color: $white;
+            cursor: pointer;
+            height: 20px;
+            left: auto;
+            padding: 0;
+            right: 10px;
+            width: 20px;
+        }
+
+        .refresh-toaster {
+            color: $yellow;
+            font-size: 1.3em;
+            right: 50px;
+            width: auto;
+        }
+
+        .icon {
+            display: block;
+            font-size: 20px;
+        }
+    }
+}

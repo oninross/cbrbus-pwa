@@ -1,0 +1,81 @@
+extends ../_layouts/base
+
+block config
+    //- Correct base url pathing for this page
+    - var baseUrl = '../'
+    - var pageTitle = ' Info'
+
+block content
+    section.container.narrow
+        h2 CBRBUS Info
+
+        p Awesome, you have made it here!
+
+        a.btn-begin(href="/") Start using the app
+
+        p We guess you want to do one of 3 things:
+
+        p The find my bus service uses
+            strong  Bluetooth, your location
+            |  and
+            strong  Google Chrome
+            |  to let you know what is around you. This is kind of a new thing so maybe our service is the first time you have seen this. There are a few steps the first time but you will only need to do this once. To see how far away your bus is follow these steps:
+
+        .accordion
+            .accordion__header
+                | Find my bus on an iPhone
+                button.accordion__btn.js-toggle-accordion
+                    span.sr-only Toggle accordion
+            .accordion__body
+                ol
+                    li Ensure you have chrome installed – this link will take you to Chrome in the#{''}
+                        a(href="https://itunes.apple.com/au/app/chrome-web-browser-by-google/id535886823?mt=8", target="_blank") app store.
+                    li Ensure you have Bluetooth turned on. Swipe up and check to see that the Bluetooth icon is selected (blue is on).
+                        img(src="/assets/btt/images/iphone01.jpg")
+                    li Add chrome to your notification screen. Swipe down notification shade and swipe to the left to visit 'Today' view. Scroll to the bottom and tap 'Edit'.
+                        img(src="/assets/btt/images/iphone02.jpg")
+                    li Scroll down to the 'More Widgets' section and add the Chrome widget.
+                        .image-wrap
+                            img(src="/assets/btt/images/iphone03.jpg")
+                            img(src="/assets/btt/images/iphone04.jpg")
+                    li Click 'Done' and scroll to the Chrome widget. Opt in to the Physical Web. If the opt-in message does not appear, toggle the "Show More" button until the widget expands.
+                        img(src="/assets/btt/images/iphone05.jpg")
+                    li You should now see the cbrbus.com.au link. Click and have fun!
+                        a.btn-begin(href="/") Start using the app
+
+        .accordion
+            .accordion__header
+                | Find my bus on Android
+                button.accordion__btn.js-toggle-accordion
+                    span.sr-only Toggle accordion
+            .accordion__body
+                ol
+                    li Ensure you have chrome installed – this link will take you to Chrome in the#{''}
+                        a(href="https://play.google.com/store/apps/details?id=com.android.chrome", target="_blank") play store.
+                    li Ensure you have Bluetooth and Location turned on. Swipe down and check to see that the Bluetooth and Location icon is selected (icon is white).
+                        img(src="/assets/btt/images/android01.jpg")
+                    li You should be all set by now.  Click on the power button to turn off the screen.  Press it again to wake up your phone.  Swipe down the notifications drawer.
+                        img(src="/assets/btt/images/android02.jpg")
+                    li You should now see the cbrbus.com.au link. Click and have fun!
+                        a.btn-begin(href="/") Start using the app
+
+
+        .accordion
+            .accordion__header
+                | Find out what the heck this is all about
+                button.accordion__btn.js-toggle-accordion
+                    span.sr-only Toggle accordion
+            .accordion__body
+                p Why thank you for asking what we are all about. We a just a bunch of geeks playing with some new technology. This is no way connected to government or business. We are just having a play.
+
+                p If you want to say g'day, hit us up at
+                    a(href='mailto:cbrbusissues@gmail.com')  cbrbusissues@gmail.com
+
+
+
+
+
+
+
+
+

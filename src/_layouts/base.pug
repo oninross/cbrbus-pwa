@@ -1,76 +1,196 @@
-include ../_modules/header/header
+include ../_modules/primary-nav/primary-nav
+include ../_modules/app-banner/app-banner
+
 
 //- Custom Configuration
 block config
-  //- Setup site's base URL to match the "baseUrl" key within `package.json`
-  //- Otherwise default to relative pathing
-  - var baseUrl = config.baseUrl || './'
-  - var isTablePreview = config.isTablePreview || false
-  - var version = '1.8.2'
+    //- Setup site's base URL to match the "baseUrl" key within `package.json`
+    //- Otherwise default to relative pathing
+    - var baseUrl = config.baseUrl || './'
+
+    - var isSearch = config.isSearch || false
+    - var isBookmark = config.isBookmark || false
+    - var isNearby = config.isNearby || false
+    - var isAbout = config.isAbout || false
+
+    - var navIndex = config.navIndex = 0
+
+    - var isBusStop = config.isBusStop || false
+    - var trackMyBus = config.trackMyBus || false
+    - var pageTitle = config.pageTitle || ''
+    - var busStopId = config.busStopId || ''
+    - var busStopName = config.busStopName || ''
 
 doctype html
 html.no-js(lang='en')
-  head
-    meta(charset='utf-8')
-    meta(http-equiv='X-UA-Compatible' content='IE=edge,chrome=1')
+    head
+        //- Google Analytics
+        //- script.
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+            ga('create', 'UA-90461175-1', 'auto');
+            ga('send', 'pageview');
 
-    title firestarter
+        meta(charset='utf-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
 
-    meta(name='description', content= 'A quick, easy front-end framework and setup for any project')
-    meta(name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=5.0')
+        if busStopId
+            title #{busStopId} #{busStopName} | Canberra Bus Schedules Web App
+        else
+            title #{pageTitle} | Canberra Bus Schedules Web App
 
-    link(rel='manifest' href='/manifest.json')
-    meta(name='mobile-web-app-capable' content='yes')
-    meta(name='apple-mobile-web-app-capable' content='yes')
-    meta(name='msapplication-TileColor' content='#000000')
-    meta(name='msapplication-TileImage', content= baseUrl + 'assets/firestarter/images/favicon/ms-icon-144x144.png')
-    meta(name='theme-color' content='#000000')
+        meta(name='description', content= 'Canberra Bus Schedules Web App')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
 
-    link(rel='apple-touch-icon' sizes='57x57', href= baseUrl + 'assets/firestarter/images/favicon/apple-icon-57x57.png')
-    link(rel='apple-touch-icon' sizes='60x60', href= baseUrl + 'assets/firestarter/images/favicon/apple-icon-60x60.png')
-    link(rel='apple-touch-icon' sizes='72x72', href= baseUrl + 'assets/firestarter/images/favicon/apple-icon-72x72.png')
-    link(rel='apple-touch-icon' sizes='76x76', href= baseUrl + 'assets/firestarter/images/favicon/apple-icon-76x76.png')
-    link(rel='apple-touch-icon' sizes='114x114', href= baseUrl + 'assets/firestarter/images/favicon/apple-icon-114x114.png')
-    link(rel='apple-touch-icon' sizes='120x120', href= baseUrl + 'assets/firestarter/images/favicon/apple-icon-120x120.png')
-    link(rel='apple-touch-icon' sizes='144x144', href= baseUrl + 'assets/firestarter/images/favicon/apple-icon-144x144.png')
-    link(rel='apple-touch-icon' sizes='152x152', href= baseUrl + 'assets/firestarter/images/favicon/apple-icon-152x152.png')
-    link(rel='apple-touch-icon' sizes='180x180', href= baseUrl + 'assets/firestarter/images/favicon/apple-icon-180x180.png')
-    link(rel='icon' type='image/png' sizes='192x192', href= baseUrl + 'assets/firestarter/images/favicon/android-icon-192x192.png')
+        meta(name='google-site-verification', content='oXearTxGSlotNgqnSGdz9E5lE8B73H42x5KWm2MqYk8')
 
-    link(rel='icon' type='image/png' sizes='32x32', href= baseUrl + 'assets/firestarter/images/favicon/favicon-32x32.png')
-    link(rel='icon' type='image/png' sizes='96x96', href= baseUrl + 'assets/firestarter/images/favicon/favicon-96x96.png')
-    link(rel='icon' type='image/png' sizes='16x16', href= baseUrl + 'assets/firestarter/images/favicon/favicon-16x16.png')
+        link(rel='manifest', href='/manifest.json')
+        meta(name='mobile-web-app-capable', content='yes')
+        meta(name='apple-mobile-web-app-capable', content='yes')
+        meta(name='msapplication-TileColor', content='#383838')
+        meta(name='msapplication-TileImage', content='/assets/btt/images/favicon/ms-icon-144x144.png')
+        meta(name='theme-color', content='#383838')
 
-    block stylesheets
-      link(rel='stylesheet', href= baseUrl + 'assets/firestarter/css/main.css?v=' + version)
+        link(rel='apple-touch-icon', sizes='57x57', href='/assets/btt/images/favicon/apple-icon-57x57.png')
+        link(rel='apple-touch-icon', sizes='60x60', href='/assets/btt/images/favicon/apple-icon-60x60.png')
+        link(rel='apple-touch-icon', sizes='72x72', href='/assets/btt/images/favicon/apple-icon-72x72.png')
+        link(rel='apple-touch-icon', sizes='76x76', href='/assets/btt/images/favicon/apple-icon-76x76.png')
+        link(rel='apple-touch-icon', sizes='114x114', href='/assets/btt/images/favicon/apple-icon-114x114.png')
+        link(rel='apple-touch-icon', sizes='120x120', href='/assets/btt/images/favicon/apple-icon-120x120.png')
+        link(rel='apple-touch-icon', sizes='144x144', href='/assets/btt/images/favicon/apple-icon-144x144.png')
+        link(rel='apple-touch-icon', sizes='152x152', href='/assets/btt/images/favicon/apple-icon-152x152.png')
+        link(rel='apple-touch-icon', sizes='180x180', href='/assets/btt/images/favicon/apple-icon-180x180.png')
 
-  body
-    a.skip-link(href='#main') Skip to content
+        link(rel='icon', type='image/png', sizes='192x192', href='/assets/btt/images/favicon/android-icon-192x192.png')
 
-    if !isTablePreview
-      +header()
+        link(rel='icon', type='image/png', sizes='32x32', href='/assets/btt/images/favicon/favicon-32x32.png')
+        link(rel='icon', type='image/png', sizes='96x96', href='/assets/btt/images/favicon/favicon-96x96.png')
+        link(rel='icon', type='image/png', sizes='16x16', href='/assets/btt/images/favicon/favicon-16x16.png')
 
-    if isTablePreview
-      block content
-    else
-      main#main
-        block content
+        meta(name='robots', content='follow')
+        meta(name='author', content='Canberra Bus Schedules Web App')
+        meta(name='copyright', content='2017')
+        meta(name='description', content="Your easy to use CBR Bus schedule")
+        meta(name='keywords', content='CBR, Canberra, Bus, Schedule, Real-time, Routes, Timetables')
 
-    block scripts
-      script(src= baseUrl + 'assets/firestarter/js/main.js?v=' + version)
+        meta(property='og:title', content='Canberra Bus Schedules Web App')
+        meta(property='og:type', content='website')
+        meta(property='og:url', content='//cbr-buses.web.app/')
+        meta(property='og:image', content='')
+        meta(property='og:description', content="Your easy to use CBR Bus schedule")
+        meta(property='og:site_name', content='Canberra Bus Schedules Web App')
 
-      script#toaster-template(type='text/template')
-        | {{? it.isReload }}
-        .toaster__card.-refresh(class='toaster{{= it.ind }}')
-          p {{! it.message }}
-          button.btn-refresh.js-refresh Refresh
-          button.js-dismiss
-            span.sr-only Close
-            i.icon.icon-cross
-        | {{?? }}
-        .toaster__card(class='toaster{{= it.ind }}')
-          p {{! it.message }}
-          button.js-dismiss
-            span.sr-only Close
-            i.icon.icon-cross
-        | {{? }}
+        meta(name='twitter:card', content='summary')
+        meta(name='twitter:creator', content='Canberra Bus Schedules Web App')
+        meta(name='twitter:url', content='//cbr-buses.web.app/')
+        meta(name='twitter:title', content='Canberra Bus Schedules Web App')
+        meta(name='twitter:description', content="Your easy to use CBR Bus schedule")
+        meta(name='twitter:image', content='')
+
+        block stylesheets
+            link(rel='stylesheet', href= baseUrl + 'assets/btt/css/main.css')
+
+        if busStopId
+            script.
+                var _busStopId = '#{busStopId}',
+                _busStopName = '#{busStopName}';
+
+    body
+        header.header
+            +primary-nav({ navIndex: navIndex })
+
+        if isBusStop || trackMyBus || nearBy
+            .loader
+                svg.circular(viewbox='25 25 50 50')
+                    circle.path(cx='50', cy='50', r='18', fill='none', stroke-width='3', stroke-miterlimit='10')
+
+        main#main
+            block content
+
+        +app-banner()
+
+        block scripts
+            script(src= baseUrl + 'assets/btt/js/main.js')
+
+            script#toaster-template(type='text/template')
+                | {{? it.isReload }}
+                .toaster__card.-refresh(class='toaster{{= it.ind }}')
+                    p {{! it.message }}
+                    button.refresh-toaster.js-refresh-app REFRESH
+                    button.js-dismiss
+                        span.sr-only Close
+                        i.icon.icon-cross
+                |{{?? }}
+                .toaster__card(class='toaster{{= it.ind }}')
+                    p {{! it.message }}
+                    button.js-dismiss
+                        span.sr-only Close
+                        i.icon.icon-cross
+                | {{? }}
+
+            script#card-header(type='text/template')
+                button.card.card__header.js-bookmark(data-id='{{! it.busStopId }}')
+                    .card__wrapper
+                        .wrap
+                            h2 {{! it.busStopName }}
+                            i.icon.icon-star(class=' {{! it.isBookmarked }}')
+
+            script#card-bookmark(type='text/template')
+                a.card.card__header(href='/busstop/?busStopId={{! it.busStopId }}&busStopName={{! it.busStopName }}')
+                    .card__wrapper
+                        .wrap
+                            h2 {{! it.busStopId }} - {{! it.busStopName }}
+                            i.icon.icon-star.active
+
+            script#card-template(type='text/template')
+                .card(data-busstopid='{{! it.busStopId }}', data-servicenum='{{! it.serviceNum }}', data-vehicleref='{{! it.vehicleRefNum[0] }}')
+                    .card__wrapper
+                        .wrap
+                            .bus {{! it.serviceNum }}
+                            .feature
+                                |{{? it.feature.length > 0 }}
+                                |{{~ it.feature :value:index }}
+                                i.icon(class='icon-{{= value}}')
+                                |{{~ }}
+                                |{{? }}
+                            .eta
+                                //- for loop
+                                |{{~ it.estimatedArrival :value:index }}
+
+                                //- begin if index > 0
+                                |{{? index == 0 }}
+
+                                |{{? value < 0 }}
+                                strong.departed Departed
+                                |{{?? value == 0 }}
+                                strong.due Due
+                                |{{?? value == 1 }}
+                                strong.arriving Arriving
+                                |{{?? }}
+                                strong
+                                    | Arr: {{= value }} mins
+                                |{{? }}
+
+                                //- else
+                                |{{?? }}
+
+                                .next
+                                    | Nxt: {{= value }} mins
+
+                                //- end if index > 0
+                                |{{? }}
+
+                                //- end for loop
+                                |{{~ }}
+
+            script#card-empty-template(type='text/template')
+                .card.warning
+                    .card__wrapper
+                        .wrap
+                            .col-12.align-center
+                                p No departures found
+
+
+

@@ -1,0 +1,18 @@
+extends ../_layouts/base
+
+block config
+    //- Correct base url pathing for this page
+    - var baseUrl = '../'
+    - var isNearby = true
+    - var pageTitle = ' Nearby'
+    - var navIndex = 2
+
+block content
+    section.nearby
+        #map.map
+
+        .widget-mylocation.noselect
+            button#widget-mylocation.widget-mylocation-button.js-find-location
+                .widget-mylocation-button-icon-common.widget-mylocation-cookieless
+
+

@@ -651,6 +651,11 @@
   dependencies:
     "@types/babel-types" "*"
 
+"@types/jquery@^2.0.32":
+  "integrity" "sha512-tcNulMBr4fuMeBhwrRNQw3JaWg7vXP9bi64nKM5qYbaIN/oyo4n9O4TG5Thyn1BmhH159XvDxD4y3kqqpYS4sg=="
+  "resolved" "https://registry.npmjs.org/@types/jquery/-/jquery-2.0.56.tgz"
+  "version" "2.0.56"
+
 "@types/minimatch@^3.0.3":
   "integrity" "sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA=="
   "resolved" "https://registry.npmjs.org/@types/minimatch/-/minimatch-3.0.3.tgz"
@@ -2971,6 +2976,14 @@
   "integrity" "sha1-p2o+0YVb56ASu4rBbLgPPADcKPA="
   "resolved" "https://registry.npmjs.org/dev-ip/-/dev-ip-1.0.1.tgz"
   "version" "1.0.1"
+
+"devbridge-autocomplete@^1.4.11":
+  "integrity" "sha512-lRU1y9IKyPm45NKDMcujszJoftw+wqxKbtcNJoMx+LywJQJdDwjg/s4lwLYR4vyQQ6VTcUaIeveLMkZTqorBIA=="
+  "resolved" "https://registry.npmjs.org/devbridge-autocomplete/-/devbridge-autocomplete-1.4.11.tgz"
+  "version" "1.4.11"
+  dependencies:
+    "@types/jquery" "^2.0.32"
+    "jquery" ">=1.7"
 
 "di@^0.0.1":
   "integrity" "sha1-gGZJMmzqp8qjMG112YXqJ0i6kTw="
@@ -5597,7 +5610,17 @@
     "bin-wrapper" "^4.0.0"
     "logalot" "^2.0.0"
 
-"jquery@^3.5.1":
+"jquery-mousewheel@>=3.0.6":
+  "integrity" "sha1-BvAzXxbjU6aV5yBr9QUDy1I6buU="
+  "resolved" "https://registry.npmjs.org/jquery-mousewheel/-/jquery-mousewheel-3.1.13.tgz"
+  "version" "3.1.13"
+
+"jquery.cookie@^1.4.1":
+  "integrity" "sha1-1j3OIJ6raR/mMxbbCMqeR+D5OFs="
+  "resolved" "https://registry.npmjs.org/jquery.cookie/-/jquery.cookie-1.4.1.tgz"
+  "version" "1.4.1"
+
+"jquery@^3.5.1", "jquery@>=1.7":
   "integrity" "sha512-JVzAR/AjBvVt2BmYhxRCSYysDsPcssdmTFnzyLEts9qNwmjmu4JTAMYubEfwVOSwpQ1I1sKKFcxhZCI2buerfw=="
   "resolved" "https://registry.npmjs.org/jquery/-/jquery-3.6.0.tgz"
   "version" "3.6.0"
@@ -6130,6 +6153,13 @@
   "version" "1.0.1"
   dependencies:
     "kind-of" "^6.0.2"
+
+"malihu-custom-scrollbar-plugin@^3.1.5":
+  "integrity" "sha1-MQzsxeWUFaHCnp37XStuAdZqKe8="
+  "resolved" "https://registry.npmjs.org/malihu-custom-scrollbar-plugin/-/malihu-custom-scrollbar-plugin-3.1.5.tgz"
+  "version" "3.1.5"
+  dependencies:
+    "jquery-mousewheel" ">=3.0.6"
 
 "map-cache@^0.2.0", "map-cache@^0.2.2":
   "integrity" "sha1-wyq9C9ZSXZsFFkW7TyasXcmKDb8="
