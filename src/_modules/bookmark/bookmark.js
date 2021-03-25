@@ -1,5 +1,6 @@
 'use strict';
 
+import $ from 'jquery';
 import doT from 'doT';
 import gsap from "gsap";
 import { ripple, toaster } from '../../_assets/btt/js/_material';
