@@ -54,7 +54,7 @@
     "imagemin-svgo": "~7.0.0",
     "jasmine-core": "3.4.0",
     "js-yaml": "~3.13.0",
-    "karma": "^6.3.1",
+    "karma": "^6.3.14",
     "karma-browserify": "~6.1.0",
     "karma-chrome-launcher": "~3.0.0",
     "karma-jasmine": "~2.0.1",
